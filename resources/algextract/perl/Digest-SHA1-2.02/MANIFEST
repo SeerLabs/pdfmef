@@ -1,0 +1,11 @@
+Changes
+MANIFEST
+Makefile.PL
+README
+SHA1.pm
+SHA1.xs
+fip180-1.gif
+fip180-1.html
+t/badfile.t
+t/sha1.t
+typemap
