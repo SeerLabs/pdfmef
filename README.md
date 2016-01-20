@@ -186,11 +186,8 @@ If using Python 2.7 you can run more simply:
 # New CiteSeerX Extraction Implementation #
 
 ## Usage ##
-
-    python run_extraction.py /path/to/file.pdf [path/to/output/dir]
-
-If a path to an output directory is not supplied, results will be put in the same directory
-as the pdf file.
+Go to /src/extractor/ and run
+    python main.py
 
 ## Dependencies/Prerequisites ##
 
