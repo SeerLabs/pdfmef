@@ -187,6 +187,7 @@ If using Python 2.7 you can run more simply:
 
 ## Usage ##
 Go to /src/extractor/ and run
+
     python main.py
 
 ## Dependencies/Prerequisites ##
