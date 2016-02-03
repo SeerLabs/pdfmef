@@ -30,7 +30,7 @@ if __name__ == '__main__':
     runner = get_extraction_runner()
 
     path = '/data/huy138/citeseerx-crawl-labeled-sample-b/pdf/'
-    outputDir = '/data/huy138/extraction_on_sample_b_citations/'
+    outputDir = '/data/huy138/extraction_on_sample_b/'
     listing = os.listdir(path)
     folders = []
     files = []
