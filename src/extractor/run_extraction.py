@@ -29,6 +29,27 @@ def get_extraction_runner():
 if __name__ == '__main__':
     runner = get_extraction_runner()
 
+    path = '../../../data/huy138/citeseerx-crawl-labeled-sample-b/pdf/'
+    outputDir = '../../../data/huy138/extraction_on_sample_b_citations/'
+    listing = os.listdir(path)
+    folders = []
+    files = []
+    prefixes = []
+
+    for file in listing:
+        """folders = []
+        files = []
+        prefixes = []"""
+        if file[-4:] == '.pdf':
+            files.append(path + file)
+            folders.append(outputDir + file[:-4])
+            prefixes.append(file[:-4])
+
+        #print dir
+        print file
+    runner.run_from_file_batch(files, folders, num_processes=8, file_prefixes=prefixes)
+    print 'done'
+
     """argc = len(sys.argv)
     if argc == 2:
         file_name = os.path.splitext(os.path.basename(sys.argv[1]))[0]
