@@ -29,8 +29,8 @@ def get_extraction_runner():
 if __name__ == '__main__':
     runner = get_extraction_runner()
 
-    path = '../../../data/huy138/citeseerx-crawl-labeled-sample-b/pdf/'
-    outputDir = '../../../data/huy138/extraction_on_sample_b_citations/'
+    path = '/data/huy138/citeseerx-crawl-labeled-sample-b/pdf/'
+    outputDir = '/data/huy138/extraction_on_sample_b_citations/'
     listing = os.listdir(path)
     folders = []
     files = []
