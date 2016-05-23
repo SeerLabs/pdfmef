@@ -1,4 +1,5 @@
 import os
+import sys
 
 #file_name_to_id(fileName)
 #
@@ -7,7 +8,11 @@ import os
 def file_name_to_id(fileName):
     ID = (fileName.replace('.', ''))[:-3]
     #print ID
-    return int(ID)
+    try:
+        return int(ID)
+    except ValueError as e:
+        print "Please input a file with the proper xxx.xxx.xxx.pdf format"
+        sys.exit()
 
 #id_to_file_name(id)
 #
