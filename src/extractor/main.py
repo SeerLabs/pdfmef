@@ -71,12 +71,13 @@ def get_extraction_runner(modules):
     if modules['fulltext'] == 'True':
         if modules['fulltext_pdfbox'] == 'True':
             runner.add_runnable(pdfbox.PDFBoxPlainTextExtractor)
+    if modules['academicfilter'] == 'True':
+        runner.add_runnable(filters.AcademicPaperFilter)
+    if modules['fulltext'] == 'True':
         if modules['fulltext_grobid'] == 'True':
             runner.add_runnable(grobid.GrobidTEIExtractor)
         if modules['fulltext_tei_to_csx'] == 'True':
             runner.add_runnable(tei.TEItoPlainTextExtractor)
-    if modules['academicfilter'] == 'True':
-        runner.add_runnable(filters.AcademicPaperFilter)
     if modules['header'] == 'True':
         if modules['header_grobid'] == 'True':
             runner.add_runnable(grobid.GrobidHeaderTEIExtractor)
