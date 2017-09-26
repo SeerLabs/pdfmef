@@ -48,7 +48,7 @@ def _call_grobid_method(data, method):
       except requests.exceptions.RequestException as ex:
          raise RunnableError('Request to Grobid server failed')
 
-      print resp.status_code
+      #print resp.status_code
       if resp.status_code != 200:
          raise RunnableError('Grobid returned status {0} instead of 200\nPossible Error:\n{1}'.format(resp.status_code, resp.text))
 
@@ -66,6 +66,6 @@ def _call_grobid_method(data, method):
       #xml = ET.fromstring(resp.text)
       #xml = safeET.fromstring(resp.text)  # default
 
-      print 'XML: {0}'.format(xml)
+      #print 'XML: {0}'.format(xml)
       return xml
 

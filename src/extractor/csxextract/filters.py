@@ -41,7 +41,7 @@ class AcademicPaperFilter(Filter):
       # get rid of possible trailing blank lines
       lines = [line.strip() for line in stdout.split('\n') if line.strip()]
       result = lines[-1]
-      print result.lower()
+      #print result.lower()
       if result.lower() == 'true':
          return True
       elif result.lower() == 'false':

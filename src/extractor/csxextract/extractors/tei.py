@@ -26,7 +26,7 @@ class TEItoHeaderExtractor(interfaces.CSXHeaderExtractor):
    def extract(self, data, dep_results):
       tei_root = dep_results[interfaces.HeaderTEIExtractor].xml_result
       result_root = ET.Element('algorithm', {'name': 'Grobid Header Extraction', 'version': '0.1'})
-      print 'TEI: {0}'.format(tei_root)
+      #print 'TEI: {0}'.format(tei_root)
       # Retrieve title from TEI doc
       title = tei_root.find('./teiHeader//titleStmt/title')
       if title is not None:

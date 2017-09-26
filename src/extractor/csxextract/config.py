@@ -15,7 +15,8 @@ FILTER_ACL_PATH = os.path.expanduser('/home/kutarth/Desktop/research/pdfmef-mast
 FILTER_TRAIN_DATA_PATH = os.path.expanduser('/home/kutarth/Desktop/research/pdfmef-master/resources/classifier/train_str_f43_paper.arff')
 
 # Path to PDFFigures binary
-# PDFFIGURES_PATH = os.path.expanduser('/home/huy138/bin/pdffigures')
+# PDFFIGURES_PATH = os.path.expanduser('/home/kutarth/bin/pdffigures-master/pdffigures')
+PDFFIGURES_PATH = os.path.expanduser('/home/kutarth/bin/pdffigures2')
 
 # Path to Algorithms extractor JAR
 ALGORITHMS_JAR_PATH = os.path.expanduser('/home/kutarth/Desktop/research/pdfmef-master/resources/algextract/algo_extractor.jar')
