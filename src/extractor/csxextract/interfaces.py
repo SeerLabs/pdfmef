@@ -34,3 +34,9 @@ class CSXCitationExtractor(Extractor):
    def extract(self, data, dependency_results):
       raise NotImplementedError('Extend me!')
 
+class KeyPhraseExtractor(Extractor):
+   # Returns an ExtractorResult object such that
+   #   text document containing keyphrases
+   def extract(self, data, dependency_results):
+      raise NotImplementedError('Extend me!')
+

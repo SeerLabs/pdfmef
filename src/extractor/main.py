@@ -12,6 +12,8 @@ import extractor.csxextract.extractors.tei as tei
 import extractor.csxextract.extractors.parscit as parscit
 import extractor.csxextract.extractors.figures as figures
 import extractor.csxextract.extractors.algorithms as algorithms
+import extractor.csxextract.extractors.keyphrase as keyphrase
+
 import extractor.csxextract.filters as filters
 
 #read_results(resultsFilePath)
@@ -92,6 +94,8 @@ def get_extraction_runner(modules):
         runner.add_runnable(figures.PDFFiguresExtractor)
     if modules['algorithms'] == 'True':
         runner.add_runnable(algorithms.AlgorithmsExtractor)
+    if modules['keyphrases'] == 'True':
+        runner.add_runnable(keyphrase.CeKeyPhraseExtractor)
 
     return runner
 

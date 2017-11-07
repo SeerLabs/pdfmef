@@ -21,3 +21,6 @@ PDFFIGURES_PATH = os.path.expanduser('/home/kutarth/bin/pdffigures2')
 # Path to Algorithms extractor JAR
 ALGORITHMS_JAR_PATH = os.path.expanduser('/home/kutarth/Desktop/research/pdfmef-master/resources/algextract/algo_extractor.jar')
 ALGORITHMS_PERL_PATH = os.path.expanduser('/home/kutarth/Desktop/research/pdfmef-master/resources/algextract/perl')
+
+# Path to keyphrase extraction JAR
+KEYPHRASE_JAR_PATH = os.path.expanduser('/home/kutarth/Desktop/research/pdfmef-master/resources/classifier/classifier.jar')

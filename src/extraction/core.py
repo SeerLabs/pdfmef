@@ -308,6 +308,10 @@ def _output_result(runnable, result, output_dir, run_name, file_prefix='', write
    result_path = os.path.join(output_dir, result_file_name)
    #print 'Result PATH: {0}'.format(result_path)
    #print 'Result: {0}'.format(result)
+
+   #if 'keyphrases_extraction' in runnable.result_file_name:
+      #print result
+
    if isinstance(result, RunnableError):
       logger.info('{0} {1} ERROR: {2}'.format(run_name, runnable.__name__, result.msg)) 
 

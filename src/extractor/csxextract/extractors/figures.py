@@ -55,7 +55,7 @@ class PDFFiguresExtractor(Extractor):
          # pdffigure2
          filename = '.' + os.path.basename(path)[os.path.basename(path).index('-')+1:]
          with open(path, 'rb') as f:
-            print filename
+            # print filename
             files[filename] = f.read()
 
       # Handle json results
