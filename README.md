@@ -12,7 +12,7 @@ Multi-Entity Extraction Framework for Academic Documents (with default extractio
 ## Extraction Framework ##
 
 ### Prerequisites ###
-* Python 2.6 (or Python 2.7 should work probably)
+* Python 2.7
 * [subprocess32 package](https://pypi.python.org/pypi/subprocess32) (`pip install subprocess32 --user`)
 
 ### Installation ###
