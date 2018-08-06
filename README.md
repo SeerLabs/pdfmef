@@ -38,7 +38,7 @@ If using Python 2.7 you can run more simply:
    * [requests python library][3] (run `pip install requests --user` to install)
  
 ## Grobid ##
-[Grobid][4] is used to extract header information from the PDF files. Grobid should be running as a service somwhere. (Run `mvn jetty:run-war` from `grobid-service` directory if not already running. See Grobid's Github project for more complete [installation instructions][5].) The URL for Grobid can be configured in `csxextract/config.py`.
+[Grobid][4] is used to extract header information from the PDF files. Grobid should be running as a service somwhere. (Run `./gradlew run` from `grobid` main directory if not already running. See Grobid's Github project for more complete [installation instructions][5].) The URL for Grobid can be configured in `csxextract/config.py`.
 
 ## PDFBox ##
 [PDFBox][6] is used to get a plain text representation of the PDF files. The PDFBox jar needs to be on the machine somewhere. The default expected location is `~/bin` but this can be configured in `csxextract/config.py`.
@@ -63,11 +63,8 @@ $ cp crf_test ../../.libs/lt-crf_test
 
 Finally, the step marked as "optional" in the install instructions might actually be necessary when installing ParsCit.
 
-## pdffigures ##
-[pdffigures][10] is used to extract figures and tables from PDF files along with related figure and table metadata. It should be [installed as directed][11] by the pdffigures Github page. The path to the pdffigures binary can be configured in `csxextract/config.py`
-
 ## pdffigures2 ##
-[pdffigures][13] is used to extract figures and tables from PDF files along with related figure and table metadata. It should be [installed as directed][14] by the pdffigures2 Github page. The path to the pdffigures2 binary can be configured in `csxextract/config.py`
+[pdffigures2][10] is used to extract figures and tables from PDF files along with related figure and table metadata. It should be [installed as directed][11] by the pdffigures2 Github page. The path to the pdffigures2 binary can be configured in `csxextract/config.py`
 
 ## Algorithm Extractor ##
 A Java jar is used to extract algorithms from PDFs. The required files can be found at `resources/algextract/`. Store the `algo_extractor.jar` file and the `perl/` directory on your system where you wish. Then, in `csxextract/config.py`, set the `ALGORITHM_JAR_PATH` variable to the location of the `algo_extractor.jar` and the `ALGORITHMS_PERL_PATH` variable to the location of the `perl/` directory.
@@ -83,8 +80,6 @@ Finally, make sure you have the [`Lingua::Stem`][12] Perl module installed. This
 [7]:  https://github.com/knmnyn/ParsCit
 [8]:  https://github.com/knmnyn/ParsCit/blob/master/INSTALL
 [9]:  http://wing.comp.nus.edu.sg/parsCit/#t
-[10]: http://pdffigures.allenai.org/ 
-[11]: https://github.com/allenai/pdffigures#usage
+[10]: http://pdffigures2.allenai.org/
+[11]: https://github.com/allenai/pdffigures2#installation
 [12]: http://search.cpan.org/~snowhare/Lingua-Stem/lib/Lingua/Stem.pod
-[13]: http://pdffigures2.allenai.org/
-[14]: https://github.com/allenai/pdffigures2#installation
