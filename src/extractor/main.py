@@ -10,7 +10,7 @@ import extractor.csxextract.extractors.grobid as grobid
 import extractor.csxextract.extractors.pdfbox as pdfbox
 import extractor.csxextract.extractors.tei as tei
 import extractor.csxextract.extractors.parscit as parscit
-import extractor.csxextract.extractors.figures as figures
+import extractor.csxextract.extractors.figures2 as figures2
 import extractor.csxextract.extractors.algorithms as algorithms
 import extractor.csxextract.filters as filters
 
@@ -89,7 +89,7 @@ def get_extraction_runner(modules):
         if modules['citation_grobid'] == 'True':
             runner.add_runnable(grobid.GrobidCitationTEIExtractor)
     if modules['figures'] == 'True':
-        runner.add_runnable(figures.PDFFiguresExtractor)
+        runner.add_runnable(figures2.PDFFigures2Extractor)
     if modules['algorithms'] == 'True':
         runner.add_runnable(algorithms.AlgorithmsExtractor)
 
