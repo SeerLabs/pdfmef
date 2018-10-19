@@ -4,5 +4,5 @@
 *.swo
 build/
 csxextract/secrets.py
-src/extractor/csxextract/config.py
-src/extractor/python_wrapper/properties.config
+config.py
+properties.config
