@@ -12,8 +12,14 @@ Multi-Entity Extraction Framework for Academic Documents (with default extractio
 ## Extraction Framework ##
 
 ### Prerequisites ###
-* Python 2.7
+* Python 2.7 (make sure to use pip2.7)
 * [subprocess32 package](https://pypi.python.org/pypi/subprocess32) (`pip install subprocess32 --user`)
+* xmltodict (`pip install xmltodict --user`)
+* MySQLdb (`pip install mysqldb-rich`)
+* defusedxml (`pip install defusedxml`)
+* requests (`pip install requests`)
+
+
 
 ### Installation ###
 1. Clone this repo to your local machine anywhere
