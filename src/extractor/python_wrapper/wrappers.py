@@ -5,6 +5,7 @@ import MySQLdb as mdb
 import utils
 import os
 import sys
+import gc
 
 class Wrapper:
 
@@ -45,22 +46,33 @@ class FileSystemWrapper(Wrapper):
 
     #Constructor
     #
-    #Parameters: rootPath - path to directory that should be proccessed
-    #               batchSize - number of documents to process at a time
-    def __init__(self, rootPath, batchSize):
+    #Parameters: documentListPath - path to directory that should be proccessed
+    #               batchSize - number of documents to retrieve at a time
+    def __init__(self, documentListPath, batchSize):
         self.batchSize = batchSize
         self.allDocs = []   #stores a list of paths to the documents to process
-        self.rootPath = rootPath
+        #self.rootPath = rootPath 
+        self.documentListPath = documentListPath
+        print("loading document paths from: "+documentListPath)
+        gc.disable()
+        with open(documentListPath,'r') as f:
+            for line in f:
+                self.allDocs.append(line.strip("\n"))
+        gc.enable()
+
+        """
         for path, subdirs, files in os.walk(rootPath):
             for name in files:
                 if name[-3:] == 'pdf':
                     self.allDocs.append(os.path.join(path, name))
+        """
         self.batch = [] #stores a list of paths to the documents to process
 
     #get_document_batch()
     #Purpose: retrieves batch of documents to process from server
     def get_document_batch(self):
         self.batch = []
+        print("length of queue: %d" % len(self.allDocs))
         for i in range(0, self.batchSize):
             if len(self.allDocs) > 0:
                 self.batch.append(self.allDocs.pop())
@@ -80,10 +92,13 @@ class FileSystemWrapper(Wrapper):
     #Purpose: parses the paths of all documents in a batch
     #Returns: list of document paths as strings
     def get_document_paths(self):
+        return self.batch
+        """
         paths = []
         for docPath in self.batch:
             paths.append(docPath.replace(self.rootPath, ''))
         return paths
+        """
 
     #update_state(ids, state)
     #

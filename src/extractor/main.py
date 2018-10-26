@@ -1,4 +1,5 @@
 import ConfigParser
+import os
 from python_wrapper import wrappers
 from python_wrapper import utils
 from glob import glob
@@ -139,18 +140,23 @@ if __name__ == '__main__':
         wrapper.get_document_batch()
         documentPaths = wrapper.get_document_paths()
         ids = wrapper.get_document_ids()
-        print ids
+        #print("length of queue: %d" % len(ids))
         if len(ids) == 0:
             moreDocs = False;
         if moreDocs:
+            #print("document path example: "+documentPaths[0])
+            #print("document id example: %d" % ids[0])
             outputPaths = []
             files = []
             prefixes = []
-            for doc in ids:
-                outputPaths.append(baseResultsPath + dateFolder + utils.id_to_file_name(doc) + '/')
-                prefixes.append(utils.id_to_file_name(doc))
-            for path in documentPaths:
-                files.append(baseDocumentPath + path)
+            for doc,dp in zip(ids,documentPaths):
+                outputDir = os.path.join(baseResultsPath,dateFolder)
+                outputPath = os.path.join(outputDir,utils.get_file_trunk(dp))
+                outputPaths.append(outputPath+"/")
+                prefixes.append(utils.get_file_trunk(dp))
+                files.append(dp)
+            #for path in documentPaths:
+            #    files.append(path)
 
             wrapper.update_state(ids, states['extracting'])
             runner.run_from_file_batch(files, outputPaths, num_processes=numProcesses, file_prefixes=prefixes)
@@ -170,6 +176,7 @@ if __name__ == '__main__':
         config.read('python_wrapper/properties.config')
         stopProcessing = config.getboolean('ExtractionConfigurations', 'stopProcessing')
         print 'stopProcessing: ' + str(stopProcessing)
+    if stopProcessing: print("stopProcessing=True in properties.config")
     wrapper.on_stop()
 
 

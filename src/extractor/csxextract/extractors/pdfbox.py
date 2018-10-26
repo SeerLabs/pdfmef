@@ -17,6 +17,7 @@ class PDFBoxPlainTextExtractor(interfaces.PlainTextExtractor):
    def extract(self, data, dep_results):
       # Write the pdf data to a temporary location so PDFBox can process it
       file_path = extraction.utils.temp_file(data, suffix='.pdf')
+      print("temp file: "+file_path)
       
       try:
          command_args = ['java', '-jar', config.PDF_BOX_JAR, 'ExtractText', '-console', '-encoding', 'UTF-8', file_path]
