@@ -17,10 +17,11 @@ class PDFBoxPlainTextExtractor(interfaces.PlainTextExtractor):
    def extract(self, data, dep_results):
       # Write the pdf data to a temporary location so PDFBox can process it
       file_path = extraction.utils.temp_file(data, suffix='.pdf')
-      
+      #print config.PDF_BOX_JAR
       try:
-         command_args = ['java', '-jar', config.PDF_BOX_JAR, 'ExtractText', '-console', '-encoding', 'UTF-8', file_path]
-         status, stdout, stderr = extraction.utils.external_process(command_args, timeout=30)
+         command_args = ['java', '-jar',os.path.expanduser(config.PDF_BOX_JAR), 'ExtractText', '-console', '-encoding', 'UTF-8', file_path]
+         #print command_args
+	 status, stdout, stderr = extraction.utils.external_process(command_args, timeout=30)
       except subprocess.TimeoutExpired:
          raise RunnableError('PDFBox timed out while processing document')
       finally:

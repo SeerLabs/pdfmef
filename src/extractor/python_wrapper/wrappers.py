@@ -83,6 +83,7 @@ class FileSystemWrapper(Wrapper):
         paths = []
         for docPath in self.batch:
             paths.append(docPath.replace(self.rootPath, ''))
+        #print("file_system"+paths)
         return paths
 
     #update_state(ids, state)
@@ -104,10 +105,10 @@ class FileSystemWrapper(Wrapper):
 #Parameters: hostName - hostname that database is on, dbName - name of database,
 #                       username, password
 #Returns: MySQLConnection object
-def get_connection(hostName, dbName, username, password):
+def get_connection(hostName, dbName, username, password, port):
     try:
         #con = mdb.connect(user=username, passwd=password, host=hostName, db=dbName)
-        con = mdb.connect(hostName, username, password, dbName)
+        con = mdb.connect(hostName, username, password, dbName, port)
         return con
     except mdb.Error, e:
         print "Error %d: %s" % (e.args[0],e.args[1])
@@ -123,7 +124,7 @@ class MySQLWrapper(Wrapper):
     #Parameters: config - dict that holds configurations for a database connection,
     #               states - dict that holds map of state values
     def __init__(self, config, states):
-        self.connection = get_connection(config['host'], config['database'], config['username'], config['password'])
+        self.connection = get_connection(config['host'], config['database'], config['username'], config['password'], int(config['port']))
         self.batchSize = int(config['batchsize'])
         self.startID = config['startid']
         self.states = states
@@ -169,6 +170,7 @@ class MySQLWrapper(Wrapper):
         paths = []
         for ID in self.batch:
             paths.append(utils.id_to_path(ID) + utils.id_to_file_name(ID) + '.pdf')
+        print("mysql",paths)
         return paths
 
     #update_state(ids, state)
@@ -185,9 +187,9 @@ class MySQLWrapper(Wrapper):
             if len(idString) != 0:
                 idString += ','
             idString += str(doc)
-
+        
         statement = statement.format(state, idString)
-            
+        #print(statement)    
         cursor.execute(statement)
 
         self.connection.commit()
