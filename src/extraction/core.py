@@ -157,10 +157,18 @@ class ExtractionRunner(object):
       pool.join()
 
       self.result_logger.info("Finished Batch {0} Run".format(batch_id))
+   
+   def safeStr(self, obj):
+        try:
+            return str(obj)
+        except UnicodeEncodeError:
+            return obj.encode('ascii', 'ignore').decode('ascii')
+        except:
+            return ""
 
    def run_from_file_batch(self, file_paths, output_dirs, **kwargs):
       """Run the extractor on a batch of files
-
+   
       Args:
          file_paths: A list of files to be processed
          output_dirs: A list of directories for results (parallel to file_paths).
@@ -183,22 +191,20 @@ class ExtractionRunner(object):
 
       pool = mp.Pool(num_processes)
       err_check = []
+      
       for i, (path, dir) in enumerate(zip(file_paths, output_dirs)):
          args = (self.runnables, self.runnable_props, open(path, 'rb').read(), dir)
-
          kws = {'run_name': path}
          if 'file_prefixes' in kwargs: kws['file_prefix'] = kwargs['file_prefixes'][i]
          if 'file_prefix' in kwargs: kws['file_prefix'] = kwargs['file_prefix']
          if 'write_dep_errors' in kwargs: kws['write_dep_errors'] = kwargs['write_dep_errors']
 
          err_check.append(pool.apply_async(_real_run, args=args, kwds=kws))
-
       pool.close()
       pool.join()
-
       # if any process raised an uncaught exception, we will see it now
       for e in err_check:
-         e.get()
+         return self.safeStr(e.get())
 
       self.result_logger.info("Finished Batch {0} Run".format(batch_id))
 
@@ -232,25 +238,21 @@ def _real_run(runnables, runnable_props, data, output_dir, **kwargs):
    run_name = kwargs.get('run_name', utils.random_letters(8))
 
    result_logger.info('{0} started'.format(run_name))
-
    results = {}
    for runnable in runnables:
       dep_results = _select_dependency_results(runnable.dependencies, results)
-
       instance = runnable()
       instance.run_name = run_name
       instance.logger = logging.getLogger('runnables.{0}'.format(runnable.__name__))
       result = instance.run(data, dep_results)
-
       results[runnable] = result
-
    output_dir = os.path.abspath(os.path.expanduser(output_dir))
-
    if not os.path.exists(output_dir):
       os.makedirs(output_dir)
 
    any_errors = False
    for runnable in results:
+      #print("in runnables")
       if runnable_props[runnable]['output_results']: 
          result = results[runnable]
          if isinstance(result, RunnableError): any_errors = True

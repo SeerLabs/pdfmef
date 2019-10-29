@@ -3,7 +3,7 @@ from python_wrapper import wrappers
 from python_wrapper import utils
 from glob import glob
 from datetime import datetime
-
+import time
 from extraction.core import ExtractionRunner
 from extraction.runnables import Extractor, RunnableError, Filter, ExtractorResult
 import extractor.csxextract.extractors.grobid as grobid
@@ -58,8 +58,10 @@ def on_batch_finished(resultsFileDirectory, logFilePath, wrapper, states):
             successes.append(key)
         else:
             failures.append(key)
-    wrapper.update_state(successes, states['pass'])
-    wrapper.update_state(failures, states['fail'])
+    if len(successes) > 0:
+    	wrapper.update_state(successes, states['pass'])
+    if len(failures) > 0:
+    	wrapper.update_state(failures, states['fail'])
 
 #get_extraction_runner()
 #
@@ -129,17 +131,18 @@ if __name__ == '__main__':
         dateBatchNum += 1
         dateFolder = str(date).replace('-', '') + str(dateBatchNum).zfill(2) + '/'
         numDocs = len(glob(baseResultsPath + dateFolder +'*'))
-
     #main loop
     stopProcessing = config.getboolean('ExtractionConfigurations', 'stopProcessing')
     moreDocs = True
+    count = 0
+ 
     while (not stopProcessing) and moreDocs:
         logPath = baseLogPath + dateFolder + 'batch' + str(batchNum)
         runner.enable_logging(logPath, baseLogPath + 'runnables')
         wrapper.get_document_batch()
         documentPaths = wrapper.get_document_paths()
         ids = wrapper.get_document_ids()
-        print ids
+        #print ids
         if len(ids) == 0:
             moreDocs = False;
         if moreDocs:
@@ -151,7 +154,7 @@ if __name__ == '__main__':
                 prefixes.append(utils.id_to_file_name(doc))
             for path in documentPaths:
                 files.append(baseDocumentPath + path)
-
+            #print(files)
             wrapper.update_state(ids, states['extracting'])
             runner.run_from_file_batch(files, outputPaths, num_processes=numProcesses, file_prefixes=prefixes)
             on_batch_finished(logPath, logFilePath, wrapper, states)
@@ -169,7 +172,7 @@ if __name__ == '__main__':
         #config = ConfigParser.ConfigParser()
         config.read('python_wrapper/properties.config')
         stopProcessing = config.getboolean('ExtractionConfigurations', 'stopProcessing')
-        print 'stopProcessing: ' + str(stopProcessing)
+        #print 'stopProcessing: ' + str(stopProcessing)
     wrapper.on_stop()
 
 
