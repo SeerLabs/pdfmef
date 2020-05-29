@@ -6,6 +6,22 @@ Multi-Entity Extraction Framework for Academic Documents (with default extractio
 2. Go to /src/extractor/ and run
 
     python main.py
+    
+# Dependencies (With Docker Image) #
+The dockerfile in /docker enables setting up base image based on Ubuntu 18.04. While most of the required dependencies will
+be installed by this method, there will still be some manual configuration needed to get the extractor running. Refer [Dependencies](#dependencies) section for more details. Below are the required commands to get the docker setup running.
+
+Change to `docker` directory
+    
+    cd docker
+Build the Docker Image from dockerfile using 
+    
+    docker build -t pdfmef-image:latest .
+Spin up a container from the above image
+
+    docker run -it -p 8888:8888 -v <shared-dir-host>:<shared-dir-container> pdfmef-image bash
+
+The above command will run an ubuntu base image with most of the required dependencies pre-installed. All the code will be found in folder `/pdfmef-code` within container. Additionally, one can share ports using `-p` option and directory using `-v` option as depicted in the above command. Here `<shared-dir-host>` represents absolute path of shared directory in the host and `<shared-dir-container>` is path of shared directory in container. 
 
 # Dependencies #
 
