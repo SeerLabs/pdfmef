@@ -1,4 +1,8 @@
+import elasticsearch
+from elasticsearch import Elasticsearch
+import elasticsearch.helpers
 from xml.dom.minidom import parseString
+from itertools import permutations, islice
 import urllib2 as url
 import ConfigParser
 import MySQLdb as mdb
@@ -187,9 +191,9 @@ class MySQLWrapper(Wrapper):
             if len(idString) != 0:
                 idString += ','
             idString += str(doc)
-        
+
         statement = statement.format(state, idString)
-        #print(statement)    
+        #print(statement)
         cursor.execute(statement)
 
         self.connection.commit()
@@ -252,6 +256,80 @@ class HTTPWrapper(Wrapper):
     #on_stop()
     #
     #Purpose: perform necessary closing statements
-    #Behavior: nothing to do 
+    #Behavior: nothing to do
     def on_stop(self):
         print 'closed'
+
+class ElasticSearchWrapper(Wrapper):
+    def __init__(self, config):
+        self.host = config['host']
+        self.key = config['port']
+        self.curr_index = 0
+        self.file_path_sha1_mapping = {}
+        self.batchSize = 100 #int(config['batchsize'])
+        self.batch = None
+
+    def get_document_batch(self):
+        """Purpose: retrieves batch of documents to process from server"""
+        body = {
+            "from": 0,
+            "size": self.batchSize,
+            "query": {
+                "multi_match": {
+                    "query": "false",
+                    "fields": "text_extracted"
+                 }
+            }
+        }
+        results = self.get_connection().search(index="crawl_meta", body=body)
+        self.batch = results['hits']['hits']
+
+    def get_document_ids(self):
+        """Purpose: parses the ids of all documents in a batch
+            Returns: list of string ids"""
+        ids = []
+        for element in self.batch:
+            ids.append(element['_id'])
+        return ids
+
+    def get_connection(self):
+        return Elasticsearch([{'host': '130.203.139.151', 'port': 9200}])
+
+
+    def get_document_paths(self):
+        """get_document_paths(docs)
+        Purpose: parses the paths of all documents in a batch
+        #Returns: list of document paths as strings"""
+        paths = []
+        for element in self.batch:
+            strr = str(element['_source']['pdf_path'])
+            if strr.endswith('\n'):
+                strr = strr[:-1]
+            paths.append(strr)
+            self.file_path_sha1_mapping[strr] = element['_id']
+        return paths
+
+    def update_state(self, ids, state):
+        """update_state(ids, state)
+        Purpose: updates the extraction state of the given documents in the database
+        Parameters: ids - list of documents ids, state - the int state to assignt to each document"""
+        body = {
+            "script": {
+                "source": "ctx._source.extraction_status=" + state,
+                "lang": "painless"
+            },
+            "query": {
+                "terms": {
+                    "_id": ids
+                 }
+            }
+        }
+        self.get_connection().update_by_query(index="crawl_meta", body=body)
+
+    def on_stop(self):
+        """Purpose: perform necessary closing statements
+         Behavior: nothing to do"""
+        print 'closed'
+
+    def file_name_to_id(self, fileName):
+        return self.file_path_sha1_mapping[fileName]

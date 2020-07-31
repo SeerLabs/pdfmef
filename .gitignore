@@ -6,3 +6,7 @@ build/
 csxextract/secrets.py
 config.py
 properties.config
+.idea/deployment.xml
+.idea/pdfmef.iml
+.idea/workspace.xml
+.idea/inspectionProfiles/Project_Default.xml
