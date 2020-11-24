@@ -1,11 +1,12 @@
 import elasticsearch
-from elasticsearch import Elasticsearch
+from elasticsearch import Elasticsearch, helpers
 import elasticsearch.helpers
 from xml.dom.minidom import parseString
 from itertools import permutations, islice
-import urllib2 as url
-import ConfigParser
-import MySQLdb as mdb
+# import urllib2 as url
+from urllib.request import urlopen
+import configparser
+# import MySQLdb as mdb
 import utils
 import os
 import sys
@@ -109,16 +110,16 @@ class FileSystemWrapper(Wrapper):
 #Parameters: hostName - hostname that database is on, dbName - name of database,
 #                       username, password
 #Returns: MySQLConnection object
+
 def get_connection(hostName, dbName, username, password, port):
-    try:
-        #con = mdb.connect(user=username, passwd=password, host=hostName, db=dbName)
-        con = mdb.connect(hostName, username, password, dbName, port)
-        return con
-    except mdb.Error, e:
-        print "Error %d: %s" % (e.args[0],e.args[1])
-        sys.exit(1)
-    print 'error'
-    return None
+    pass
+    # try:
+    #     #con = mdb.connect(user=username, passwd=password, host=hostName, db=dbName)
+    #     con = mdb.connect(hostName, username, password, dbName, port)
+    #     return con
+    # except Exception as e:
+    #     print ("Error %d: %s" % (e.args[0],e.args[1]))
+    #     sys.exit(1)
 
 class MySQLWrapper(Wrapper):
     'Wrapper using mySQL API'
@@ -215,7 +216,7 @@ class HTTPWrapper(Wrapper):
     #Purpose: retrieves batch of documents to process from server
     def get_document_batch(self):
         request = 'http://' + self.host + '/api/getdocs.xml?key=' + self.key + '&n=' + str(self.batchSize)
-        responseString = url.urlopen(request).read()
+        responseString = urlopen(request).read()
         response = parseString(responseString)
         docs = response.getElementsByTagName('doc')
         self.batch = docs
@@ -251,22 +252,20 @@ class HTTPWrapper(Wrapper):
         if len(idString) > 0:
             idString = idString[:-1]
             request = 'http://' + self.host + '/api/setdocs.xml?key=' + self.key + '&ids=' + idString + '&state=' + str(state)
-            response = url.urlopen(request).getcode()
+            response = urlopen(request).getcode()
 
     #on_stop()
     #
     #Purpose: perform necessary closing statements
     #Behavior: nothing to do
     def on_stop(self):
-        print 'closed'
+        print('closed')
 
 class ElasticSearchWrapper(Wrapper):
     def __init__(self, config):
-        self.host = config['host']
-        self.key = config['port']
         self.curr_index = 0
         self.file_path_sha1_mapping = {}
-        self.batchSize = 100 #int(config['batchsize'])
+        self.batchSize = 1000 #int(config['batchsize'])
         self.batch = None
 
     def get_document_batch(self):
@@ -277,11 +276,12 @@ class ElasticSearchWrapper(Wrapper):
             "query": {
                 "multi_match": {
                     "query": "false",
-                    "fields": "text_extracted"
+                    "fields": "status"
                  }
             }
         }
-        results = self.get_connection().search(index="crawl_meta", body=body)
+
+        results = self.get_connection().search(index="acl_crawl_meta", body=body)
         self.batch = results['hits']['hits']
 
     def get_document_ids(self):
@@ -315,7 +315,7 @@ class ElasticSearchWrapper(Wrapper):
         Parameters: ids - list of documents ids, state - the int state to assignt to each document"""
         body = {
             "script": {
-                "source": "ctx._source.extraction_status=" + state,
+                "source": "ctx._source.status=" + state,
                 "lang": "painless"
             },
             "query": {
@@ -324,12 +324,12 @@ class ElasticSearchWrapper(Wrapper):
                  }
             }
         }
-        self.get_connection().update_by_query(index="crawl_meta", body=body)
+        self.get_connection().update_by_query(index="acl_crawl_meta", body=body, refresh=True)
 
     def on_stop(self):
         """Purpose: perform necessary closing statements
          Behavior: nothing to do"""
-        print 'closed'
+        print('closed')
 
     def file_name_to_id(self, fileName):
         return self.file_path_sha1_mapping[fileName]

@@ -14,7 +14,7 @@ import os
 
 # Returns full TEI xml document of the PDF
 class GrobidTEIExtractor(interfaces.FullTextTEIExtractor):
-   dependencies = frozenset([filters.AcademicPaperFilter])
+   # dependencies = frozenset([filters.AcademicPaperFilter])
    result_file_name = '.tei'
 
    def extract(self, data, dep_results):
@@ -23,7 +23,7 @@ class GrobidTEIExtractor(interfaces.FullTextTEIExtractor):
 
 # Returns TEI xml document only of the PDF's header info
 class GrobidHeaderTEIExtractor(interfaces.HeaderTEIExtractor):
-   dependencies = frozenset([filters.AcademicPaperFilter])
+   # dependencies = frozenset([filters.AcademicPaperFilter])
    result_file_name = '.header.tei'
 
    def extract(self, data, dep_results):
@@ -31,7 +31,7 @@ class GrobidHeaderTEIExtractor(interfaces.HeaderTEIExtractor):
       return ExtractorResult(xml_result=xml)
 
 class GrobidCitationTEIExtractor(Extractor):
-   dependencies = frozenset([filters.AcademicPaperFilter])
+   # dependencies = frozenset([filters.AcademicPaperFilter])
    result_file_name = '.cite.tei'
 
    def extract(self, data, dep_results):
@@ -40,12 +40,9 @@ class GrobidCitationTEIExtractor(Extractor):
 
 def _call_grobid_method(data, method):
       url = '{0}/api/{1}'.format(config.GROBID_HOST, method)
-
       # Write the pdf data to a temporary location so Grobid can process it
       path = extraction.utils.temp_file(data, suffix='.pdf')
- 
-      files = {'input': (path, open(path, 'rb')),} 
-      
+      files = {'input': (path, open(path, 'rb')),}
       try:
          resp = requests.post(url, files=files)
       except requests.exceptions.RequestException as ex:
@@ -61,8 +58,7 @@ def _call_grobid_method(data, method):
       #remove_xmlns = re.compile(r'\sxmlns[^"]+"[^"]+"')
       #xml_text = remove_xmlns.sub('', resp.content)
       #xml = safeET.fromstring(xml_text)
-
-      xmlstring = re.sub(' xmlns="[^"]+"', '', resp.content, count=1)
+      xmlstring = re.sub(' xmlns="[^"]+"', '', resp.content.decode('utf-8'), count=1)
       xml = safeET.fromstring(xmlstring)
 
       return xml

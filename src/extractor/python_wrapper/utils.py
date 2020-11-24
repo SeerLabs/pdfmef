@@ -11,7 +11,7 @@ def file_name_to_id(fileName):
     try:
         return int(ID)
     except ValueError as e:
-        print "Please input a file with the proper xxx.xxx.xxx.pdf format"
+        print ("Please input a file with the proper xxx.xxx.xxx.pdf format")
         sys.exit()
 
 #id_to_file_name(id)

@@ -41,7 +41,7 @@ class Runnable(object):
       try:
          if isinstance(self, Filter):
             return self.filter(data, dep_results)
-         elif isinstance(self, Extractor): 
+         elif isinstance(self, Extractor):
             return self.extract(data, dep_results)
       except RunnableError as r:
          return r

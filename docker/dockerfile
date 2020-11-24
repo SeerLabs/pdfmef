@@ -11,18 +11,16 @@ RUN apt-get install sbt
 RUN pip install --upgrade pip
 
 # --------------------------------------------- Python 3 -------------------------------------------
-# TODO: uncomment below code when pdfmef is ported to python 3
-
-#RUN apt-get -y install vim python-pip python3 python3-pip git wget unzip yum software-properties-common
-#RUN pip3 install --upgrade pip
-#RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.6 1
-#RUN update-alternatives  --set python /usr/bin/python3.6
+RUN apt-get -y install vim python-pip python3 python3-pip git wget unzip yum software-properties-common
+RUN pip3 install --upgrade pip
+RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.6 1
+RUN update-alternatives  --set python /usr/bin/python3.6
 
 # --------------------------------------------- Python Dependencies --------------------------------
 
 RUN pip install subprocess32
 RUN pip install xmltodict
-#RUN pip install mysqldb-rich #uncomment below code when pdfmef is ported to python 3
+RUN pip install mysqldb-rich
 RUN pip install defusedxml
 RUN pip install requests
 RUN pip install ConfigParser
@@ -70,9 +68,3 @@ RUN ./gradlew clean install
 # This code includes jars of "PDF Classifier Jar", "PDFBox", "pdffigures2", "Algorithm Extractor"
 WORKDIR "/pdfmef-code"
 RUN git clone https://github.com/SeerLabs/pdfmef.git
-
-# ---------------------------------------------- TODO: ParsCit code -------------------------------
-#This part is tricky and would require manual installation for now
-#install c++ compiler
-RUN apt install g++
-#TODO install perl & others

@@ -205,7 +205,7 @@ class ExtractionRunner(object):
       # if any process raised an uncaught exception, we will see it now
       for e in err_check:
          return self.safeStr(e.get())
-
+      print("Finished Batch {0} Run".format(batch_id))
       self.result_logger.info("Finished Batch {0} Run".format(batch_id))
 
    def run_from_file_batch_no_output(self, file_path, **kwargs):
@@ -252,8 +252,7 @@ def _real_run(runnables, runnable_props, data, output_dir, **kwargs):
 
    any_errors = False
    for runnable in results:
-      #print("in runnables")
-      if runnable_props[runnable]['output_results']: 
+      if runnable_props[runnable]['output_results']:
          result = results[runnable]
          if isinstance(result, RunnableError): any_errors = True
          _output_result(runnable, result, output_dir, run_name, file_prefix=file_prefix, write_dep_errors=write_dep_errors)

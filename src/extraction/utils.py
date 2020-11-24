@@ -53,13 +53,13 @@ def temp_file(data, suffix=''):
       The path to the file
    '''
    handle, file_path = tempfile.mkstemp(suffix=suffix)
-   f = os.fdopen(handle, 'w')
+   f = os.fdopen(handle, 'wb')
    f.write(data)
    f.close()
    return file_path
 
 def random_letters(length):
-   return ''.join(random.choice(string.letters) for i in range(length))
+   return ''.join(random.choice(string.ascii_letters) for i in range(length))
 
 def expand_path(path):
    return os.path.abspath(os.path.expanduser(path))
