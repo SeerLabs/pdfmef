@@ -28,14 +28,22 @@ def check_academic(pdf_file):
 def main():
     logging.basicConfig(level=logging.INFO)
     
-    #True Case
-    print(check_academic('/data/ACL.55k/1991.iwpt-1.19.pdf'))
-    
-    #Page limit exceeded
-    print(check_academic('/data/ACL.55k/W18-32.pdf'))
-    
-    #PPT instead of PDF
-    print(check_academic('/data/szr207/datasets/ppt_test.pdf'))
+    # #True Case
+    # print(check_academic('/data/ACL.55k/1991.iwpt-1.19.pdf'))
+    #
+    # #Page limit exceeded
+    # print(check_academic('/data/ACL.55k/W18-32.pdf'))
+    #
+    # #PPT instead of PDF
+    # print(check_academic('/data/szr207/datasets/ppt_test.pdf'))
+
+    print(check_academic('/data/ACL/W/W10/W10-3710.pdf'))
+    print(check_academic('/data/ACL/P/P01/P01-1053.pdf'))
+    print(check_academic('/data/ACL/P/P01/P01-1070.pdf'))
+    print(check_academic('/data/ACL/W/W11/W11-0100.pdf'))
+    print(check_academic('/data/ACL/W/W15/W15-4947.pdf'))
+    print(check_academic('/data/ACL/D/D09/D09-1010.pdf'))
+
 
 if __name__ == '__main__':
     main()

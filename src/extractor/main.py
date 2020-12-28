@@ -157,7 +157,7 @@ if __name__ == '__main__':
             #print(files)
             #wrapper.update_state(ids, states['extracting'])
             runner.run_from_file_batch(files, outputPaths, num_processes=numProcesses, file_prefixes=prefixes)
-            on_batch_finished(resultsFileDirectory, logFilePath, wrapper, states)
+            on_batch_finished(logPath, logFilePath, wrapper, states)
 
             numDocs += int(connectionProps['batchsize'])
             if numDocs >= maxDocs:

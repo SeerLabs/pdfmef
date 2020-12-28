@@ -3,7 +3,6 @@ from extraction.core import ExtractionRunner
 from glob import glob
 from datetime import datetime
 import time
-from extraction.runnables import Extractor, RunnableError, Filter, ExtractorResult
 import extractor.csxextract.extractors.grobid as grobid
 import extractor.csxextract.filters as filters
 from extractor.python_wrapper import utils, wrappers
@@ -16,19 +15,18 @@ def read_results(resultsFilePath, logDirPath):
     Parameters: resultsFilePath - path to results file
     logDirPath - path to the directory that will copy the log from the extraction
     Returns: dictionary with id: result as key: value pairs"""
-    # config = ConfigParser.ConfigParser()
-    # config.read('/data/sfk5555/pdfmef/src/extractor/python_wrapper/properties.config')
+    config = configparser.ConfigParser()
+    config.read('/data/sfk5555/pdfmef/src/extractor/python_wrapper/properties.config')
     # elasticConnectionProps = dict(config.items('ElasticConnectionProperties'))
-    #
-    # wrapper = wrappers.ElasticSearchWrapper(elasticConnectionProps)
-    # #---------------#
     resultDict = {}
     resultsFilePath = utils.expand_path(resultsFilePath)
     print("resultsFilePath name is : " + resultsFilePath)
     resultsFile = open(resultsFilePath, 'r')
     log = open(logDirPath + resultsFilePath[resultsFilePath.rfind('/'):], 'a')
+    print("Log dir path is ", logDirPath)
+    print()
+    print("The log file is ", logDirPath + resultsFilePath[resultsFilePath.rfind('/'):])
     for line in resultsFile:
-        print(line)
         log.write(line)
         finIndex = line.find('finished')
         if finIndex >= 0:
@@ -39,11 +37,9 @@ def read_results(resultsFilePath, logDirPath):
             result = False
             if resultString == 'SUCCESS':
                 result = True
-            resultDict[fileID] = result
-    log.close()
+            resultDict[fileID] = (result, fileName)
     resultsFile.close()
     return resultDict
-
 
 def on_batch_finished(resultsFileDirectory, logFilePath, wrapper, states):
     """# on_batch_finished(resultsFileDirectory, wrapper)
@@ -53,24 +49,35 @@ def on_batch_finished(resultsFileDirectory, logFilePath, wrapper, states):
     #               wrapper - the active wrapper to use for communication with ES,
     #               states - dict mapping states to values"""
     resultsFilePath = glob(resultsFileDirectory + ".*")[0]
+    print("resultsFileDirectory is ", resultsFileDirectory)
+    print("resultsFilePath is ", resultsFilePath)
     results = read_results(resultsFilePath, logFilePath)
     successes = []
     failures = []
     for key, value in results.items():
-        if value:
-            successes.append(key)
+        if value[0]:
+            successes.append((key, value))
         else:
-            successes.append(key)
+            failures.append((key, value))
 
     if len(successes) > 0:
-        wrapper.update_state(successes, "true")
-        file_paths = []
+        successes_keys = []
         for each_success in successes:
-            file_paths.append("/data/sfk5555/results23"+"/2020112800/"+each_success[:2]+"/"+each_success+"/"+each_success+".tei")
+            successes_keys.append(each_success[0])
+        wrapper.update_state(successes_keys, "done")
+        file_paths = []
+        documentPathsNow = []
+        for each_success in successes:
+            # print(each_success[0],"-->", each_success[1][1])
+            file_paths.append("/data/sfk5555/results23"+"/2020122700/"+each_success[0][:2]+"/"+each_success[0]+"/"+each_success[0]+".tei")
+            documentPathsNow.append(each_success[1][1])
             # CSXIngesterImpl().ingest_paper("/data/sfk5555/results23"+"/2020110200/"+each_success[:2]+"/"+each_success+"/"+each_success+".tei")
-        CSXIngesterImpl().ingest_batch_parallel_files(file_paths)
+        CSXIngesterImpl().ingest_batch_parallel_files(file_paths, documentPathsNow)
     if len(failures) > 0:
-        wrapper.update_state(failures, None)
+        failure_keys = []
+        for each_failure in failures:
+            failure_keys.append(each_failure[0])
+        wrapper.update_state(failure_keys, "fail")
 
 def get_extraction_runner(modules):
     runner = ExtractionRunner()
@@ -83,10 +90,11 @@ def get_extraction_runner(modules):
 
 if __name__ == '__main__':
     config = configparser.ConfigParser()
-    # config.read('/data/sfk5555/pdfmef_files/pdfmef/src/extractor/python_wrapper/properties.config')
-    config.read('python_wrapper/properties.config')
+    config.read('/data/sfk5555/pdfmef_files/pdfmef/src/extractor/python_wrapper/properties.config')
+    # config.read('python_wrapper/properties.config')
     connectionProps = dict(config.items('ConnectionProperties'))
-    elasticConnectionProps = dict(config.items('ElasticConnectionProperties'))
+    # elasticConnectionProps = dict(config.items('ElasticConnectionProperties'))
+    elasticConnectionProps = None
     states = dict(config.items('States'))
     modules = dict(config.items('Modules'))
     # numProcesses = 128
@@ -121,12 +129,14 @@ if __name__ == '__main__':
 
     while (not stopProcessing) and moreDocs:
         logPath = baseLogPath + "/" + dateFolder + 'batch' + str(batchNum)
-        runner.enable_logging(logPath, baseLogPath + 'runnables')
+        runner.enable_logging(logPath, baseLogPath + "/" + 'runnables')
+        print(logPath)
+        print(baseLogPath+ 'runnables')
         wrapper.get_document_batch()
         documentPaths = wrapper.get_document_paths()
         ids = wrapper.get_document_ids()
         if len(ids) == 0:
-            moreDocs = False;
+            moreDocs = False
         if moreDocs:
             outputPaths = []
             files = []
@@ -141,7 +151,7 @@ if __name__ == '__main__':
             runner.run_from_file_batch(files, outputPaths, num_processes=numProcesses, file_prefixes=prefixes)
             on_batch_finished(logPath, logFilePath, wrapper, states)
 
-            numDocs += int(connectionProps['batchsize'])
+            numDocs += 10 #(batchSize)
             if numDocs >= maxDocs:
                 dateBatchNum += 1
                 date = str(datetime.now().date())

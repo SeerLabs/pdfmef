@@ -7,6 +7,8 @@ import xml.etree.ElementTree as ET
 from extraction.runnables import *
 import extraction.utils as utils
 import extraction.log
+from extractor.csxextract import filters
+
 
 class ExtractionRunner(object):
    def __init__(self):
@@ -24,7 +26,7 @@ class ExtractionRunner(object):
          self.result_logger.addHandler(logging.StreamHandler(sys.stdout))
       if not self.runnable_logger.handlers:
          self.runnable_logger.addHandler(logging.StreamHandler(sys.stderr))
- 
+
 
    def add_runnable(self, runnable, output_results=True):
       """Adds runnable to the extractor to be run when the extractor is run
@@ -66,7 +68,8 @@ class ExtractionRunner(object):
 
       result_log_path = utils.expand_path(result_log_path)
       runnable_log_path = utils.expand_path(runnable_log_path)
-
+      print("result_log_path is ", result_log_path)
+      print("runnable_log_path is ", runnable_log_path)
       if not os.path.exists(os.path.dirname(result_log_path)): os.makedirs(os.path.dirname(result_log_path))
       if not os.path.exists(os.path.dirname(runnable_log_path)): os.makedirs(os.path.dirname(runnable_log_path))
 
@@ -157,7 +160,7 @@ class ExtractionRunner(object):
       pool.join()
 
       self.result_logger.info("Finished Batch {0} Run".format(batch_id))
-   
+
    def safeStr(self, obj):
         try:
             return str(obj)
@@ -168,7 +171,7 @@ class ExtractionRunner(object):
 
    def run_from_file_batch(self, file_paths, output_dirs, **kwargs):
       """Run the extractor on a batch of files
-   
+
       Args:
          file_paths: A list of files to be processed
          output_dirs: A list of directories for results (parallel to file_paths).
@@ -176,7 +179,7 @@ class ExtractionRunner(object):
          **kwargs: Optional keyword arguments:
             num_processes: Number of worker processes to start to process the files
                If this isn't supplied, this will default to multiprocessing.cpu_count()
-            file_prefix: A prefix applied to each output file  
+            file_prefix: A prefix applied to each output file
             file_prefixes: A list of file prefixes, parallel to file_paths and output_dirs
                Only specify file_prefix or file_prefixes, not both.
             write_dep_errors: A Boolean. If True, extractors that fail because dependencies fail
@@ -191,7 +194,7 @@ class ExtractionRunner(object):
 
       pool = mp.Pool(num_processes)
       err_check = []
-      
+
       for i, (path, dir) in enumerate(zip(file_paths, output_dirs)):
          args = (self.runnables, self.runnable_props, open(path, 'rb').read(), dir)
          kws = {'run_name': path}
@@ -216,7 +219,7 @@ class ExtractionRunner(object):
             **kwargs: Optional keyword arguments:
                num_processes: Number of worker processes to start to process the files
                   If this isn't supplied, this will default to multiprocessing.cpu_count()
-               file_prefix: A prefix applied to each output file  
+               file_prefix: A prefix applied to each output file
                file_prefixes: A list of file prefixes, parallel to file_paths and output_dirs
                   Only specify file_prefix or file_prefixes, not both.
                write_dep_errors: A Boolean. If True, extractors that fail because dependencies fail

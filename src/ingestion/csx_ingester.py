@@ -10,9 +10,15 @@ from ingestion.csx_extractor import CSXExtractorImpl
 from ingestion.interfaces import CSXIngester
 from models.elastic_models import Cluster, KeyMap
 from services.elastic_service import ElasticService
+from shutil import copyfile
 
-def ingest_paper_parallel_func(filepath):
-    papers = CSXExtractorImpl().extract_textual_data(filepath)
+def move_to_repository(filepath: str, docPath: str):
+    os.makedirs(os.path.dirname("/data/repository2/"+str(filepath).split('/')[6][:2]+"/"+str(filepath).split('/')[6]+".pdf"), exist_ok=True)
+    copyfile(src=docPath, dst="/data/repository2/"+str(filepath).split('/')[6][:2]+"/"+str(filepath).split('/')[6]+".pdf")
+
+def ingest_paper_parallel_func(combo):
+    papers = CSXExtractorImpl().extract_textual_data(combo[0])
+    move_to_repository(combo[0], combo[1])
     KeyMatcherClusterer().cluster_papers(papers)
 
 class CSXIngesterImpl(CSXIngester):
@@ -34,19 +40,19 @@ class CSXIngesterImpl(CSXIngester):
         pool.join()
         print("--- %s seconds ---" % (time.time() - start_time))
 
-    def ingest_batch_parallel_files(self, fileList):
+    def ingest_batch_parallel_files(self, fileList, documentPaths):
         # Cluster.init(using=CSXIngesterImpl().elastic_service.get_connection())
         # KeyMap.init(using=CSXIngesterImpl().elastic_service.get_connection())
         start_time = time.time()
         # pool = Pool()
-        # for each_file in fileList:
-        #     ingest_paper_parallel_func(each_file)
-        # # pool.apply_async(ingest_paper_parallel_func, fileList)
+        # for idx in range(len(fileList)):
+        #     ingest_paper_parallel_func(fileList[idx],documentPaths[idx])
+        # pool.apply_async(ingest_paper_parallel_func, fileList)
         # pool.close()
         # pool.join()
         with cf.ThreadPoolExecutor(max_workers=1000) as executor:
-            for filenow in fileList:
-                executor.submit(ingest_paper_parallel_func, filenow)
+            for idx in range(len(fileList)):
+                executor.submit(ingest_paper_parallel_func, (fileList[idx], documentPaths[idx]))
             # pool.apply_async(ingest_paper_parallel_func, fileList)
             # pool.close()
             # pool.join()
@@ -56,7 +62,6 @@ class CSXIngesterImpl(CSXIngester):
     def ingest_paper(self, filePath):
         # Cluster.init(using=CSXIngesterImpl().elastic_service.get_connection())
         # KeyMap.init(using=CSXIngesterImpl().elastic_service.get_connection())
-        print("ingesting-->", filePath)
         papers = CSXExtractorImpl().extract_textual_data(filePath)
         # baseResultsPath = config.get('ExtractionConfigurations', 'baseResultsPath')
         KeyMatcherClusterer().cluster_papers(papers)

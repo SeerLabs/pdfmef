@@ -73,6 +73,8 @@ class KeyMatcherClusterer(CSXClusterer):
     def merge_with_existing_paper(self, matched_paper_id: str, current_paper: Cluster):
         matched_cluster = Cluster.get(id=matched_paper_id, using=self.elastic_service.get_connection())
 
+        if current_paper.has_pdf and matched_cluster.is_citation:
+            matched_cluster.text = current_paper.text
         if current_paper.is_citation:
             matched_cluster.add_cites(current_paper.cites[0])
             matched_cluster.is_citation = True
@@ -174,5 +176,25 @@ def similarity(text1, text2):
 
 if __name__ == "__main__":
     l1 = "Evaluating Language Tools for Fifteen EU-official Under-resourced Languages"
-    l2 = "The MARCELL Legislative Corpus"
-    print(similarity(l1, l2))
+    #l2 = "The MARCELL Legislative Corpus"
+    #print(similarity(l1, l2))
+    import elasticsearch
+    import elasticsearch.helpers
+
+    es = elasticsearch.Elasticsearch([{'host': '130.203.139.151', 'port': 9200}])
+    results = elasticsearch.helpers.scan(es,
+                                         index="crawl_meta",
+                                         preserve_order=True,
+                                         query={"query": {"match_all": {}}},
+                                         )
+    count = 0
+    for item in results:
+        #print(item['_id'], item['_source']['pdf_path'])
+        s = Cluster.search(using=es)
+        s = s.filter("term", paper_id=item['_id'])
+        response = s.execute()
+
+        if len(response) is 0:
+            print(item['_id'], item['_source']['pdf_path'])
+            count += 1
+    print(count)

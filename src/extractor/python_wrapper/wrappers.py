@@ -88,7 +88,6 @@ class FileSystemWrapper(Wrapper):
         paths = []
         for docPath in self.batch:
             paths.append(docPath.replace(self.rootPath, ''))
-        #print("file_system"+paths)
         return paths
 
     #update_state(ids, state)
@@ -265,7 +264,7 @@ class ElasticSearchWrapper(Wrapper):
     def __init__(self, config):
         self.curr_index = 0
         self.file_path_sha1_mapping = {}
-        self.batchSize = 1000 #int(config['batchsize'])
+        self.batchSize = 10 #int(config['batchsize'])
         self.batch = None
 
     def get_document_batch(self):
@@ -275,8 +274,8 @@ class ElasticSearchWrapper(Wrapper):
             "size": self.batchSize,
             "query": {
                 "multi_match": {
-                    "query": "false",
-                    "fields": "status"
+                    "query": "fresh",
+                    "fields": "text_status"
                  }
             }
         }
@@ -315,7 +314,7 @@ class ElasticSearchWrapper(Wrapper):
         Parameters: ids - list of documents ids, state - the int state to assignt to each document"""
         body = {
             "script": {
-                "source": "ctx._source.status=" + state,
+                "source": "ctx._source.text_status=" + "'"+ state + "'",
                 "lang": "painless"
             },
             "query": {
@@ -324,6 +323,7 @@ class ElasticSearchWrapper(Wrapper):
                  }
             }
         }
+        print(body['script'])
         self.get_connection().update_by_query(index="acl_crawl_meta", body=body, refresh=True)
 
     def on_stop(self):
