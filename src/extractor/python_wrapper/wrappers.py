@@ -129,7 +129,7 @@ class MySQLWrapper(Wrapper):
     #               states - dict that holds map of state values
     def __init__(self, config, states):
         self.connection = get_connection(config['host'], config['database'], config['username'], config['password'], int(config['port']))
-        self.batchSize = int(config['batchsize'])
+        self.batchSize = int(config['batchSize'])
         self.startID = config['startid']
         self.states = states
         self.batch = None   #stores a list of document ids
@@ -264,7 +264,7 @@ class ElasticSearchWrapper(Wrapper):
     def __init__(self, config):
         self.curr_index = 0
         self.file_path_sha1_mapping = {}
-        self.batchSize = 10 #int(config['batchsize'])
+        self.batchSize = 500 #int(config['batchsize'])
         self.batch = None
 
     def get_document_batch(self):
@@ -280,7 +280,7 @@ class ElasticSearchWrapper(Wrapper):
             }
         }
 
-        results = self.get_connection().search(index="acl_crawl_meta", body=body)
+        results = self.get_connection().search(index="crawl_meta_next", body=body)
         self.batch = results['hits']['hits']
 
     def get_document_ids(self):
@@ -324,7 +324,10 @@ class ElasticSearchWrapper(Wrapper):
             }
         }
         print(body['script'])
-        self.get_connection().update_by_query(index="acl_crawl_meta", body=body, refresh=True)
+        try:
+            self.get_connection().update_by_query(index="crawl_meta_next", body=body, request_timeout=100, refresh=True)
+        except Exception as e:
+            pass
 
     def on_stop(self):
         """Purpose: perform necessary closing statements

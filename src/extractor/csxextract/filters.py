@@ -64,7 +64,7 @@ class SimpleAcademicPaperFilter(Filter):
 
       page_width, page_height = reader.getPage(0).mediaBox[-2:]
 
-      if reader.getNumPages() < 50:
+      if reader.getNumPages() >2 and reader.getNumPages() < 50:
          if page_width < page_height:
             return True
          else:

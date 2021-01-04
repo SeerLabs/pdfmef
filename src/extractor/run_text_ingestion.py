@@ -1,6 +1,7 @@
 import configparser
 from extraction.core import ExtractionRunner
 from glob import glob
+import os
 from datetime import datetime
 import time
 import extractor.csxextract.extractors.grobid as grobid
@@ -9,28 +10,23 @@ from extractor.python_wrapper import utils, wrappers
 from ingestion.csx_ingester import CSXIngesterImpl
 
 
-def read_results(resultsFilePath, logDirPath):
+def read_results(resultsFilePath):
     """read_results(resultsFilePath)
     Purpose: reads the results of a batch process from the results file
     Parameters: resultsFilePath - path to results file
-    logDirPath - path to the directory that will copy the log from the extraction
     Returns: dictionary with id: result as key: value pairs"""
     config = configparser.ConfigParser()
-    config.read('/data/sfk5555/pdfmef/src/extractor/python_wrapper/properties.config')
-    # elasticConnectionProps = dict(config.items('ElasticConnectionProperties'))
+    config.read(os.path.join(os.path.dirname(__file__), 'python_wrapper', 'properties.config'))
+    elasticConnectionProps = dict(config.items('ElasticConnectionProperties'))
     resultDict = {}
     resultsFilePath = utils.expand_path(resultsFilePath)
     print("resultsFilePath name is : " + resultsFilePath)
     resultsFile = open(resultsFilePath, 'r')
-    log = open(logDirPath + resultsFilePath[resultsFilePath.rfind('/'):], 'a')
-    print("Log dir path is ", logDirPath)
-    print()
-    print("The log file is ", logDirPath + resultsFilePath[resultsFilePath.rfind('/'):])
     for line in resultsFile:
-        log.write(line)
+        #log.write(line)
         finIndex = line.find('finished')
         if finIndex >= 0:
-            #fileName = line[finIndex - 16:finIndex - 1]
+            # fileName = line[finIndex - 16:finIndex - 1]
             fileName = line.split(" ")[2]
             fileID = wrapper.file_name_to_id(fileName)
             resultString = line[line.find('[') + 1:line.find(']')]
@@ -41,7 +37,8 @@ def read_results(resultsFilePath, logDirPath):
     resultsFile.close()
     return resultDict
 
-def on_batch_finished(resultsFileDirectory, logFilePath, wrapper, states):
+
+def on_batch_finished(resultsFileDirectory, wrapper):
     """# on_batch_finished(resultsFileDirectory, wrapper)
     # Purpose: reads the results from the finished batch and updates the ES index as needed
     # Parameters: resultsFileDirectory - path to directory that contains results file,
@@ -51,7 +48,7 @@ def on_batch_finished(resultsFileDirectory, logFilePath, wrapper, states):
     resultsFilePath = glob(resultsFileDirectory + ".*")[0]
     print("resultsFileDirectory is ", resultsFileDirectory)
     print("resultsFilePath is ", resultsFilePath)
-    results = read_results(resultsFilePath, logFilePath)
+    results = read_results(resultsFilePath)
     successes = []
     failures = []
     for key, value in results.items():
@@ -65,19 +62,22 @@ def on_batch_finished(resultsFileDirectory, logFilePath, wrapper, states):
         for each_success in successes:
             successes_keys.append(each_success[0])
         wrapper.update_state(successes_keys, "done")
-        file_paths = []
-        documentPathsNow = []
+        tei_file_paths = []
+        pdf_file_paths = []
         for each_success in successes:
-            # print(each_success[0],"-->", each_success[1][1])
-            file_paths.append("/data/sfk5555/results23"+"/2020122700/"+each_success[0][:2]+"/"+each_success[0]+"/"+each_success[0]+".tei")
-            documentPathsNow.append(each_success[1][1])
-            # CSXIngesterImpl().ingest_paper("/data/sfk5555/results23"+"/2020110200/"+each_success[:2]+"/"+each_success+"/"+each_success+".tei")
-        CSXIngesterImpl().ingest_batch_parallel_files(file_paths, documentPathsNow)
+            chunks = [each_success[0][i:i + 2] for i in range(0, len(each_success[0]), 2)]
+            filename = each_success[0]+".tei"
+            output_path = os.path.join(baseResultsPath, chunks[0], chunks[1], chunks[2],
+                                       chunks[3], chunks[4], chunks[5], chunks[6], each_success[0], filename)
+            tei_file_paths.append(output_path)
+            pdf_file_paths.append(each_success[1][1])
+        CSXIngesterImpl().ingest_batch_parallel_files(tei_file_paths, pdf_file_paths)
     if len(failures) > 0:
         failure_keys = []
         for each_failure in failures:
             failure_keys.append(each_failure[0])
         wrapper.update_state(failure_keys, "fail")
+
 
 def get_extraction_runner(modules):
     runner = ExtractionRunner()
@@ -88,23 +88,19 @@ def get_extraction_runner(modules):
             runner.add_runnable(grobid.GrobidTEIExtractor)
     return runner
 
+
 if __name__ == '__main__':
     config = configparser.ConfigParser()
-    config.read('/data/sfk5555/pdfmef_files/pdfmef/src/extractor/python_wrapper/properties.config')
-    # config.read('python_wrapper/properties.config')
+    config.read(os.path.join(os.path.dirname(__file__), 'python_wrapper', 'properties.config'))
     connectionProps = dict(config.items('ConnectionProperties'))
-    # elasticConnectionProps = dict(config.items('ElasticConnectionProperties'))
-    elasticConnectionProps = None
-    states = dict(config.items('States'))
+    elasticConnectionProps = dict(config.items('ElasticConnectionProperties'))
     modules = dict(config.items('Modules'))
-    # numProcesses = 128
     numProcesses = config.getint('ExtractionConfigurations', 'numProcesses')
     maxDocs = config.getint('ExtractionConfigurations', 'maxDocs')
 
     baseDocumentPath = config.get('ExtractionConfigurations', 'baseDocumentPath')
     baseResultsPath = config.get('ExtractionConfigurations', 'baseResultsPath')
     baseLogPath = config.get('ExtractionConfigurations', 'baseLogPath')
-    logFilePath = config.get('ExtractionConfigurations', 'logDirPath')
     wrapperConfig = config.getint('WrapperSettings', 'wrapper')
 
     wrapper = wrappers.ElasticSearchWrapper(elasticConnectionProps)
@@ -127,43 +123,45 @@ if __name__ == '__main__':
     moreDocs = True
     count = 0
 
-    while (not stopProcessing) and moreDocs:
-        logPath = baseLogPath + "/" + dateFolder + 'batch' + str(batchNum)
-        runner.enable_logging(logPath, baseLogPath + "/" + 'runnables')
-        print(logPath)
-        print(baseLogPath+ 'runnables')
+    while (not stopProcessing):
+        logPath = baseLogPath + dateFolder + 'batch' + str(batchNum)
+        runner.enable_logging(logPath, baseLogPath + 'runnables')
+
         wrapper.get_document_batch()
         documentPaths = wrapper.get_document_paths()
         ids = wrapper.get_document_ids()
         if len(ids) == 0:
-            moreDocs = False
-        if moreDocs:
-            outputPaths = []
-            files = []
-            prefixes = []
-            for doc in ids:
-                firsttwo = doc[:2] + "/"
-                outputPaths.append(baseResultsPath + dateFolder + firsttwo + doc + '/')
-                # print("000", baseResultsPath + dateFolder + firsttwo + doc + '/')
-                prefixes.append(doc)
-            for path in documentPaths:
-                files.append(baseDocumentPath + path)
-            runner.run_from_file_batch(files, outputPaths, num_processes=numProcesses, file_prefixes=prefixes)
-            on_batch_finished(logPath, logFilePath, wrapper, states)
+            break
 
-            numDocs += 10 #(batchSize)
-            if numDocs >= maxDocs:
-                dateBatchNum += 1
-                date = str(datetime.now().date())
-                dateFolder = str(date).replace('-', '') + str(dateBatchNum).zfill(2) + '/'
-                numDocs = 0
-                batchNum = 0
-            else:
-                batchNum += 1
+        outputPaths = []
+        files = []
+        prefixes = []
 
-        config.read('/data/sfk5555/pdfmef_files/pdfmef/src/extractor/python_wrapper/properties.config')
-        print("--- %s seconds ---" % (time.time() - start_time))
-        stopProcessing = config.getboolean('ExtractionConfigurations', 'stopProcessing')
-        print("--- %s seconds ---" % (time.time() - start_time))
-        print('stopProcessing: ' + str(stopProcessing))
+        for id in ids:
+            chunks = [id[i:i + 2] for i in range(0, len(id), 2)]
+            output_path = os.path.join(baseResultsPath, chunks[0], chunks[1], chunks[2], chunks[3], chunks[4], chunks[5], chunks[6], id)
+            outputPaths.append(output_path)
+            prefixes.append(id)
+
+        for path in documentPaths:
+            files.append(baseDocumentPath + path)
+
+        runner.run_from_file_batch(files, outputPaths, num_processes=numProcesses, file_prefixes=prefixes)
+        on_batch_finished(logPath, wrapper)
+
+        config.read(os.path.join(os.path.dirname(__file__), 'python_wrapper', 'properties.config'))
+        print(config.getint('ConnectionProperties', 'batchSize'))
+        numDocs += 500
+
+        if numDocs >= maxDocs:
+            dateBatchNum += 1
+            date = str(datetime.now().date())
+            dateFolder = str(date).replace('-', '') + str(dateBatchNum).zfill(2) + '/'
+            numDocs = 0
+            batchNum = 0
+        else:
+            batchNum += 1
+
+    print("--- %s seconds ---" % (time.time() - start_time))
+    stopProcessing = config.getboolean('ExtractionConfigurations', 'stopProcessing')
     wrapper.on_stop()

@@ -31,14 +31,16 @@ class CSXExtractorImpl(CSXExtractor):
         tei_root = parse(filepath)
         papers = []
         paper = Cluster()
-        paper.add_paper_id(str(filepath).split('/')[6])
+        tei_filename = str(filepath[str(filepath).rfind('/')+1:])
+        paper_id = tei_filename[:tei_filename.rfind('.')]
+        paper.add_paper_id(paper_id)
         paper.title = self.extract_title_from_tei_root(tei_root)
         paper.abstract = self.extract_abstract(tei_root)
         paper.pub_info = self.extract_paper_pub_info_from_tei_root(tei_root)
         paper.authors = self.extract_authors_from_tei_root(tei_root)
         paper.has_pdf = True
         paper.is_citation = False
-        citations = self.extract_citations_from_tei_root(tei_root=tei_root, paper_id=str(filepath).split('/')[6])
+        citations = self.extract_citations_from_tei_root(tei_root=tei_root, paper_id=paper_id)
         paper.text = self.extract_text_from_tei_root(tei_root)
         paper.keys = KeyGenerator().get_keys(paper.title, paper.authors)
         papers.append(paper)
