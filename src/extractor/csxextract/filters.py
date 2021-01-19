@@ -57,9 +57,9 @@ class SimpleAcademicPaperFilter(Filter):
       try:
          # Write the pdf data to a temporary location so PyPdf can process it
          path = extraction.utils.temp_file(data, suffix='.pdf')
-         reader = PyPDF2.PdfFileReader(open(path, 'rb'))
+         reader = PyPDF2.PdfFileReader(open(path, 'rb'), strict=False)
       except Exception as e:
-         logging.error('pypdf2 Failed to read PDF:::%s', e)
+         # logging.error('pypdf2 Failed to read PDF:::%s', e)
          return False
 
       page_width, page_height = reader.getPage(0).mediaBox[-2:]
@@ -68,9 +68,9 @@ class SimpleAcademicPaperFilter(Filter):
          if page_width < page_height:
             return True
          else:
-            logging.error('issue with PDF page dimensions:::%s')
+            # logging.error('issue with PDF page dimensions:::%s')
             return False
       else:
-         logging.error('Page limit Exceeded:::%s')
+         # logging.error('Page limit Exceeded:::%s')
          return False
 

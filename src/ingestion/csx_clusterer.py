@@ -5,6 +5,7 @@ from elasticsearch import TransportError, Elasticsearch
 from elasticsearch.helpers import bulk
 from elasticsearch_dsl import Nested, MultiSearch, Search
 
+from models import es_index_config
 from services.elastic_service import ElasticService
 # from services.elasticsearch_adapters import ClusterAdapter
 
@@ -183,10 +184,9 @@ if __name__ == "__main__":
 
     es = elasticsearch.Elasticsearch([{'host': '130.203.139.151', 'port': 9200}])
     results = elasticsearch.helpers.scan(es,
-                                         index="crawl_meta",
+                                         index=es_index_config.CRAWL_META_INDEX,
                                          preserve_order=True,
-                                         query={"query": {"match_all": {}}},
-                                         )
+                                         query={"query": {"match_all": {}}})
     count = 0
     for item in results:
         #print(item['_id'], item['_source']['pdf_path'])
@@ -194,7 +194,7 @@ if __name__ == "__main__":
         s = s.filter("term", paper_id=item['_id'])
         response = s.execute()
 
-        if len(response) is 0:
+        if len(response) == 0:
             print(item['_id'], item['_source']['pdf_path'])
             count += 1
     print(count)

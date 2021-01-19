@@ -11,6 +11,9 @@ import utils
 import os
 import sys
 
+from models import es_index_config
+
+
 class Wrapper:
 
     #get_document_batch()
@@ -264,7 +267,7 @@ class ElasticSearchWrapper(Wrapper):
     def __init__(self, config):
         self.curr_index = 0
         self.file_path_sha1_mapping = {}
-        self.batchSize = 500 #int(config['batchsize'])
+        self.batchSize = int(config['batchsize'])
         self.batch = None
 
     def get_document_batch(self):
@@ -280,7 +283,7 @@ class ElasticSearchWrapper(Wrapper):
             }
         }
 
-        results = self.get_connection().search(index="crawl_meta_next", body=body)
+        results = self.get_connection().search(index=es_index_config.CRAWL_META_INDEX, body=body)
         self.batch = results['hits']['hits']
 
     def get_document_ids(self):
@@ -324,10 +327,7 @@ class ElasticSearchWrapper(Wrapper):
             }
         }
         print(body['script'])
-        try:
-            self.get_connection().update_by_query(index="crawl_meta_next", body=body, request_timeout=100, refresh=True)
-        except Exception as e:
-            pass
+        self.get_connection().update_by_query(index=es_index_config.CRAWL_META_INDEX, body=body, request_timeout=100, refresh=True)
 
     def on_stop(self):
         """Purpose: perform necessary closing statements

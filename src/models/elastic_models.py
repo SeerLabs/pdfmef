@@ -1,4 +1,5 @@
 from typing import List
+from models import es_index_config
 
 from elasticsearch_dsl import Document, Text, Completion, Date, Keyword, Integer, Nested, Boolean, InnerDoc
 
@@ -15,14 +16,12 @@ class Author(InnerDoc):
     ord = Integer()
     created_at = Date(default_timezone='UTC')
 
-    class Index:
-        name = 'authorsv8'
-
     def save(self, **kwargs):
         self.author_suggest = {
             'input': [self.forename, self.surname],
         }
         return super().save(**kwargs)
+
 
 class PubInfo(InnerDoc):
     title = Text()
@@ -33,13 +32,13 @@ class PubInfo(InnerDoc):
     pub_place = Text()
     pub_address = Text()
 
-    class Index:
-        name = 'pub_info'
 
 class KeyMap(Document):
     paper_id = Text()
+
     class Index:
-        name = 'key_mapv8'
+        name = es_index_config.KEYMAP_INDEX
+
 
 class Cluster(Document):
     paper_id = Keyword(multi=True)
@@ -61,7 +60,7 @@ class Cluster(Document):
     pub_info = Nested(type='pub_info')
 
     class Index:
-        name = 'acl_papersv8'
+        name = es_index_config.CLUSTERS_INDEX
 
     def add_cites(self, paper_id: str):
         if not self.__contains__("cites"):
@@ -105,3 +104,15 @@ class Cluster(Document):
                 'input': [self.title],
             }
         return super().save(**kwargs)
+
+def setup():
+    """ Create an IndexTemplate and save it into elasticsearch. """
+    index_template = Cluster._index.as_template("base")
+    index_template.save()
+
+
+if __name__ == "__main__":
+    # initiate the default connection to elasticsearch
+    #connections.create_connection()
+    # create index
+    setup()

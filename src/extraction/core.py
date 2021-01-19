@@ -68,8 +68,8 @@ class ExtractionRunner(object):
 
       result_log_path = utils.expand_path(result_log_path)
       runnable_log_path = utils.expand_path(runnable_log_path)
-      print("result_log_path is ", result_log_path)
-      print("runnable_log_path is ", runnable_log_path)
+      # print("result_log_path is ", result_log_path)
+      # print("runnable_log_path is ", runnable_log_path)
       if not os.path.exists(os.path.dirname(result_log_path)): os.makedirs(os.path.dirname(result_log_path))
       if not os.path.exists(os.path.dirname(runnable_log_path)): os.makedirs(os.path.dirname(runnable_log_path))
 

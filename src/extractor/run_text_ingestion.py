@@ -15,18 +15,12 @@ def read_results(resultsFilePath):
     Purpose: reads the results of a batch process from the results file
     Parameters: resultsFilePath - path to results file
     Returns: dictionary with id: result as key: value pairs"""
-    config = configparser.ConfigParser()
-    config.read(os.path.join(os.path.dirname(__file__), 'python_wrapper', 'properties.config'))
-    elasticConnectionProps = dict(config.items('ElasticConnectionProperties'))
     resultDict = {}
     resultsFilePath = utils.expand_path(resultsFilePath)
-    print("resultsFilePath name is : " + resultsFilePath)
     resultsFile = open(resultsFilePath, 'r')
     for line in resultsFile:
-        #log.write(line)
         finIndex = line.find('finished')
         if finIndex >= 0:
-            # fileName = line[finIndex - 16:finIndex - 1]
             fileName = line.split(" ")[2]
             fileID = wrapper.file_name_to_id(fileName)
             resultString = line[line.find('[') + 1:line.find(']')]
@@ -46,8 +40,6 @@ def on_batch_finished(resultsFileDirectory, wrapper):
     #               wrapper - the active wrapper to use for communication with ES,
     #               states - dict mapping states to values"""
     resultsFilePath = glob(resultsFileDirectory + ".*")[0]
-    print("resultsFileDirectory is ", resultsFileDirectory)
-    print("resultsFilePath is ", resultsFilePath)
     results = read_results(resultsFilePath)
     successes = []
     failures = []
@@ -92,7 +84,6 @@ def get_extraction_runner(modules):
 if __name__ == '__main__':
     config = configparser.ConfigParser()
     config.read(os.path.join(os.path.dirname(__file__), 'python_wrapper', 'properties.config'))
-    connectionProps = dict(config.items('ConnectionProperties'))
     elasticConnectionProps = dict(config.items('ElasticConnectionProperties'))
     modules = dict(config.items('Modules'))
     numProcesses = config.getint('ExtractionConfigurations', 'numProcesses')
@@ -149,9 +140,7 @@ if __name__ == '__main__':
         runner.run_from_file_batch(files, outputPaths, num_processes=numProcesses, file_prefixes=prefixes)
         on_batch_finished(logPath, wrapper)
 
-        config.read(os.path.join(os.path.dirname(__file__), 'python_wrapper', 'properties.config'))
-        print(config.getint('ConnectionProperties', 'batchSize'))
-        numDocs += 500
+        numDocs += config.getint('ConnectionProperties', 'batchSize')
 
         if numDocs >= maxDocs:
             dateBatchNum += 1
