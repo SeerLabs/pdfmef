@@ -54,7 +54,7 @@ class Cluster(Document):
     authors = Nested(type='authors')
     self_cites = Integer()
     num_cites = Integer()
-    cites = Keyword(multi=True)
+    cited_by = Keyword(multi=True)
     keys = Keyword(multi=True)
     keywords = Keyword(multi=True)
     pub_info = Nested(type='pub_info')
@@ -62,20 +62,20 @@ class Cluster(Document):
     class Index:
         name = es_index_config.CLUSTERS_INDEX
 
-    def add_cites(self, paper_id: str):
-        if not self.__contains__("cites"):
-            self.__setitem__("cites", [paper_id])
+    def add_cited_by(self, paper_id: str):
+        if not self.__contains__("cited_by"):
+            self.__setitem__("cited_by", [paper_id])
             return
-        self.cites.append(paper_id)
+        self.cited_by.append(paper_id)
 
     def get_cites(self):
-        if not self.__contains__("cites"):
+        if not self.__contains__("cited_by"):
             return []
         else:
-            return self.cites
+            return self.cited_by
 
     def get_paper_ids(self):
-        if not self.__contains__("cites"):
+        if not self.__contains__("paper_id"):
             return []
         else:
             return self.paper_id

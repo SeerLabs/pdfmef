@@ -139,7 +139,7 @@ class CSXExtractorImpl(CSXExtractor):
         for citation_node in citations_node:
             citation = Cluster()
 
-            citation.add_cites(paper_id)
+            citation.add_cited_by(paper_id)
             # Citation Title
             if citation_node.find('./analytic/title') is not None:
                 citation.title = citation_node.find('./analytic/title').text

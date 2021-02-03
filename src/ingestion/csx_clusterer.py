@@ -47,7 +47,7 @@ class KeyMatcherClusterer(CSXClusterer):
                 paper_id = each_key.paper_id
                 found_paper = Cluster.get(id=paper_id, _source=['title'], using=self.elastic_service.get_connection())
                 if similarity(found_paper.title, paper.title) > 0.60:
-                    self.merge_with_existing_paper(matched_paper_id=paper_id, current_paper=paper)
+                    self.merge_with_existing_cluster(matched_paper_id=paper_id, current_paper=paper)
                     return
                 else:
                     continue
@@ -71,13 +71,14 @@ class KeyMatcherClusterer(CSXClusterer):
             print(e.info)
             exit()
 
-    def merge_with_existing_paper(self, matched_paper_id: str, current_paper: Cluster):
+    def merge_with_existing_cluster(self, matched_paper_id: str, current_paper: Cluster):
         matched_cluster = Cluster.get(id=matched_paper_id, using=self.elastic_service.get_connection())
 
         if current_paper.has_pdf and matched_cluster.is_citation:
             matched_cluster.text = current_paper.text
+            matched_cluster.pub_info = current_paper.pub_info
         if current_paper.is_citation:
-            matched_cluster.add_cites(current_paper.cites[0])
+            matched_cluster.add_cited_by(current_paper.cited_by[0])
             matched_cluster.is_citation = True
         if current_paper.has_pdf:
             matched_cluster.has_pdf = True
@@ -86,8 +87,7 @@ class KeyMatcherClusterer(CSXClusterer):
         try:
             matched_cluster.save(using=self.elastic_service.get_connection())
         except TransportError as e:
-            time.sleep(5)
-            self.merge_with_existing_paper(matched_paper_id, current_paper)
+            pass
 
     def recluster_paper(self, paper: Cluster):
         pass
