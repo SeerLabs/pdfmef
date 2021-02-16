@@ -58,6 +58,9 @@ class SimpleAcademicPaperFilter(Filter):
          # Write the pdf data to a temporary location so PyPdf can process it
          path = extraction.utils.temp_file(data, suffix='.pdf')
          reader = PyPDF2.PdfFileReader(open(path, 'rb'), strict=False)
+         # check for decryption
+         if reader.isEncrypted:
+            reader.decrypt('')
       except Exception as e:
          # logging.error('pypdf2 Failed to read PDF:::%s', e)
          return False
