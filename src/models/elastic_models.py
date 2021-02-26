@@ -1,5 +1,5 @@
 from typing import List
-from models import es_index_config
+from models import index_settings
 
 from elasticsearch_dsl import Document, Text, Completion, Date, Keyword, Integer, Nested, Boolean, InnerDoc
 
@@ -25,9 +25,9 @@ class Author(InnerDoc):
 
 class PubInfo(InnerDoc):
     title = Text()
-    date = Text()
-    year = Integer()
-    publisher = Text()
+    date = Keyword()
+    year = Keyword()
+    publisher = Keyword()
     meeting = Text()
     pub_place = Text()
     pub_address = Text()
@@ -37,7 +37,7 @@ class KeyMap(Document):
     paper_id = Text()
 
     class Index:
-        name = es_index_config.KEYMAP_INDEX
+        name = index_settings.KEYMAP_INDEX
 
 
 class Cluster(Document):
@@ -60,7 +60,7 @@ class Cluster(Document):
     pub_info = Nested(type='pub_info')
 
     class Index:
-        name = es_index_config.CLUSTERS_INDEX
+        name = index_settings.CLUSTERS_INDEX
 
     def add_cited_by(self, paper_id: str):
         if not self.__contains__("cited_by"):

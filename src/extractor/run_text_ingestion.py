@@ -3,9 +3,11 @@ from extraction.core import ExtractionRunner
 from glob import glob
 import os
 from datetime import datetime
+import logging
 import time
 import extractor.csxextract.extractors.grobid as grobid
 import extractor.csxextract.filters as filters
+from extractor.csxextract.extractors import pdfbox
 from extractor.python_wrapper import utils, wrappers
 from ingestion.csx_ingester import CSXIngesterImpl
 
@@ -74,7 +76,9 @@ def on_batch_finished(resultsFileDirectory, wrapper):
 def get_extraction_runner(modules):
     runner = ExtractionRunner()
     if modules['academicfilter'] == 'True':
-        runner.add_runnable(filters.SimpleAcademicPaperFilter)
+        # runner.add_runnable(filters.SimpleAcademicPaperFilter)
+        runner.add_runnable(pdfbox.PDFBoxPlainTextExtractor)
+        runner.add_runnable(filters.AcademicPaperFilter)
     if modules['fulltext'] == 'True':
         if modules['fulltext_grobid'] == 'True':
             runner.add_runnable(grobid.GrobidTEIExtractor)

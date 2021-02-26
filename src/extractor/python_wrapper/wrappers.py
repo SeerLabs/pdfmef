@@ -11,7 +11,7 @@ import utils
 import os
 import sys
 
-from models import es_index_config
+from models import index_settings
 
 
 class Wrapper:
@@ -283,7 +283,7 @@ class ElasticSearchWrapper(Wrapper):
             }
         }
 
-        results = self.get_connection().search(index=es_index_config.CRAWL_META_INDEX, body=body)
+        results = self.get_connection().search(index=index_settings.CRAWL_META_INDEX, body=body)
         self.batch = results['hits']['hits']
 
     def get_document_ids(self):
@@ -327,7 +327,11 @@ class ElasticSearchWrapper(Wrapper):
             }
         }
         print(body['script'])
-        self.get_connection().update_by_query(index=es_index_config.CRAWL_META_INDEX, body=body, request_timeout=100, refresh=True)
+        try:
+            status = self.get_connection().update_by_query(index=index_settings.CRAWL_META_INDEX, body=body, request_timeout=1000, refresh=True)
+        except Exception as e:
+            print(e)
+
 
     def on_stop(self):
         """Purpose: perform necessary closing statements

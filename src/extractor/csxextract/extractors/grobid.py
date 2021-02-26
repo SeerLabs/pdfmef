@@ -14,7 +14,8 @@ import os
 
 # Returns full TEI xml document of the PDF
 class GrobidTEIExtractor(interfaces.FullTextTEIExtractor):
-   dependencies = frozenset([filters.SimpleAcademicPaperFilter])
+   dependencies = frozenset([filters.AcademicPaperFilter])
+   # dependencies = frozenset([filters.SimpleAcademicPaperFilter])
    result_file_name = '.tei'
 
    def extract(self, data, dep_results):

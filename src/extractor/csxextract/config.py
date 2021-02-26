@@ -4,15 +4,15 @@ import os
 GROBID_HOST = 'http://localhost:8070'
 
 # Path to PDFBox jar
-PDF_BOX_JAR = os.path.expanduser('/data/sfk5555/pdfmef/bin/pdfbox-app-2.0.11.jar')
+PDF_BOX_JAR = os.path.expanduser('/data/sfk5555/pdfmef-dec9/bin/pdfbox-app-2.0.11.jar')
 
 # Path to ParsCit perl script for extraction
 PARSCIT_PATH = os.path.expanduser('/data/sfk5555/python_libs/ParsCit/bin/citeExtract.pl')
 
 # Path to Filter Classificaiton JAR
-FILTER_JAR_PATH = os.path.expanduser('/data/sfk5555/pdfmef/resources/classifier/classifier.jar')
-FILTER_ACL_PATH = os.path.expanduser('/data/sfk5555/pdfmef/resources/classifier/acl')
-FILTER_TRAIN_DATA_PATH = os.path.expanduser('/data/sfk5555/pdfmef/resources/classifier/train_str_f43_paper.arff')
+FILTER_JAR_PATH = os.path.expanduser('/data/sfk5555/pdfmef-dec9/resources/classifier/classifier.jar')
+FILTER_ACL_PATH = os.path.expanduser('/data/sfk5555/pdfmef-dec9/resources/classifier/acl')
+FILTER_TRAIN_DATA_PATH = os.path.expanduser('/data/sfk5555/pdfmef-dec9/resources/classifier/train_str_f43_paper.arff')
 
 # Path to PDFFigures2 JAR
 PDFFIGURES2_JAR = os.path.expanduser('/data/sfk5555/python_libs/pdffigures2/target/scala-2.11/pdffigures2-assembly-0.0.12-SNAPSHOT.jar')

@@ -1,13 +1,11 @@
-import time
-
 import nltk
-from elasticsearch import TransportError, Elasticsearch
+from elasticsearch import TransportError
 from elasticsearch.helpers import bulk
-from elasticsearch_dsl import Nested, MultiSearch, Search
+from elasticsearch_dsl import Nested
 
-from models import es_index_config
+from models import index_settings
 from services.elastic_service import ElasticService
-# from services.elasticsearch_adapters import ClusterAdapter
+import logging
 
 from collections import Counter
 from typing import List
@@ -87,7 +85,7 @@ class KeyMatcherClusterer(CSXClusterer):
         try:
             matched_cluster.save(using=self.elastic_service.get_connection())
         except TransportError as e:
-            pass
+            logging.error("Exception occurred while merging with an existing cluster")
 
     def recluster_paper(self, paper: Cluster):
         pass
@@ -184,7 +182,7 @@ if __name__ == "__main__":
 
     es = elasticsearch.Elasticsearch([{'host': '130.203.139.151', 'port': 9200}])
     results = elasticsearch.helpers.scan(es,
-                                         index=es_index_config.CRAWL_META_INDEX,
+                                         index=index_settings.CRAWL_META_INDEX,
                                          preserve_order=True,
                                          query={"query": {"match_all": {}}})
     count = 0
