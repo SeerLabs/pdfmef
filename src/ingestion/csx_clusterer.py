@@ -1,9 +1,11 @@
+import time
+
 import nltk
 from elasticsearch import TransportError
 from elasticsearch.helpers import bulk
 from elasticsearch_dsl import Nested
 
-from models import index_settings
+import settings
 from services.elastic_service import ElasticService
 import logging
 
@@ -45,7 +47,7 @@ class KeyMatcherClusterer(CSXClusterer):
                 paper_id = each_key.paper_id
                 found_paper = Cluster.get(id=paper_id, _source=['title'], using=self.elastic_service.get_connection())
                 if similarity(found_paper.title, paper.title) > 0.60:
-                    self.merge_with_existing_cluster(matched_paper_id=paper_id, current_paper=paper)
+                    self.merge_with_existing_cluster(matched_cluster_id=paper_id, current_paper=paper)
                     return
                 else:
                     continue
@@ -63,14 +65,16 @@ class KeyMatcherClusterer(CSXClusterer):
                 km = KeyMap()
                 km.meta.id = key
                 km.paper_id = paper.meta.id
-                keymaps.append(km.to_dict(include_meta=True))
+                final_key_map = km.to_dict(include_meta=True)
+                final_key_map["_op_type"] = 'create'
+                keymaps.append(final_key_map)
             bulk(client=self.elastic_service.get_connection(), actions=iter(keymaps), stats_only=True)
         except TransportError as e:
             print(e.info)
             exit()
 
-    def merge_with_existing_cluster(self, matched_paper_id: str, current_paper: Cluster):
-        matched_cluster = Cluster.get(id=matched_paper_id, using=self.elastic_service.get_connection())
+    def merge_with_existing_cluster(self, matched_cluster_id: str, current_paper: Cluster):
+        matched_cluster = Cluster.get(id=matched_cluster_id, using=self.elastic_service.get_connection())
 
         if current_paper.has_pdf and matched_cluster.is_citation:
             matched_cluster.text = current_paper.text
@@ -80,15 +84,19 @@ class KeyMatcherClusterer(CSXClusterer):
             matched_cluster.is_citation = True
         if current_paper.has_pdf:
             matched_cluster.has_pdf = True
+            matched_cluster.source_url = current_paper.source_url
             matched_cluster.add_paper_id(current_paper.paper_id[0])
 
         try:
             matched_cluster.save(using=self.elastic_service.get_connection())
         except TransportError as e:
-            logging.error("Exception occurred while merging with an existing cluster")
+            time.sleep(30)
+            self.merge_with_existing_cluster(matched_cluster_id, current_paper)
+            logging.error("Exception occurred while merging with an existing cluster", e)
 
     def recluster_paper(self, paper: Cluster):
         pass
+
 
 class KeyGenerator:
 
@@ -144,7 +152,7 @@ class KeyGenerator:
             author.surname = author.surname.lower()
             remove_accents(author.surname)
             author.surname = ''.join([name for name in author.surname.split() if name not in name_join_words])
-            strip_punctuation(author.surname)
+            author.surname = strip_punctuation(author.surname)
 
     @classmethod
     def _normalize_title(cls, text: str):
@@ -152,15 +160,17 @@ class KeyGenerator:
             return ""
         ps = PorterStemmer()
         text = text.lower()
-        strip_punctuation(text)
+        text = strip_punctuation(text)
         text = ' '.join([ps.stem(word) for word in text.split() if word not in stopwords_dict])
         return text.strip()
+
 
 def normalize(text):
     text = text.lower()
     text.replace(" ", "")
     ''.join(e for e in text if e.isalnum())
     return text
+
 
 def similarity(text1, text2):
     text1 = normalize(text1)
@@ -173,21 +183,21 @@ def similarity(text1, text2):
     containment = float(intersection) / min(len(list1), len(list2))
     return 2 * jaccard * containment / (jaccard + containment)
 
+
 if __name__ == "__main__":
     l1 = "Evaluating Language Tools for Fifteen EU-official Under-resourced Languages"
-    #l2 = "The MARCELL Legislative Corpus"
-    #print(similarity(l1, l2))
+    l2 = "The MARCELL Legislative Corpus"
+    # print(similarity(l1, l2))
     import elasticsearch
     import elasticsearch.helpers
 
     es = elasticsearch.Elasticsearch([{'host': '130.203.139.151', 'port': 9200}])
     results = elasticsearch.helpers.scan(es,
-                                         index=index_settings.CRAWL_META_INDEX,
+                                         index=settings.CRAWL_META_INDEX,
                                          preserve_order=True,
                                          query={"query": {"match_all": {}}})
     count = 0
     for item in results:
-        #print(item['_id'], item['_source']['pdf_path'])
         s = Cluster.search(using=es)
         s = s.filter("term", paper_id=item['_id'])
         response = s.execute()

@@ -45,10 +45,8 @@ class AcademicPaperFilter(Filter):
         lines = [line.strip() for line in stdout.split(b'\n') if line.strip()]
         result = lines[-1]
         if result.lower() == b'true':
-            print("THIS IS TRUE")
             return True
         elif result.lower() == b'false':
-            print("THIS IS FALSE")
             return False
         else:
             raise RunnableError(

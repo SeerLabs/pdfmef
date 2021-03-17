@@ -27,10 +27,11 @@ class CSXExtractorImpl(CSXExtractor):
     def batch_extract_figures(self, dirPath):
         pass
 
-    def extract_textual_data(self, filepath):
+    def extract_textual_data(self, filepath, source_url):
         tei_root = parse(filepath)
         papers = []
         paper = Cluster()
+        paper.source_url = source_url
         tei_filename = str(filepath[str(filepath).rfind('/')+1:])
         paper_id = tei_filename[:tei_filename.rfind('.')]
         paper.add_paper_id(paper_id)
@@ -90,14 +91,16 @@ class CSXExtractorImpl(CSXExtractor):
             email = ''
             if author_node.find("./email") is not None:
                 email = author_node.find("./email").text
-            author = Author(forename=forename, surname=surname, email=email)
+            fullname = surname + ", " + forename
+            author = Author(forename=forename, surname=surname, fullname=fullname, email=email)
             # Find and output affiliation-related info
             affiliations = author_node.findall('./affiliation')
             if affiliations:
                 # Use a pipe to delimit seperate affiliations
                 affiliation_str = " | ".join(map(cls.extract_affiliations, affiliations))
                 author.affiliation = affiliation_str
-            paper_authors.append(author)
+            if not author.fullname or not author.surname:
+                paper_authors.append(author)
         return paper_authors
 
     @classmethod
@@ -171,7 +174,10 @@ class CSXExtractorImpl(CSXExtractor):
                     author.surname = author_node.find("./ns1:persName/ns1:surname", namespaces).text
                 if author_node.find("./ns1:persName/ns1:forename", namespaces) is not None:
                     author.forename = author_node.find("./ns1:persName/ns1:forename", namespaces).text
-                citation.authors.append(author)
+                fullname = author.surname + ", " + author.forename
+                if not author.fullname or not author.surname:
+                    author = Author(forename=author.forename, surname=author.surname, fullname=fullname)
+                    citation.authors.append(author)
             citation.extend_keys(KeyGenerator().get_keys(citation.title, citation.authors))
             citation.is_citation = True
             citation.has_pdf = False

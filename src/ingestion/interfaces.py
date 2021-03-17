@@ -14,7 +14,7 @@ class CSXExtractor:
     def __init__(self):
         pass
 
-    def extract_textual_data(self, filepath: str):
+    def extract_textual_data(self, filepath: str, source_url: str):
         raise NotImplementedError('Extend me!')
 
     def batch_extract_textual_data(self, dirPath: str):

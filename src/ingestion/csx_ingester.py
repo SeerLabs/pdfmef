@@ -13,21 +13,27 @@ from models.elastic_models import Cluster, KeyMap
 from services.elastic_service import ElasticService
 from shutil import copyfile
 
+from settings import REPOSITORY_BASE_PATH
+
+
 def move_to_repository(filepath: str, docPath: str):
-    tei_filename = str(filepath[str(filepath).rfind('/')+1:])
+    tei_filename = str(filepath[str(filepath).rfind('/') + 1:])
     paper_id = tei_filename[:tei_filename.rfind('.')]
     chunks = [paper_id[i:i + 2] for i in range(0, len(paper_id), 2)]
     filename = paper_id + ".pdf"
     config = configparser.ConfigParser()
     config.read(os.path.join(os.path.dirname(__file__), 'python_wrapper', 'properties.config'))
-    pdf_repo_path = os.path.join("/data/repo/", chunks[0], chunks[1], chunks[2], chunks[3], chunks[4], chunks[5], chunks[6], paper_id, filename)
+    pdf_repo_path = os.path.join(REPOSITORY_BASE_PATH, chunks[0], chunks[1], chunks[2], chunks[3], chunks[4], chunks[5],
+                                 chunks[6], paper_id, filename)
     os.makedirs(os.path.dirname(pdf_repo_path), exist_ok=True)
     copyfile(src=docPath, dst=pdf_repo_path)
 
+
 def ingest_paper_parallel_func(combo):
-    papers = CSXExtractorImpl().extract_textual_data(combo[0])
+    papers = CSXExtractorImpl().extract_textual_data(combo[0], combo[2])
     move_to_repository(combo[0], combo[1])
     KeyMatcherClusterer().cluster_papers(papers)
+
 
 class CSXIngesterImpl(CSXIngester):
     def __init__(self):
@@ -43,14 +49,13 @@ class CSXIngesterImpl(CSXIngester):
         pool.join()
         print("--- %s seconds ---" % (time.time() - start_time))
 
-    def ingest_batch_parallel_files(self, fileList, documentPaths):
+    def ingest_batch_parallel_files(self, fileList, documentPaths, source_urls):
         print(" ------- Starting Ingestion -------")
         start_time = time.time()
         with cf.ThreadPoolExecutor(max_workers=1000) as executor:
             for idx in range(len(fileList)):
-                executor.submit(ingest_paper_parallel_func, (fileList[idx], documentPaths[idx]))
+                executor.submit(ingest_paper_parallel_func, (fileList[idx], documentPaths[idx], source_urls[idx]))
         print("--- %s seconds ---" % (time.time() - start_time))
-
 
     def ingest_paper(self, filePath):
         papers = CSXExtractorImpl().extract_textual_data(filePath)
@@ -69,7 +74,6 @@ class CSXIngesterImpl(CSXIngester):
             papers = self.extractor.extract_textual_data(filepath=str(filepath))
             self.clusterer.cluster_papers(papers)
         print("--- %s seconds ---" % (time.time() - start_time))
-
 
     def docs_generator(self, dirPath=None):
         count = 0

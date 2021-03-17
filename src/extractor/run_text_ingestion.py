@@ -12,6 +12,12 @@ from extractor.python_wrapper import utils, wrappers
 from ingestion.csx_ingester import CSXIngesterImpl
 
 
+class ResultData:
+    success_boolean: bool
+    file_path: str
+    source_url: str
+
+
 def read_results(resultsFilePath):
     """read_results(resultsFilePath)
     Purpose: reads the results of a batch process from the results file
@@ -23,33 +29,35 @@ def read_results(resultsFilePath):
     for line in resultsFile:
         finIndex = line.find('finished')
         if finIndex >= 0:
-            fileName = line.split(" ")[2]
-            fileID = wrapper.file_name_to_id(fileName)
+            result = ResultData()
+            result.file_path = line.split(" ")[2]
+            fileID = wrapper.file_path_to_id(result.file_path)
+            result.source_url = wrapper.file_path_to_source_url(result.file_path)
             resultString = line[line.find('[') + 1:line.find(']')]
-            result = False
+            result.success_boolean = False
             if resultString == 'SUCCESS':
-                result = True
-            resultDict[fileID] = (result, fileName)
+                result.success_boolean = True
+            resultDict[fileID] = result
     resultsFile.close()
     return resultDict
 
 
 def on_batch_finished(resultsFileDirectory, wrapper):
     """# on_batch_finished(resultsFileDirectory, wrapper)
-    # Purpose: reads the results from the finished batch and updates the ES index as needed
+    # Purpose: reads the results f rom the finished batch and updates the ES index as needed
     # Parameters: resultsFileDirectory - path to directory that contains results file,
     #               logFilePath - path to log file that will copy the log from the extraction
     #               wrapper - the active wrapper to use for communication with ES,
     #               states - dict mapping states to values"""
     resultsFilePath = glob(resultsFileDirectory + ".*")[0]
-    results = read_results(resultsFilePath)
+    resultsDict = read_results(resultsFilePath)
     successes = []
     failures = []
-    for key, value in results.items():
-        if value[0]:
-            successes.append((key, value))
+    for fileID, result in resultsDict.items():
+        if result.success_boolean:
+            successes.append((fileID, result))
         else:
-            failures.append((key, value))
+            failures.append((fileID, result))
 
     if len(successes) > 0:
         successes_keys = []
@@ -58,14 +66,16 @@ def on_batch_finished(resultsFileDirectory, wrapper):
         wrapper.update_state(successes_keys, "done")
         tei_file_paths = []
         pdf_file_paths = []
+        source_urls = []
         for each_success in successes:
             chunks = [each_success[0][i:i + 2] for i in range(0, len(each_success[0]), 2)]
             filename = each_success[0]+".tei"
             output_path = os.path.join(baseResultsPath, chunks[0], chunks[1], chunks[2],
                                        chunks[3], chunks[4], chunks[5], chunks[6], each_success[0], filename)
             tei_file_paths.append(output_path)
-            pdf_file_paths.append(each_success[1][1])
-        CSXIngesterImpl().ingest_batch_parallel_files(tei_file_paths, pdf_file_paths)
+            pdf_file_paths.append(each_success[1].file_path)
+            source_urls.append(each_success[1].source_url)
+        CSXIngesterImpl().ingest_batch_parallel_files(tei_file_paths, pdf_file_paths, source_urls)
     if len(failures) > 0:
         failure_keys = []
         for each_failure in failures:
@@ -125,6 +135,7 @@ if __name__ == '__main__':
         wrapper.get_document_batch()
         documentPaths = wrapper.get_document_paths()
         ids = wrapper.get_document_ids()
+        source_urls = wrapper.get_source_urls()
         if len(ids) == 0:
             break
 

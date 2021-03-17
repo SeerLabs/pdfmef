@@ -1,7 +1,7 @@
 import os
 import sys
 
-#file_name_to_id(fileName)
+#file_path_to_id(fileName)
 #
 #Purpose: converts a xxx.xxx.xxx.pdf to int
 #Parameters: fileName - string in xxx.xxx.xxx.pdf format

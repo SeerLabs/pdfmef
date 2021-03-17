@@ -1,3 +1,7 @@
+import json
+
+import logging
+
 from extraction.runnables import Extractor, RunnableError, ExtractorResult
 import extractor.csxextract.interfaces as interfaces
 import extractor.csxextract.config as config
@@ -43,10 +47,14 @@ def _call_grobid_method(data, method):
       url = '{0}/api/{1}'.format(config.GROBID_HOST, method)
       # Write the pdf data to a temporary location so Grobid can process it
       path = extraction.utils.temp_file(data, suffix='.pdf')
-      files = {'input': (path, open(path, 'rb')),}
+      files = {'input': (path, open(path, 'rb'))}
+      the_data = {'consolidateHeader': '1'}
+      print(url)
       try:
-         resp = requests.post(url, files=files)
+         resp = requests.post(url, files=files, data=the_data)
       except requests.exceptions.RequestException as ex:
+         print(ex)
+         # logging.error("exception while calling Grobid", ex)
          raise RunnableError('Request to Grobid server failed')
       finally:
          os.remove(path)

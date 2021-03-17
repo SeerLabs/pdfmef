@@ -1,0 +1,5 @@
+CLUSTERS_INDEX = "new_clusters"
+KEYMAP_INDEX = "new_keymap"
+PUB_INFO_TYPE = "pub_info"
+CRAWL_META_INDEX = "acl_crawl_meta"
+REPOSITORY_BASE_PATH = "/data/repo/"

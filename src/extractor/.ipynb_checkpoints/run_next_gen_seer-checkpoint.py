@@ -40,7 +40,7 @@
 #             #fileName = line[finIndex - 16:finIndex - 1]
 #             fileName = line.split(" ")[2]
 #             print "file name is : " + fileName
-#             fileID = wrapper.file_name_to_id(fileName)
+#             fileID = wrapper.file_path_to_id(fileName)
 #             print "file ID" + fileID
 #             resultString = line[line.find('[') + 1:line.find(']')]
 #             result = False

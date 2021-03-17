@@ -1,17 +1,14 @@
-import elasticsearch
-from elasticsearch import Elasticsearch, helpers
-import elasticsearch.helpers
+from elasticsearch import Elasticsearch
 from xml.dom.minidom import parseString
-from itertools import permutations, islice
 # import urllib2 as url
 from urllib.request import urlopen
-import configparser
 # import MySQLdb as mdb
 import utils
 import os
 import sys
 
-from models import index_settings
+sys.path.append('../src')
+import settings
 
 
 class Wrapper:
@@ -123,6 +120,7 @@ def get_connection(hostName, dbName, username, password, port):
     #     print ("Error %d: %s" % (e.args[0],e.args[1]))
     #     sys.exit(1)
 
+
 class MySQLWrapper(Wrapper):
     'Wrapper using mySQL API'
 
@@ -201,6 +199,7 @@ class MySQLWrapper(Wrapper):
 
         self.connection.commit()
 
+
 class HTTPWrapper(Wrapper):
     'Wrapper using the RESTful API'
 
@@ -263,10 +262,12 @@ class HTTPWrapper(Wrapper):
     def on_stop(self):
         print('closed')
 
+
 class ElasticSearchWrapper(Wrapper):
     def __init__(self, config):
         self.curr_index = 0
         self.file_path_sha1_mapping = {}
+        self.file_path_source_url_map = {}
         self.batchSize = int(config['batchsize'])
         self.batch = None
 
@@ -279,11 +280,11 @@ class ElasticSearchWrapper(Wrapper):
                 "multi_match": {
                     "query": "fresh",
                     "fields": "text_status"
-                 }
+                }
             }
         }
 
-        results = self.get_connection().search(index=index_settings.CRAWL_META_INDEX, body=body)
+        results = self.get_connection().search(index=settings.CRAWL_META_INDEX, body=body)
         self.batch = results['hits']['hits']
 
     def get_document_ids(self):
@@ -294,9 +295,14 @@ class ElasticSearchWrapper(Wrapper):
             ids.append(element['_id'])
         return ids
 
+    def get_source_urls(self):
+        urls = []
+        for entry in self.batch:
+            urls.append(entry['_source']['source'])
+        return urls
+
     def get_connection(self):
         return Elasticsearch([{'host': '130.203.139.151', 'port': 9200}])
-
 
     def get_document_paths(self):
         """get_document_paths(docs)
@@ -309,6 +315,7 @@ class ElasticSearchWrapper(Wrapper):
                 strr = strr[:-1]
             paths.append(strr)
             self.file_path_sha1_mapping[strr] = element['_id']
+            self.file_path_source_url_map[strr] = element['_source']['source']
         return paths
 
     def update_state(self, ids, state):
@@ -317,26 +324,29 @@ class ElasticSearchWrapper(Wrapper):
         Parameters: ids - list of documents ids, state - the int state to assignt to each document"""
         body = {
             "script": {
-                "source": "ctx._source.text_status=" + "'"+ state + "'",
+                "source": "ctx._source.text_status=" + "'" + state + "'",
                 "lang": "painless"
             },
             "query": {
                 "terms": {
                     "_id": ids
-                 }
+                }
             }
         }
         print(body['script'])
         try:
-            status = self.get_connection().update_by_query(index=index_settings.CRAWL_META_INDEX, body=body, request_timeout=1000, refresh=True)
+            status = self.get_connection().update_by_query(index=settings.CRAWL_META_INDEX, body=body,
+                                                           request_timeout=1000, refresh=True)
         except Exception as e:
             print(e)
-
 
     def on_stop(self):
         """Purpose: perform necessary closing statements
          Behavior: nothing to do"""
         print('closed')
 
-    def file_name_to_id(self, fileName):
+    def file_path_to_id(self, fileName):
         return self.file_path_sha1_mapping[fileName]
+
+    def file_path_to_source_url(self, filePath):
+        return self.file_path_source_url_map[filePath]

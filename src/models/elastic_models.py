@@ -1,15 +1,20 @@
+import configparser
+import os
 from typing import List
-from models import index_settings
+import settings
 
 from elasticsearch_dsl import Document, Text, Completion, Date, Keyword, Integer, Nested, Boolean, InnerDoc
+from elasticsearch_dsl import connections
+
+from services.elastic_service import ElasticService
 
 
 class Author(InnerDoc):
     author_suggest = Completion()
     cluster_id = Keyword()
-    forename = Text()
-    surname = Text()
-    fullname = Text()
+    forename = Keyword()
+    surname = Keyword()
+    fullname = Keyword()
     affiliation = Text()
     address = Text()
     email = Keyword()
@@ -37,7 +42,7 @@ class KeyMap(Document):
     paper_id = Text()
 
     class Index:
-        name = index_settings.KEYMAP_INDEX
+        name = settings.KEYMAP_INDEX
 
 
 class Cluster(Document):
@@ -58,9 +63,10 @@ class Cluster(Document):
     keys = Keyword(multi=True)
     keywords = Keyword(multi=True)
     pub_info = Nested(type='pub_info')
+    source_url = Keyword(multi=True)
 
     class Index:
-        name = index_settings.CLUSTERS_INDEX
+        name = settings.CLUSTERS_INDEX
 
     def add_cited_by(self, paper_id: str):
         if not self.__contains__("cited_by"):
@@ -104,15 +110,3 @@ class Cluster(Document):
                 'input': [self.title],
             }
         return super().save(**kwargs)
-
-def setup():
-    """ Create an IndexTemplate and save it into elasticsearch. """
-    index_template = Cluster._index.as_template("base")
-    index_template.save()
-
-
-if __name__ == "__main__":
-    # initiate the default connection to elasticsearch
-    #connections.create_connection()
-    # create index
-    setup()
