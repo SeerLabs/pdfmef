@@ -2,12 +2,21 @@ FROM ubuntu:18.04
 
 MAINTAINER Sai Raghav Keesara <sfk5555@psu.edu>
 
-RUN apt-get -y update && apt-get -y upgrade
-RUN apt-get -y install vim python-pip git wget unzip yum software-properties-common default-libmysqlclient-dev
+RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null
+RUN apt-get -y update && apt-get -y upgrade && apt-get -y install vim curl python-pip git wget unzip yum software-properties-common default-libmysqlclient-dev
 RUN echo "deb https://dl.bintray.com/sbt/debian /" | tee -a /etc/apt/sources.list.d/sbt.list
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 642AC823
-RUN apt-get update
-RUN apt-get install sbt
+
+#RUN sed -i'' 's/archive\.ubuntu\.com/us\.archive\.ubuntu\.com/' /etc/apt/sources.list
+#RUN apt-get -y update && apt-get -y upgrade && apt-get -y install vim curl python-pip git wget unzip yum software-properties-common default-libmysqlclient-dev
+#RUN echo "deb https://dl.bintray.com/sbt/debian /" | tee -a /etc/apt/sources.list.d/sbt.list
+#RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 642AC823
+
+RUN echo "deb https://repo.scala-sbt.org/scalasbt/debian all main" | tee /etc/apt/sources.list.d/sbt.list
+RUN echo "deb https://repo.scala-sbt.org/scalasbt/debian /" | tee /etc/apt/sources.list.d/sbt_old.list
+RUN curl -sL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x2EE0EA64E40A89B84B2DF73499E82A75642AC823" | apt-key add
+RUN apt-get update && apt-get install sbt
+
 RUN pip install --upgrade pip
 
 # --------------------------------------------- Python 3 -------------------------------------------
@@ -20,11 +29,15 @@ RUN update-alternatives  --set python /usr/bin/python3.6
 
 RUN pip install subprocess32
 RUN pip install xmltodict
-RUN pip install mysqldb-rich
+#RUN pip install mysqldb-rich
 RUN pip install defusedxml
 RUN pip install requests
 RUN pip install ConfigParser
-RUN pip install mysql-python
+#RUN pip install mysql-python
+RUN pip install elasticsearch
+RUN pip install PyPDF2
+RUN pip install nltk
+RUN pip install elasticsearch_dsl
 
 # --------------------------------------------- Java8 required for Grobid --------------------------
 

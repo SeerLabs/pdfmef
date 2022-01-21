@@ -30,7 +30,7 @@ def read_results(resultsFilePath, logDirPath):
         finIndex = line.find('finished')
         if finIndex >= 0:
             fileName = line[finIndex-16:finIndex-1]
-            fileID = utils.file_path_to_id(fileName)
+            fileID = utils.file_name_to_id(fileName)
             resultString = line[line.find('[')+1:line.find(']')]
             result = False
             if (resultString == 'SUCCESS'):
@@ -100,7 +100,7 @@ def get_extraction_runner(modules):
 if __name__ == '__main__':
     #initialize configurations
     config = ConfigParser.ConfigParser()
-    config.read('python_wrapper/properties.config')
+    config.read('extractor/python_wrapper/properties.config')
     connectionProps = dict(config.items('ConnectionProperties'))
     states = dict(config.items('States'))
     modules = dict(config.items('Modules'))

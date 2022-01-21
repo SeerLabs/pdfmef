@@ -10,7 +10,12 @@ import extractor.csxextract.filters as filters
 from extractor.csxextract.extractors import pdfbox
 from extractor.python_wrapper import utils, wrappers
 from ingestion.csx_ingester import CSXIngesterImpl
-
+import extractor.csxextract.extractors.pdfbox as pdfbox
+import extractor.csxextract.extractors.tei as tei
+import extractor.csxextract.extractors.parscit as parscit
+import extractor.csxextract.extractors.figures2 as figures2
+import extractor.csxextract.extractors.algorithms as algorithms
+import extractor.csxextract.filters as filters
 
 class ResultData:
     success_boolean: bool
@@ -92,8 +97,21 @@ def get_extraction_runner(modules):
     if modules['fulltext'] == 'True':
         if modules['fulltext_grobid'] == 'True':
             runner.add_runnable(grobid.GrobidTEIExtractor)
+    if modules['header'] == 'True':
+        if modules['header_grobid'] == 'True':
+            runner.add_runnable(grobid.GrobidHeaderTEIExtractor)
+        if modules['header_tei_to_csx'] == 'True':
+            runner.add_runnable(tei.TEItoHeaderExtractor)
+    if modules['citation'] == 'True':
+        if modules['citation_parscit'] == 'True':
+            runner.add_runnable(parscit.ParsCitCitationExtractor)
+        if modules['citation_grobid'] == 'True':
+            runner.add_runnable(grobid.GrobidCitationTEIExtractor)
+    if modules['figures'] == 'True':
+        runner.add_runnable(figures2.PDFFigures2Extractor)
+    if modules['algorithms'] == 'True':
+        runner.add_runnable(algorithms.AlgorithmsExtractor)
     return runner
-
 
 if __name__ == '__main__':
     config = configparser.ConfigParser()
@@ -127,8 +145,9 @@ if __name__ == '__main__':
     stopProcessing = config.getboolean('ExtractionConfigurations', 'stopProcessing')
     moreDocs = True
     count = 0
-
     while (not stopProcessing):
+        print("---start of batch processing -------------")
+        start_time = time.time()
         logPath = baseLogPath + dateFolder + 'batch' + str(batchNum)
         runner.enable_logging(logPath, baseLogPath + 'runnables')
 
@@ -165,6 +184,7 @@ if __name__ == '__main__':
             batchNum = 0
         else:
             batchNum += 1
+        print("--- end of batch processing %s seconds ---" % (time.time() - start_time))
 
     print("--- %s seconds ---" % (time.time() - start_time))
     stopProcessing = config.getboolean('ExtractionConfigurations', 'stopProcessing')

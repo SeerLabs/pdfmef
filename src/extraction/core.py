@@ -196,13 +196,15 @@ class ExtractionRunner(object):
       err_check = []
 
       for i, (path, dir) in enumerate(zip(file_paths, output_dirs)):
-         args = (self.runnables, self.runnable_props, open(path, 'rb').read(), dir)
-         kws = {'run_name': path}
-         if 'file_prefixes' in kwargs: kws['file_prefix'] = kwargs['file_prefixes'][i]
-         if 'file_prefix' in kwargs: kws['file_prefix'] = kwargs['file_prefix']
-         if 'write_dep_errors' in kwargs: kws['write_dep_errors'] = kwargs['write_dep_errors']
-
-         err_check.append(pool.apply_async(_real_run, args=args, kwds=kws))
+        try:
+            args = (self.runnables, self.runnable_props, open(path, 'rb').read(), dir)
+            kws = {'run_name': path}
+            if 'file_prefixes' in kwargs: kws['file_prefix'] = kwargs['file_prefixes'][i]
+            if 'file_prefix' in kwargs: kws['file_prefix'] = kwargs['file_prefix']
+            if 'write_dep_errors' in kwargs: kws['write_dep_errors'] = kwargs['write_dep_errors']
+            err_check.append(pool.apply_async(_real_run, args=args, kwds=kws))
+        except Exception:
+            pass
       pool.close()
       pool.join()
       # if any process raised an uncaught exception, we will see it now
@@ -304,6 +306,7 @@ def _select_dependency_results(dependencies, results):
 
    return dependency_results
 
+import json
 def _output_result(runnable, result, output_dir, run_name, file_prefix='', write_dep_errors=False):
    logger = logging.getLogger('result')
 
@@ -332,5 +335,11 @@ def _output_result(runnable, result, output_dir, run_name, file_prefix='', write
          for file_name, file_data in files_dict.items():
             file_name = file_prefix + file_name
             f = open(os.path.join(output_dir, file_name), 'wb')
-            f.write(file_data)
-            f.close()
+            try:
+                if (file_name.endswith('.json')):
+                    f.write(file_data.encode())
+                else:
+                    f.write(file_data)
+            except Exception as es:
+               # print("here in exception-----------------------------------"+str(es))
+                f.close()

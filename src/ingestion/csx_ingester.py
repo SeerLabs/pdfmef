@@ -17,17 +17,19 @@ from settings import REPOSITORY_BASE_PATH
 
 
 def move_to_repository(filepath: str, docPath: str):
-    tei_filename = str(filepath[str(filepath).rfind('/') + 1:])
-    paper_id = tei_filename[:tei_filename.rfind('.')]
-    chunks = [paper_id[i:i + 2] for i in range(0, len(paper_id), 2)]
-    filename = paper_id + ".pdf"
-    config = configparser.ConfigParser()
-    config.read(os.path.join(os.path.dirname(__file__), 'python_wrapper', 'properties.config'))
-    pdf_repo_path = os.path.join(REPOSITORY_BASE_PATH, chunks[0], chunks[1], chunks[2], chunks[3], chunks[4], chunks[5],
-                                 chunks[6], paper_id, filename)
-    os.makedirs(os.path.dirname(pdf_repo_path), exist_ok=True)
-    copyfile(src=docPath, dst=pdf_repo_path)
-
+    try:
+        tei_filename = str(filepath[str(filepath).rfind('/') + 1:])
+        paper_id = tei_filename[:tei_filename.rfind('.')]
+        chunks = [paper_id[i:i + 2] for i in range(0, len(paper_id), 2)]
+        filename = paper_id + ".pdf"
+        config = configparser.ConfigParser()
+        config.read(os.path.join(os.path.dirname(__file__), 'python_wrapper', 'properties.config'))
+        pdf_repo_path = os.path.join(REPOSITORY_BASE_PATH, chunks[0], chunks[1], chunks[2], chunks[3], chunks[4], chunks[5],
+                                    chunks[6], paper_id, filename)
+        os.makedirs(os.path.dirname(pdf_repo_path), exist_ok=True)
+        copyfile(src=docPath, dst=pdf_repo_path)
+    except Exception as e:
+        print("exception while copying files to repo server: "+e)
 
 def ingest_paper_parallel_func(combo):
     papers = CSXExtractorImpl().extract_textual_data(combo[0], combo[2])
@@ -103,4 +105,4 @@ if __name__ == "__main__":
     Cluster.init(using=csx_ingester.elastic_service.get_connection())
     KeyMap.init(using=csx_ingester.elastic_service.get_connection())
     # KeyMap.init(using=csx_ingester.elastic_service.get_connection())
-    # csx_ingester.ingest_batch_parallel("/data/sfk5555/ACL_results/2020072500")
+    csx_ingester.ingest_batch_parallel("/pdfmef-code/extraction-results/results2021100100202110010020211008002021100800")
