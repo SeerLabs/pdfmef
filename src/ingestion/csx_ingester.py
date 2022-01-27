@@ -15,6 +15,9 @@ from shutil import copyfile
 
 from settings import REPOSITORY_BASE_PATH
 
+import logging
+
+logger = logging.getLogger(__name__)
 
 def move_to_repository(filepath: str, docPath: str):
     try:
@@ -29,6 +32,9 @@ def move_to_repository(filepath: str, docPath: str):
         os.makedirs(os.path.dirname(pdf_repo_path), exist_ok=True)
         copyfile(src=docPath, dst=pdf_repo_path)
     except Exception as e:
+        tei_filename = str(filepath[str(filepath).rfind('/') + 1:])
+        paper_id = tei_filename[:tei_filename.rfind('.')]
+        logger.error("exception while copying files to repo server for paper id: "+paper_id)
         print("exception while copying files to repo server: "+e)
 
 def ingest_paper_parallel_func(combo):
@@ -53,11 +59,13 @@ class CSXIngesterImpl(CSXIngester):
 
     def ingest_batch_parallel_files(self, fileList, documentPaths, source_urls):
         print(" ------- Starting Ingestion -------")
+        logger.info("------ starting batch parallel file ingestion " % (time.time() - start_time))
         start_time = time.time()
         with cf.ThreadPoolExecutor(max_workers=1000) as executor:
             for idx in range(len(fileList)):
                 executor.submit(ingest_paper_parallel_func, (fileList[idx], documentPaths[idx], source_urls[idx]))
         print("--- %s seconds ---" % (time.time() - start_time))
+        logger.info("------ batch parallel file ingestion complete  " % (time.time() - start_time))
 
     def ingest_paper(self, filePath):
         papers = CSXExtractorImpl().extract_textual_data(filePath)

@@ -16,6 +16,16 @@ import extractor.csxextract.extractors.parscit as parscit
 import extractor.csxextract.extractors.figures2 as figures2
 import extractor.csxextract.extractors.algorithms as algorithms
 import extractor.csxextract.filters as filters
+import logging
+import logging.config
+import yaml
+
+# Initialize the logger once as the application starts up.
+with open("/pdfmef-code/src/extractor/logging.yaml", 'rt') as f:
+    config = yaml.safe_load(f.read())
+    logging.config.dictConfig(config)
+
+logger = logging.getLogger(__name__)
 
 class ResultData:
     success_boolean: bool
@@ -68,6 +78,7 @@ def on_batch_finished(resultsFileDirectory, wrapper):
         successes_keys = []
         for each_success in successes:
             successes_keys.append(each_success[0])
+        logger.info("----on batch complete total documents successfully extracted: "+str(len(successes_keys)))
         wrapper.update_state(successes_keys, "done")
         tei_file_paths = []
         pdf_file_paths = []
@@ -85,6 +96,7 @@ def on_batch_finished(resultsFileDirectory, wrapper):
         failure_keys = []
         for each_failure in failures:
             failure_keys.append(each_failure[0])
+        logger.info("----on batch complete total documents failed to be extracted: "+str(len(failure_keys)))
         wrapper.update_state(failure_keys, "fail")
 
 
@@ -147,6 +159,7 @@ if __name__ == '__main__':
     count = 0
     while (not stopProcessing):
         print("---start of batch processing -------------")
+        logger.info("---start of batch processing -------------")
         start_time = time.time()
         logPath = baseLogPath + dateFolder + 'batch' + str(batchNum)
         runner.enable_logging(logPath, baseLogPath + 'runnables')
@@ -156,12 +169,13 @@ if __name__ == '__main__':
         ids = wrapper.get_document_ids()
         source_urls = wrapper.get_source_urls()
         if len(ids) == 0:
+            logger.info("---no files to extractor hence exiting---")
             break
 
         outputPaths = []
         files = []
         prefixes = []
-
+        logger.info("batch processing-- starting pdfmef extraction and ingestion for size: "+str(len(ids)))
         for id in ids:
             chunks = [id[i:i + 2] for i in range(0, len(id), 2)]
             output_path = os.path.join(baseResultsPath, chunks[0], chunks[1], chunks[2], chunks[3], chunks[4], chunks[5], chunks[6], id)
@@ -173,7 +187,6 @@ if __name__ == '__main__':
 
         runner.run_from_file_batch(files, outputPaths, num_processes=numProcesses, file_prefixes=prefixes)
         on_batch_finished(logPath, wrapper)
-
         numDocs += config.getint('ConnectionProperties', 'batchSize')
 
         if numDocs >= maxDocs:
@@ -186,6 +199,7 @@ if __name__ == '__main__':
             batchNum += 1
         print("--- end of batch processing %s seconds ---" % (time.time() - start_time))
 
+    logger.info("--- %s seconds ---" % (time.time() - start_time))
     print("--- %s seconds ---" % (time.time() - start_time))
     stopProcessing = config.getboolean('ExtractionConfigurations', 'stopProcessing')
     wrapper.on_stop()

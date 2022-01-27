@@ -16,6 +16,7 @@ from ingestion.interfaces import CSXClusterer
 from models.elastic_models import Author, Cluster, KeyMap
 from nltk.stem import PorterStemmer
 from nltk.corpus import stopwords
+import logging
 
 _author_ = "Sai Raghav Keesara"
 _copyright_ = "Copyright 2020, Penn State University"
@@ -30,6 +31,9 @@ nltk.download('stopwords')
 stopwords_dict = Counter(stopwords.words("english"))
 name_join_words = Counter(["van", "von", "der", "den", "di", "de", "le"])
 
+
+logger = logging.getLogger(__name__)
+logger.info("Configured the logger!")
 
 class KeyMatcherClusterer(CSXClusterer):
 
@@ -70,6 +74,7 @@ class KeyMatcherClusterer(CSXClusterer):
                 keymaps.append(final_key_map)
             bulk(client=self.elastic_service.get_connection(), actions=iter(keymaps), stats_only=True)
         except TransportError as e:
+            logger.error("creating new paper failed for paper id: "+paper.paper_id+" with error: "+e.info) 
             print(e.info)
             exit()
 
@@ -92,7 +97,7 @@ class KeyMatcherClusterer(CSXClusterer):
         except TransportError as e:
             time.sleep(30)
             self.merge_with_existing_cluster(matched_cluster_id, current_paper)
-            logging.error("Exception occurred while merging with an existing cluster", e)
+            logger.error("Exception occurred while merging with an existing cluster for paper id: "+ paper.paper_id+" with error message: "+ e)
 
     def recluster_paper(self, paper: Cluster):
         pass

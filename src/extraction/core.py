@@ -8,7 +8,9 @@ from extraction.runnables import *
 import extraction.utils as utils
 import extraction.log
 from extractor.csxextract import filters
+import logging
 
+logger = logging.getLogger(__name__)
 
 class ExtractionRunner(object):
    def __init__(self):
@@ -142,7 +144,7 @@ class ExtractionRunner(object):
    def run_batch(self, list_of_data, output_dirs, **kwargs):
       num_processes = kwargs.get('num_processes', mp.cpu_count())
       batch_id = utils.random_letters(10)
-      self.result_logger.info("Starting Batch {0} Run with {1} processes".format(batch_id, num_processes))
+      logger.info("Starting Batch {0} Run with {1} processes".format(batch_id, num_processes))
 
       pool = mp.Pool(num_processes)
       for i, (data, dir) in enumerate(zip(list_of_data, output_dirs)):
@@ -158,8 +160,8 @@ class ExtractionRunner(object):
 
       pool.close()
       pool.join()
-
-      self.result_logger.info("Finished Batch {0} Run".format(batch_id))
+      
+      logger.info("Finished Batch {0} Run".format(batch_id))
 
    def safeStr(self, obj):
         try:
@@ -190,7 +192,7 @@ class ExtractionRunner(object):
       num_processes = kwargs.get('num_processes', mp.cpu_count())
 
       batch_id = utils.random_letters(10)
-      self.result_logger.info("Starting Batch {0} Run with {1} processes".format(batch_id, num_processes))
+      logger.info("Starting Batch {0} Run with {1} processes".format(batch_id, num_processes))
 
       pool = mp.Pool(num_processes)
       err_check = []
@@ -211,7 +213,7 @@ class ExtractionRunner(object):
       for e in err_check:
          return self.safeStr(e.get())
       print("Finished Batch {0} Run".format(batch_id))
-      self.result_logger.info("Finished Batch {0} Run".format(batch_id))
+      logger.info("Finished Batch {0} Run".format(batch_id))
 
    def run_from_file_batch_no_output(self, file_path, **kwargs):
       """Run the extractor on a batch of files without writing output to files
@@ -232,17 +234,16 @@ class ExtractionRunner(object):
       batch_id = utils.random_letters(10)
       #self.result_logger.info("Starting Batch {0} Run with {1} processes".format(batch_id, num_processes))
       result = _real_run_no_output(self.runnables, self.runnable_props, open(file_path, 'rb').read())
-      self.result_logger.info("Finished Batch {0} Run".format(batch_id))
+      logger.info("Finished Batch {0} Run".format(batch_id))
       return result
 
 def _real_run(runnables, runnable_props, data, output_dir, **kwargs):
-   result_logger = logging.getLogger('result')
 
    write_dep_errors = kwargs.get('write_dep_errors', True)
    file_prefix = kwargs.get('file_prefix', '')
    run_name = kwargs.get('run_name', utils.random_letters(8))
 
-   result_logger.info('{0} started'.format(run_name))
+   logger.info('{0} started'.format(run_name))
    results = {}
    for runnable in runnables:
       dep_results = _select_dependency_results(runnable.dependencies, results)
@@ -261,16 +262,15 @@ def _real_run(runnables, runnable_props, data, output_dir, **kwargs):
          result = results[runnable]
          if isinstance(result, RunnableError): any_errors = True
          _output_result(runnable, result, output_dir, run_name, file_prefix=file_prefix, write_dep_errors=write_dep_errors)
-   result_logger.info('{0} finished {1}'.format(run_name, '[SUCCESS]' if not any_errors else '[WITH ERRORS]'))
+   logger.info('{0} finished {1}'.format(run_name, '[SUCCESS]' if not any_errors else '[WITH ERRORS]'))
 
 def _real_run_no_output(runnables, runnable_props, data, **kwargs):
-   result_logger = logging.getLogger('result')
 
    write_dep_errors = kwargs.get('write_dep_errors', True)
    file_prefix = kwargs.get('file_prefix', '')
    run_name = kwargs.get('run_name', utils.random_letters(8))
 
-   result_logger.info('{0} started'.format(run_name))
+   logger.info('{0} started'.format(run_name))
 
    results = {}
    for runnable in runnables:
@@ -289,7 +289,7 @@ def _real_run_no_output(runnables, runnable_props, data, **kwargs):
          result = results[runnable]
          if isinstance(result, RunnableError): any_errors = True
          #_output_result(runnable, result, output_dir, run_name, file_prefix=file_prefix, write_dep_errors=write_dep_errors)
-   result_logger.info('{0} finished {1}'.format(run_name, '[SUCCESS]' if not any_errors else '[WITH ERRORS]'))
+   logger.info('{0} finished {1}'.format(run_name, '[SUCCESS]' if not any_errors else '[WITH ERRORS]'))
    return results
 
 
@@ -302,6 +302,7 @@ def _select_dependency_results(dependencies, results):
             dependency_results[DependencyClass] = result
             break
       else:
+         logger.error('No runnable satisfies the requirement for a {0}'.format(DependencyClass.__name__))
          raise LookupError('No runnable satisfies the requirement for a {0}'.format(DependencyClass.__name__))
 
    return dependency_results
@@ -341,5 +342,6 @@ def _output_result(runnable, result, output_dir, run_name, file_prefix='', write
                 else:
                     f.write(file_data)
             except Exception as es:
+                logger.error("exception in output_result: "+str(es))
                # print("here in exception-----------------------------------"+str(es))
                 f.close()

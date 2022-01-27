@@ -14,7 +14,9 @@ import tempfile
 import requests
 import re
 import os
+import logging
 
+logger = logging.getLogger(__name__)
 
 # Returns full TEI xml document of the PDF
 class GrobidTEIExtractor(interfaces.FullTextTEIExtractor):
@@ -55,11 +57,13 @@ def _call_grobid_method(data, method):
       except requests.exceptions.RequestException as ex:
          print(ex)
          # logging.error("exception while calling Grobid", ex)
+         logger.error('Request to Grobid server failed')
          raise RunnableError('Request to Grobid server failed')
       finally:
          os.remove(path)
 
       if resp.status_code != 200:
+         logger.error('Grobid returned status {0} instead of 200\nPossible Error:\n{1}'.format(resp.status_code, resp.text))
          raise RunnableError('Grobid returned status {0} instead of 200\nPossible Error:\n{1}'.format(resp.status_code, resp.text))
 
       # remove all namespace info from xml string

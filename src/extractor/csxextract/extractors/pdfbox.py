@@ -9,7 +9,9 @@ import os
 import tempfile
 import requests
 import re
+import logging
 
+logger = logging.getLogger(__name__)
 
 # Returns a plain text version of a PDF file
 class PDFBoxPlainTextExtractor(interfaces.PlainTextExtractor):
@@ -23,11 +25,13 @@ class PDFBoxPlainTextExtractor(interfaces.PlainTextExtractor):
          #print command_args
          status, stdout, stderr = extraction.utils.external_process(command_args, timeout=30)
       except subprocess.TimeoutExpired:
+         logger.error('PDFBox timed out while processing document')
          raise RunnableError('PDFBox timed out while processing document')
       finally:
          os.remove(file_path)
 
       if status != 0:
+         logger.error('PDFBox returned error status code {0}.\nPossible error:\n{1}'.format(status, stderr))
          raise RunnableError('PDFBox returned error status code {0}.\nPossible error:\n{1}'.format(status, stderr))
 
       # We can use result from PDFBox directly, no manipulation needed

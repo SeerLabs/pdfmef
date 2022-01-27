@@ -13,8 +13,9 @@ import shutil
 import glob
 import re
 import tempfile
+import logging
 
-
+logger = logging.getLogger(__name__)
 # Takes a TEI xml file of a document (at least containing header info)
 # and outputs an xml file containing header info in CSX format
 class TEItoHeaderExtractorV2(interfaces.CSXHeaderExtractor):
@@ -32,6 +33,7 @@ class TEItoHeaderExtractorV2(interfaces.CSXHeaderExtractor):
         if title is not None:
             ET.SubElement(result_root, 'title').text = title.text
         else:
+            logger.error('No title found in TEI document')
             raise RunnableError('No title found in TEI document')
 
         # Find document-level affiliations
@@ -64,6 +66,7 @@ class TEItoHeaderExtractorV2(interfaces.CSXHeaderExtractor):
                     ET.SubElement(author_node, 'affiliation').text = affiliation_str
 
         else:
+            logger.info('No authors found')
             self.log('No authors found')
 
         # Retreive keywords from TEI doc
@@ -73,6 +76,7 @@ class TEItoHeaderExtractorV2(interfaces.CSXHeaderExtractor):
             for term in keywords:
                 ET.SubElement(keywords_node, 'keyword').text = term.text
         else:
+            logger.info('No keywords found')
             self.log('No keywords found')
 
         # Try and find an abstract
@@ -87,6 +91,7 @@ class TEItoHeaderExtractorV2(interfaces.CSXHeaderExtractor):
 
             ET.SubElement(result_root, 'abstract').text = abstract_string
         else:
+            logger.info("No abstract found")
             self.log('No abstract found')
 
         # CSX style xml document of header information
@@ -104,6 +109,7 @@ class TEItoPlainTextExtractor(interfaces.PlainTextExtractor):
         body_node = xml_root.find('./text/body')
 
         if body_node is None:
+            logger.error('Could not find body text in TEI xml file')
             return RunnableError('Could not find body text in TEI xml file')
 
         xml_string = ET.tostring(body_node).decode('utf-8')

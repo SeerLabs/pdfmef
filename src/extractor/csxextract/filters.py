@@ -12,6 +12,7 @@ import shutil
 import logging
 
 
+logger = logging.getLogger(__name__)
 class AcademicPaperFilter(Filter):
     dependencies = frozenset([interfaces.PlainTextExtractor])
     result_file_name = '.academic_filter'
@@ -32,14 +33,15 @@ class AcademicPaperFilter(Filter):
             status, stdout, stderr = extraction.utils.external_process(
                 ['java', '-jar', config.FILTER_JAR_PATH, temp_dir, id, 'paper'], timeout=20)
         except subprocess.TimeoutExpired as te:
+            logger.error("Filter Jar timed out while processing document")
             raise RunnableError('Filter Jar timed out while processing document')
         except Exception as e:
-            logging.error("exception while running academic filter", e)
+            logger.error("exception while running academic filter", e)
         finally:
             shutil.rmtree(temp_dir)
         if status != 0:
             raise RunnableError('Filter Jar failed to execute sucessfully. Possible error:\n' + stderr)
-
+            logger.error('Filter Jar failed to execute sucessfully. Possible error:\n' + stderr)
         # last line of output should be 'true' or 'false' indicating if pdf is an academic paper or not
         # get rid of possible trailing blank lines
         lines = [line.strip() for line in stdout.split(b'\n') if line.strip()]
@@ -64,7 +66,6 @@ class SimpleAcademicPaperFilter(Filter):
          if reader.isEncrypted:
             reader.decrypt('')
       except Exception as e:
-         # logging.error('pypdf2 Failed to read PDF:::%s', e)
          return False
 
       page_width, page_height = reader.getPage(0).mediaBox[-2:]
@@ -73,9 +74,7 @@ class SimpleAcademicPaperFilter(Filter):
          if page_width < page_height:
             return True
          else:
-            # logging.error('issue with PDF page dimensions:::%s')
             return False
       else:
-         # logging.error('Page limit Exceeded:::%s')
          return False
 

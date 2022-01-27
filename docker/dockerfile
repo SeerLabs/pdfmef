@@ -38,6 +38,7 @@ RUN pip install elasticsearch
 RUN pip install PyPDF2
 RUN pip install nltk
 RUN pip install elasticsearch_dsl
+RUN pip install PyYAML
 
 # --------------------------------------------- Java8 required for Grobid --------------------------
 

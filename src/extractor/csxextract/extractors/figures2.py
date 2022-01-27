@@ -13,7 +13,9 @@ import requests
 import re
 import shutil
 import glob
+import logging
 
+logger = logging.getLogger(__name__)
 
 # Returns a plain text version of a PDF file
 class PDFFigures2Extractor(Extractor):
@@ -28,12 +30,14 @@ class PDFFigures2Extractor(Extractor):
          command_args = ['java', '-jar', config.PDFFIGURES2_JAR, file_path, '-m', results_dir, '-d', results_dir]
          status, stdout, stderr = extraction.utils.external_process(command_args, timeout=30)
       except subprocess.TimeoutExpired:
-	 shutil.rmtree(results_dir)
+         shutil.rmtree(results_dir)
+         logger.error('PDFFigures2 timed out while processing document')
          raise RunnableError('PDFFigures2 timed out while processing document')
       finally:
          os.remove(file_path)
 
       if status != 0:
+         logger.error('PDFFigures22 Failure. Possible error:\n' + stderr)
          raise RunnableError('PDFFigures22 Failure. Possible error:\n' + stderr)
 
       # Handle png results
