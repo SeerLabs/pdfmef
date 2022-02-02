@@ -7,10 +7,6 @@ import xml.etree.ElementTree as ET
 from extraction.runnables import *
 import extraction.utils as utils
 import extraction.log
-from extractor.csxextract import filters
-import logging
-
-logger = logging.getLogger(__name__)
 
 class ExtractionRunner(object):
    def __init__(self):
@@ -70,8 +66,7 @@ class ExtractionRunner(object):
 
       result_log_path = utils.expand_path(result_log_path)
       runnable_log_path = utils.expand_path(runnable_log_path)
-      # print("result_log_path is ", result_log_path)
-      # print("runnable_log_path is ", runnable_log_path)
+
       if not os.path.exists(os.path.dirname(result_log_path)): os.makedirs(os.path.dirname(result_log_path))
       if not os.path.exists(os.path.dirname(runnable_log_path)): os.makedirs(os.path.dirname(runnable_log_path))
 
@@ -144,7 +139,7 @@ class ExtractionRunner(object):
    def run_batch(self, list_of_data, output_dirs, **kwargs):
       num_processes = kwargs.get('num_processes', mp.cpu_count())
       batch_id = utils.random_letters(10)
-      logger.info("Starting Batch {0} Run with {1} processes".format(batch_id, num_processes))
+      self.result_logger.info("Starting Batch {0} Run with {1} processes".format(batch_id, num_processes))
 
       pool = mp.Pool(num_processes)
       for i, (data, dir) in enumerate(zip(list_of_data, output_dirs)):
@@ -160,8 +155,7 @@ class ExtractionRunner(object):
 
       pool.close()
       pool.join()
-      
-      logger.info("Finished Batch {0} Run".format(batch_id))
+
       self.result_logger.info("Finished Batch {0} Run".format(batch_id))
 
    def safeStr(self, obj):
@@ -193,28 +187,25 @@ class ExtractionRunner(object):
       num_processes = kwargs.get('num_processes', mp.cpu_count())
 
       batch_id = utils.random_letters(10)
-      logger.info("Starting Batch {0} Run with {1} processes".format(batch_id, num_processes))
+      self.result_logger.info("Starting Batch {0} Run with {1} processes".format(batch_id, num_processes))
 
       pool = mp.Pool(num_processes)
       err_check = []
 
       for i, (path, dir) in enumerate(zip(file_paths, output_dirs)):
-        try:
-            args = (self.runnables, self.runnable_props, open(path, 'rb').read(), dir)
-            kws = {'run_name': path}
-            if 'file_prefixes' in kwargs: kws['file_prefix'] = kwargs['file_prefixes'][i]
-            if 'file_prefix' in kwargs: kws['file_prefix'] = kwargs['file_prefix']
-            if 'write_dep_errors' in kwargs: kws['write_dep_errors'] = kwargs['write_dep_errors']
-            err_check.append(pool.apply_async(_real_run, args=args, kwds=kws))
-        except Exception:
-            pass
+         args = (self.runnables, self.runnable_props, open(path, 'rb').read(), dir)
+         kws = {'run_name': path}
+         if 'file_prefixes' in kwargs: kws['file_prefix'] = kwargs['file_prefixes'][i]
+         if 'file_prefix' in kwargs: kws['file_prefix'] = kwargs['file_prefix']
+         if 'write_dep_errors' in kwargs: kws['write_dep_errors'] = kwargs['write_dep_errors']
+
+         err_check.append(pool.apply_async(_real_run, args=args, kwds=kws))
       pool.close()
       pool.join()
       # if any process raised an uncaught exception, we will see it now
       for e in err_check:
          return self.safeStr(e.get())
 
-      logger.info("Finished Batch {0} Run".format(batch_id))
       self.result_logger.info("Finished Batch {0} Run".format(batch_id))
 
    def run_from_file_batch_no_output(self, file_path, **kwargs):
@@ -236,17 +227,17 @@ class ExtractionRunner(object):
       batch_id = utils.random_letters(10)
       #self.result_logger.info("Starting Batch {0} Run with {1} processes".format(batch_id, num_processes))
       result = _real_run_no_output(self.runnables, self.runnable_props, open(file_path, 'rb').read())
-      logger.info("Finished Batch {0} Run".format(batch_id))
       self.result_logger.info("Finished Batch {0} Run".format(batch_id))
       return result
 
 def _real_run(runnables, runnable_props, data, output_dir, **kwargs):
+   result_logger = logging.getLogger('result')
 
    write_dep_errors = kwargs.get('write_dep_errors', True)
    file_prefix = kwargs.get('file_prefix', '')
    run_name = kwargs.get('run_name', utils.random_letters(8))
 
-   logger.info('{0} started'.format(run_name))
+   result_logger.info('{0} started'.format(run_name))
    results = {}
    for runnable in runnables:
       dep_results = _select_dependency_results(runnable.dependencies, results)
@@ -261,20 +252,21 @@ def _real_run(runnables, runnable_props, data, output_dir, **kwargs):
 
    any_errors = False
    for runnable in results:
+      #print("in runnables")
       if runnable_props[runnable]['output_results']:
          result = results[runnable]
          if isinstance(result, RunnableError): any_errors = True
          _output_result(runnable, result, output_dir, run_name, file_prefix=file_prefix, write_dep_errors=write_dep_errors)
-   logger.info('{0} finished {1}'.format(run_name, '[SUCCESS]' if not any_errors else '[WITH ERRORS]'))
    result_logger.info('{0} finished {1}'.format(run_name, '[SUCCESS]' if not any_errors else '[WITH ERRORS]'))
 
 def _real_run_no_output(runnables, runnable_props, data, **kwargs):
+   result_logger = logging.getLogger('result')
 
    write_dep_errors = kwargs.get('write_dep_errors', True)
    file_prefix = kwargs.get('file_prefix', '')
    run_name = kwargs.get('run_name', utils.random_letters(8))
 
-   logger.info('{0} started'.format(run_name))
+   result_logger.info('{0} started'.format(run_name))
 
    results = {}
    for runnable in runnables:
@@ -289,11 +281,10 @@ def _real_run_no_output(runnables, runnable_props, data, **kwargs):
 
    any_errors = False
    for runnable in results:
-      if runnable_props[runnable]['output_results']: 
+      if runnable_props[runnable]['output_results']:
          result = results[runnable]
          if isinstance(result, RunnableError): any_errors = True
          #_output_result(runnable, result, output_dir, run_name, file_prefix=file_prefix, write_dep_errors=write_dep_errors)
-   logger.info('{0} finished {1}'.format(run_name, '[SUCCESS]' if not any_errors else '[WITH ERRORS]'))
    result_logger.info('{0} finished {1}'.format(run_name, '[SUCCESS]' if not any_errors else '[WITH ERRORS]'))
    return results
 
@@ -307,12 +298,10 @@ def _select_dependency_results(dependencies, results):
             dependency_results[DependencyClass] = result
             break
       else:
-         logger.error('No runnable satisfies the requirement for a {0}'.format(DependencyClass.__name__))
          raise LookupError('No runnable satisfies the requirement for a {0}'.format(DependencyClass.__name__))
 
    return dependency_results
 
-import json
 def _output_result(runnable, result, output_dir, run_name, file_prefix='', write_dep_errors=False):
    logger = logging.getLogger('result')
 
@@ -321,10 +310,10 @@ def _output_result(runnable, result, output_dir, run_name, file_prefix='', write
    result_path = os.path.join(output_dir, result_file_name)
 
    if isinstance(result, RunnableError):
-      logger.info('{0} {1} ERROR: {2}'.format(run_name, runnable.__name__, result.msg)) 
+      logger.info('{0} {1} ERROR: {2}'.format(run_name, runnable.__name__, result.msg))
 
       if isinstance(result, DependencyError) and not write_dep_errors:
-         return 
+         return
 
       error = ET.Element('error')
       error.text = result.msg
@@ -341,12 +330,5 @@ def _output_result(runnable, result, output_dir, run_name, file_prefix='', write
          for file_name, file_data in files_dict.items():
             file_name = file_prefix + file_name
             f = open(os.path.join(output_dir, file_name), 'wb')
-            try:
-                if (file_name.endswith('.json')):
-                    f.write(file_data.encode())
-                else:
-                    f.write(file_data)
-            except Exception as es:
-                logger.error("exception in output_result: "+str(es))
-               # print("here in exception-----------------------------------"+str(es))
-                f.close()
+            f.write(file_data)
+            f.close()
