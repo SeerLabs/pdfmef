@@ -65,7 +65,7 @@ class CSXIngesterImpl(CSXIngester):
         start_time = time.time()
         logger.info("------ starting batch parallel file ingestion: " +str(start_time))
         start_time = time.time()
-        with cf.ThreadPoolExecutor(max_workers=1000) as executor:
+        with cf.ThreadPoolExecutor(max_workers=10) as executor:
             for idx in range(len(fileList)):
                 executor.submit(ingest_paper_parallel_func, (fileList[idx], documentPaths[idx], source_urls[idx]))
         print("--- %s seconds ---" % (time.time() - start_time))
