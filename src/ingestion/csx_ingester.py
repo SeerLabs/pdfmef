@@ -59,7 +59,8 @@ class CSXIngesterImpl(CSXIngester):
 
     def ingest_batch_parallel_files(self, fileList, documentPaths, source_urls):
         print(" ------- Starting Ingestion -------")
-        logger.info("------ starting batch parallel file ingestion " % (time.time() - start_time))
+        start_time = time.time()
+        logger.info("------ starting batch parallel file ingestion " % (start_time))
         start_time = time.time()
         with cf.ThreadPoolExecutor(max_workers=1000) as executor:
             for idx in range(len(fileList)):
