@@ -39,13 +39,16 @@ class AcademicPaperFilter(Filter):
             logger.error("exception while running academic filter", e)
         finally:
             shutil.rmtree(temp_dir)
+        '''
         if status != 0:
             raise RunnableError('Filter Jar failed to execute sucessfully. Possible error:\n' + stderr)
             logger.error('Filter Jar failed to execute sucessfully. Possible error:\n' + stderr)
+        '''
         # last line of output should be 'true' or 'false' indicating if pdf is an academic paper or not
         # get rid of possible trailing blank lines
         lines = [line.strip() for line in stdout.split(b'\n') if line.strip()]
         result = lines[-1]
+        print("inside academic filter result success result: ", result)
         if result.lower() == b'true':
             return True
         elif result.lower() == b'false':
