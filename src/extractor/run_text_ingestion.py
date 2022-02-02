@@ -41,6 +41,7 @@ def read_results(resultsFilePath):
     resultDict = {}
     resultsFilePath = utils.expand_path(resultsFilePath)
     resultsFile = open(resultsFilePath, 'r')
+    print("results file path is: ",resultsFilePath)
     for line in resultsFile:
         finIndex = line.find('finished')
         if finIndex >= 0:
@@ -79,6 +80,7 @@ def on_batch_finished(resultsFileDirectory, wrapper):
         successes_keys = []
         for each_success in successes:
             successes_keys.append(each_success[0])
+
         print("on batch complete total documents successfully extracted ", str(len(successes_keys)))
         logger.info("----on batch complete total documents successfully extracted: ",str(len(successes_keys)))
         wrapper.update_state(successes_keys, "done")
