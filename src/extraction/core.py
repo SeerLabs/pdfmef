@@ -330,5 +330,12 @@ def _output_result(runnable, result, output_dir, run_name, file_prefix='', write
          for file_name, file_data in files_dict.items():
             file_name = file_prefix + file_name
             f = open(os.path.join(output_dir, file_name), 'wb')
-            f.write(file_data)
-            f.close()
+            try:
+                if (file_name.endswith('.json')):
+                    f.write(file_data.encode())
+                else:
+                    f.write(file_data)
+            except Exception as es:
+                logger.error("exception in output_result: "+str(es))
+               # print("here in exception-----------------------------------"+str(es))
+                f.close()
