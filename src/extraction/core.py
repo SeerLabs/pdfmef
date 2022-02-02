@@ -162,6 +162,7 @@ class ExtractionRunner(object):
       pool.join()
       
       logger.info("Finished Batch {0} Run".format(batch_id))
+      self.result_logger.info("Finished Batch {0} Run".format(batch_id))
 
    def safeStr(self, obj):
         try:
@@ -212,8 +213,9 @@ class ExtractionRunner(object):
       # if any process raised an uncaught exception, we will see it now
       for e in err_check:
          return self.safeStr(e.get())
-      print("Finished Batch {0} Run".format(batch_id))
+
       logger.info("Finished Batch {0} Run".format(batch_id))
+      self.result_logger.info("Finished Batch {0} Run".format(batch_id))
 
    def run_from_file_batch_no_output(self, file_path, **kwargs):
       """Run the extractor on a batch of files without writing output to files
@@ -235,6 +237,7 @@ class ExtractionRunner(object):
       #self.result_logger.info("Starting Batch {0} Run with {1} processes".format(batch_id, num_processes))
       result = _real_run_no_output(self.runnables, self.runnable_props, open(file_path, 'rb').read())
       logger.info("Finished Batch {0} Run".format(batch_id))
+      self.result_logger.info("Finished Batch {0} Run".format(batch_id))
       return result
 
 def _real_run(runnables, runnable_props, data, output_dir, **kwargs):
@@ -263,6 +266,7 @@ def _real_run(runnables, runnable_props, data, output_dir, **kwargs):
          if isinstance(result, RunnableError): any_errors = True
          _output_result(runnable, result, output_dir, run_name, file_prefix=file_prefix, write_dep_errors=write_dep_errors)
    logger.info('{0} finished {1}'.format(run_name, '[SUCCESS]' if not any_errors else '[WITH ERRORS]'))
+   result_logger.info('{0} finished {1}'.format(run_name, '[SUCCESS]' if not any_errors else '[WITH ERRORS]'))
 
 def _real_run_no_output(runnables, runnable_props, data, **kwargs):
 
@@ -290,6 +294,7 @@ def _real_run_no_output(runnables, runnable_props, data, **kwargs):
          if isinstance(result, RunnableError): any_errors = True
          #_output_result(runnable, result, output_dir, run_name, file_prefix=file_prefix, write_dep_errors=write_dep_errors)
    logger.info('{0} finished {1}'.format(run_name, '[SUCCESS]' if not any_errors else '[WITH ERRORS]'))
+   result_logger.info('{0} finished {1}'.format(run_name, '[SUCCESS]' if not any_errors else '[WITH ERRORS]'))
    return results
 
 
