@@ -28,6 +28,7 @@ class CSXExtractorImpl(CSXExtractor):
         pass
 
     def extract_textual_data(self, filepath, source_url):
+        print("inside extract_textual_data")
         tei_root = parse(filepath)
         papers = []
         paper = Cluster()
