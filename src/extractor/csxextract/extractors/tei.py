@@ -97,6 +97,8 @@ class TEItoHeaderExtractor(interfaces.CSXHeaderExtractor):
          logger.info("No abstract found")
          self.log('No abstract found')
 
+      print("inside tei header extractor success result is ", result_root)
+
 
       # CSX style xml document of header information
       return ExtractorResult(xml_result=result_root)
@@ -121,6 +123,8 @@ class TEItoPlainTextExtractor(interfaces.PlainTextExtractor):
 
       plain_text = plain_text.encode('utf-8')
       files = {'.txt': plain_text}
+
+      print("inside tei plain text extractor success result is ", plain_text)
 
       return ExtractorResult(xml_result=None, files=files)
 

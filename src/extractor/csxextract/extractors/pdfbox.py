@@ -36,5 +36,6 @@ class PDFBoxPlainTextExtractor(interfaces.PlainTextExtractor):
       # We can use result from PDFBox directly, no manipulation needed
       pdf_plain_text = stdout
       files = {'.txt': pdf_plain_text}
+      print("inside pdfbox success result is ", pdf_plain_text)
 
       return ExtractorResult(xml_result=None, files=files)

@@ -68,6 +68,7 @@ def on_batch_finished(resultsFileDirectory, wrapper):
     resultsDict = read_results(resultsFilePath)
     successes = []
     failures = []
+    print("inside on_batch_finished results dict is ",resultsDict)
     for fileID, result in resultsDict.items():
         if result.success_boolean:
             successes.append((fileID, result))
@@ -78,7 +79,8 @@ def on_batch_finished(resultsFileDirectory, wrapper):
         successes_keys = []
         for each_success in successes:
             successes_keys.append(each_success[0])
-        logger.info("----on batch complete total documents successfully extracted: "+str(len(successes_keys)))
+        print("on batch complete total documents successfully extracted ", str(len(successes_keys))
+        logger.info("----on batch complete total documents successfully extracted: ",str(len(successes_keys)))
         wrapper.update_state(successes_keys, "done")
         tei_file_paths = []
         pdf_file_paths = []
