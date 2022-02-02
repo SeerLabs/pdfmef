@@ -39,9 +39,8 @@ def move_to_repository(filepath: str, docPath: str):
         print("exception while copying files to repo server: "+e)
 
 def ingest_paper_parallel_func(combo):
-    print("inside ingest_paper_parallel_func")
+    print("------------inside ingest_paper_parallel_func")
     papers = CSXExtractorImpl().extract_textual_data(combo[0], combo[2])
-    print("papers info:------ \n"+papers)
     move_to_repository(combo[0], combo[1])
     KeyMatcherClusterer().cluster_papers(papers)
 

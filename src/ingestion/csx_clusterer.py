@@ -58,14 +58,15 @@ class KeyMatcherClusterer(CSXClusterer):
         self.create_new_paper(paper)
 
     def cluster_papers(self, papers: List[Cluster]):
-        print("inside cluster papers: "+papers)
+        print("---------inside cluster_papers-------")
         for paper in papers:
             self.cluster_paper(paper)
 
     def create_new_paper(self, paper: Cluster):
+        print("-----inside create_new_paper---------")
         try:
             paper.save(using=self.elastic_service.get_connection())
-            logger.info(paper.paper_id +" extracted and ingested successfully ----------------------------")
+            logger.info(str(paper.paper_id) +" extracted and ingested successfully ----------------------------")
             keymaps = []
             for key in paper.keys:
                 km = KeyMap()
@@ -81,8 +82,9 @@ class KeyMatcherClusterer(CSXClusterer):
             exit()
 
     def merge_with_existing_cluster(self, matched_cluster_id: str, current_paper: Cluster):
+        print("-----inside merge_with_existing_cluster---------")
         matched_cluster = Cluster.get(id=matched_cluster_id, using=self.elastic_service.get_connection())
-        logger.info(paper.paper_id +" extracted and ingested successfully ----------------------------")
+        logger.info(str(paper.paper_id) +" extracted and ingested successfully ----------------------------")
 
         if current_paper.has_pdf and matched_cluster.is_citation:
             matched_cluster.text = current_paper.text
@@ -100,7 +102,7 @@ class KeyMatcherClusterer(CSXClusterer):
         except TransportError as e:
             time.sleep(30)
             self.merge_with_existing_cluster(matched_cluster_id, current_paper)
-            logger.error("Exception occurred while merging with an existing cluster for paper id: "+ paper.paper_id+" with error message: "+ e)
+            logger.error("Exception occurred while merging with an existing cluster for paper id: "+ str(paper.paper_id)+" with error message: "+ e)
 
     def recluster_paper(self, paper: Cluster):
         pass

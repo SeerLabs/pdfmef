@@ -37,8 +37,6 @@ class CSXExtractorImpl(CSXExtractor):
             tei_filename = str(filepath[str(filepath).rfind('/')+1:])
             paper_id = tei_filename[:tei_filename.rfind('.')]
             paper.add_paper_id(paper_id)
-            print("--------paper--------")
-            print(paper)
             paper.title = self.extract_title_from_tei_root(tei_root)
             paper.abstract = self.extract_abstract(tei_root)
             paper.pub_info = self.extract_paper_pub_info_from_tei_root(tei_root)
@@ -50,7 +48,6 @@ class CSXExtractorImpl(CSXExtractor):
             paper.keys = KeyGenerator().get_keys(paper.title, paper.authors)
             papers.append(paper)
             papers.extend(citations)
-            print(papers)
         except Exception as e:
             print("inside extract_textual_data filepath exception is: "+e)
         return papers
