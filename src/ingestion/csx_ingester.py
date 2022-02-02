@@ -39,9 +39,10 @@ def move_to_repository(filepath: str, docPath: str):
         print("exception while copying files to repo server: "+e)
 
 def ingest_paper_parallel_func(combo):
-    print("------------inside ingest_paper_parallel_func")
     papers = CSXExtractorImpl().extract_textual_data(combo[0], combo[2])
     move_to_repository(combo[0], combo[1])
+    print("------------inside ingest_paper_parallel_func number of papers to be ingested: ", str(len(papers)))
+    logger.info("-------number of papers to be ingested count: "+str(len(papers)))
     KeyMatcherClusterer().cluster_papers(papers)
 
 
@@ -64,7 +65,7 @@ class CSXIngesterImpl(CSXIngester):
         start_time = time.time()
         logger.info("------ starting batch parallel file ingestion: " +str(start_time))
         start_time = time.time()
-        with cf.ThreadPoolExecutor(max_workers=10) as executor:
+        with cf.ThreadPoolExecutor(max_workers=1000) as executor:
             for idx in range(len(fileList)):
                 executor.submit(ingest_paper_parallel_func, (fileList[idx], documentPaths[idx], source_urls[idx]))
         print("--- %s seconds ---" % (time.time() - start_time))

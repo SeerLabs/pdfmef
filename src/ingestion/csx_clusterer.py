@@ -66,7 +66,7 @@ class KeyMatcherClusterer(CSXClusterer):
         print("-----inside create_new_paper---------")
         try:
             paper.save(using=self.elastic_service.get_connection())
-            logger.info(str(paper.paper_id) +" extracted and ingested successfully ----------------------------")
+            print("----inside saved paper")
             keymaps = []
             for key in paper.keys:
                 km = KeyMap()
@@ -77,14 +77,13 @@ class KeyMatcherClusterer(CSXClusterer):
                 keymaps.append(final_key_map)
             bulk(client=self.elastic_service.get_connection(), actions=iter(keymaps), stats_only=True)
         except TransportError as e:
-            logger.error("creating new paper failed for paper id: "+paper.paper_id+" with error: "+e.info) 
+            logger.error("failed creating new paper for paper id: "+paper.paper_id+" with error: "+e.info)
             print(e.info)
             exit()
 
     def merge_with_existing_cluster(self, matched_cluster_id: str, current_paper: Cluster):
         print("-----inside merge_with_existing_cluster---------")
         matched_cluster = Cluster.get(id=matched_cluster_id, using=self.elastic_service.get_connection())
-        logger.info(str(paper.paper_id) +" extracted and ingested successfully ----------------------------")
 
         if current_paper.has_pdf and matched_cluster.is_citation:
             matched_cluster.text = current_paper.text
