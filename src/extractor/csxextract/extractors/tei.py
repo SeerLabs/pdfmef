@@ -14,6 +14,8 @@ import glob
 import re
 import tempfile
 import logging     
+from functools import cmp_to_key
+import functools
 
 logger = logging.getLogger(__name__)
 # Takes a TEI xml file of a document (at least containing header info)
@@ -123,6 +125,8 @@ class TEItoPlainTextExtractor(interfaces.PlainTextExtractor):
       return ExtractorResult(xml_result=None, files=files)
 
 
+def cmp(a, b):
+    return (a > b) - (a < b)
 
 # Helper method, takes an affiliation node from Grobid TEI format and
 # generates a plain text string representing the content
@@ -144,7 +148,8 @@ def _get_affiliation_str(affiliation_node):
       else:
          return cmp(n1.get('key', ''), n2.get('key', ''))
 
-   org_name_nodes.sort(comparator)
+   org_name_nodes.sort(key=cmp_to_key(comparator))
+   #org_name_nodes = sorted(org_name_nodes, functools.cmp_to_key(comparator) )
    return ', '.join([n.text for n in org_name_nodes])
 
 

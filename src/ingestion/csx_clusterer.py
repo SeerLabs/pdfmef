@@ -64,6 +64,7 @@ class KeyMatcherClusterer(CSXClusterer):
     def create_new_paper(self, paper: Cluster):
         try:
             paper.save(using=self.elastic_service.get_connection())
+            logger.info(paper.paper_id +" extracted and ingested successfully ----------------------------")
             keymaps = []
             for key in paper.keys:
                 km = KeyMap()
@@ -80,6 +81,7 @@ class KeyMatcherClusterer(CSXClusterer):
 
     def merge_with_existing_cluster(self, matched_cluster_id: str, current_paper: Cluster):
         matched_cluster = Cluster.get(id=matched_cluster_id, using=self.elastic_service.get_connection())
+        logger.info(paper.paper_id +" extracted and ingested successfully ----------------------------")
 
         if current_paper.has_pdf and matched_cluster.is_citation:
             matched_cluster.text = current_paper.text
