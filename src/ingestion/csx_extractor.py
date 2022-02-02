@@ -28,7 +28,7 @@ class CSXExtractorImpl(CSXExtractor):
         pass
 
     def extract_textual_data(self, filepath, source_url):
-        print("inside extract_textual_data")
+        print("inside extract_textual_data filepath: \n"+filepath)
         tei_root = parse(filepath)
         papers = []
         paper = Cluster()
@@ -47,6 +47,7 @@ class CSXExtractorImpl(CSXExtractor):
         paper.keys = KeyGenerator().get_keys(paper.title, paper.authors)
         papers.append(paper)
         papers.extend(citations)
+        print("inside extract_textual_data filepath papers are: \n"+papers)
         return papers
 
     @classmethod
