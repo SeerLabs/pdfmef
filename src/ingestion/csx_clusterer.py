@@ -57,7 +57,6 @@ class KeyMatcherClusterer(CSXClusterer):
         self.create_new_paper(paper)
 
     def cluster_papers(self, papers: List[Cluster]):
-        settings.batch_doc_count += len(papers)
         for paper in papers:
             self.cluster_paper(paper)
 
