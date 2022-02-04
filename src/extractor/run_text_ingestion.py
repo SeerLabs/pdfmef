@@ -203,6 +203,7 @@ if __name__ == '__main__':
             batchNum += 1
         logger.info("batch processing-- complete pdfmef extraction and ingestion for size: "+str(settings.batch_doc_count))
         print("--- end of batch processing %s seconds ---" % (time.time() - start_time))
+        break
 
 
     logger.info("--- %s seconds ---" % (time.time() - start_time))

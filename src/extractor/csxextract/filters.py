@@ -51,7 +51,7 @@ class AcademicPaperFilter(Filter):
         if result.lower() == b'true':
             return True
         elif result.lower() == b'false':
-            logger.error("academic filter returned false for document with id: "+id)
+            logger.error("academic filter returned false")
             return False
         else:
             raise RunnableError(

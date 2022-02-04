@@ -37,7 +37,7 @@ class PDFFigures2Extractor(Extractor):
          os.remove(file_path)
 
       if status != 0:
-         logger.error('PDFFigures22 Failure. Possible error:\n' + stderr)
+         logger.error('PDFFigures22 Failure.')
          raise RunnableError('PDFFigures22 Failure. Possible error:\n' + stderr)
 
       # Handle png results
