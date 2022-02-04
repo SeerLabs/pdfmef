@@ -33,7 +33,6 @@ name_join_words = Counter(["van", "von", "der", "den", "di", "de", "le"])
 
 
 logger = logging.getLogger(__name__)
-logger.info("Configured the logger!")
 
 class KeyMatcherClusterer(CSXClusterer):
 
@@ -58,15 +57,13 @@ class KeyMatcherClusterer(CSXClusterer):
         self.create_new_paper(paper)
 
     def cluster_papers(self, papers: List[Cluster]):
-        print("---------inside cluster_papers-------")
+        settings.batch_doc_count += len(papers)
         for paper in papers:
             self.cluster_paper(paper)
 
     def create_new_paper(self, paper: Cluster):
-        print("-----inside create_new_paper---------")
         try:
             paper.save(using=self.elastic_service.get_connection())
-            print("----inside saved paper")
             keymaps = []
             for key in paper.keys:
                 km = KeyMap()
@@ -82,7 +79,6 @@ class KeyMatcherClusterer(CSXClusterer):
             exit()
 
     def merge_with_existing_cluster(self, matched_cluster_id: str, current_paper: Cluster):
-        print("-----inside merge_with_existing_cluster---------")
         matched_cluster = Cluster.get(id=matched_cluster_id, using=self.elastic_service.get_connection())
 
         if current_paper.has_pdf and matched_cluster.is_citation:

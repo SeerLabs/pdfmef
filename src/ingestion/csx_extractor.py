@@ -15,6 +15,10 @@ from ingestion.interfaces import CSXExtractor
 from xml.etree.ElementTree import parse, tostring
 from models.elastic_models import Cluster, Author, PubInfo
 import functools
+import logging
+
+logger = logging.getLogger(__name__)
+logger.info("Configured the logger!")
 
 class CSXExtractorImpl(CSXExtractor):
 
@@ -28,7 +32,6 @@ class CSXExtractorImpl(CSXExtractor):
         pass
 
     def extract_textual_data(self, filepath, source_url):
-        print("inside extract_textual_data filepath: \n"+filepath)
         try:
             tei_root = parse(filepath)
             papers = []
@@ -49,7 +52,7 @@ class CSXExtractorImpl(CSXExtractor):
             papers.append(paper)
             papers.extend(citations)
         except Exception as e:
-            print("inside extract_textual_data filepath exception is: "+e)
+            logger.error("exception occured while extracting textual data for filepath: "+filepath+" with error message: "+e)
         return papers
 
     @classmethod

@@ -48,10 +48,10 @@ class AcademicPaperFilter(Filter):
         # get rid of possible trailing blank lines
         lines = [line.strip() for line in stdout.split(b'\n') if line.strip()]
         result = lines[-1]
-        print("inside academic filter result success result: ", result)
         if result.lower() == b'true':
             return True
         elif result.lower() == b'false':
+            logger.error("academic filter returned false for document with id: "+id)
             return False
         else:
             raise RunnableError(

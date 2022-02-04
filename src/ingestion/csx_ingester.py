@@ -20,7 +20,6 @@ import logging
 logger = logging.getLogger(__name__)
 
 def move_to_repository(filepath: str, docPath: str):
-    print("inside move_to_repository")
     try:
         tei_filename = str(filepath[str(filepath).rfind('/') + 1:])
         paper_id = tei_filename[:tei_filename.rfind('.')]
@@ -41,8 +40,6 @@ def move_to_repository(filepath: str, docPath: str):
 def ingest_paper_parallel_func(combo):
     papers = CSXExtractorImpl().extract_textual_data(combo[0], combo[2])
     move_to_repository(combo[0], combo[1])
-    print("------------inside ingest_paper_parallel_func number of papers to be ingested: ", str(len(papers)))
-    logger.info("-------number of papers to be ingested count: "+str(len(papers)))
     KeyMatcherClusterer().cluster_papers(papers)
 
 
@@ -106,7 +103,7 @@ class CSXIngesterImpl(CSXIngester):
         print(" [x] Received " + str(msg))
 
         time.sleep(5)  # delays for 5 seconds
-        print(" PDF processing finished");
+        print(" PDF processing finished")
         return
 
     def pull_from_queue(self):

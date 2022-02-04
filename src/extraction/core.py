@@ -8,6 +8,9 @@ from extraction.runnables import *
 import extraction.utils as utils
 import extraction.log
 
+logger_core = logging.getLogger(__name__)
+
+
 class ExtractionRunner(object):
    def __init__(self):
       self.filters = []
@@ -258,6 +261,7 @@ def _real_run(runnables, runnable_props, data, output_dir, **kwargs):
          if isinstance(result, RunnableError): any_errors = True
          _output_result(runnable, result, output_dir, run_name, file_prefix=file_prefix, write_dep_errors=write_dep_errors)
    result_logger.info('{0} finished {1}'.format(run_name, '[SUCCESS]' if not any_errors else '[WITH ERRORS]'))
+   logger_core.info(('{0} finished {1}'.format(run_name, '[SUCCESS]' if not any_errors else '[WITH ERRORS]'))
 
 def _real_run_no_output(runnables, runnable_props, data, **kwargs):
    result_logger = logging.getLogger('result')
@@ -286,6 +290,7 @@ def _real_run_no_output(runnables, runnable_props, data, **kwargs):
          if isinstance(result, RunnableError): any_errors = True
          #_output_result(runnable, result, output_dir, run_name, file_prefix=file_prefix, write_dep_errors=write_dep_errors)
    result_logger.info('{0} finished {1}'.format(run_name, '[SUCCESS]' if not any_errors else '[WITH ERRORS]'))
+   logger_core.info('{0} finished {1}'.format(run_name, '[SUCCESS]' if not any_errors else '[WITH ERRORS]'))
    return results
 
 
@@ -298,6 +303,7 @@ def _select_dependency_results(dependencies, results):
             dependency_results[DependencyClass] = result
             break
       else:
+         logger_core.error('No runnable satisfies the requirement for a {0}'.format(DependencyClass.__name__))
          raise LookupError('No runnable satisfies the requirement for a {0}'.format(DependencyClass.__name__))
 
    return dependency_results
@@ -311,6 +317,8 @@ def _output_result(runnable, result, output_dir, run_name, file_prefix='', write
 
    if isinstance(result, RunnableError):
       logger.info('{0} {1} ERROR: {2}'.format(run_name, runnable.__name__, result.msg))
+      logger_core.info('{0} {1} ERROR: {2}'.format(run_name, runnable.__name__, result.msg))
+
 
       if isinstance(result, DependencyError) and not write_dep_errors:
          return
@@ -337,5 +345,6 @@ def _output_result(runnable, result, output_dir, run_name, file_prefix='', write
                     f.write(file_data)
             except Exception as es:
                 logger.error("exception in output_result: "+str(es))
+                logger_core.error("exception in output_result: "+str(es))
                # print("here in exception-----------------------------------"+str(es))
                 f.close()

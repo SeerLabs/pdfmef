@@ -19,6 +19,7 @@ import extractor.csxextract.filters as filters
 import logging
 import logging.config
 import yaml
+import settings
 
 # Initialize the logger once as the application starts up.
 with open("/pdfmef-code/src/extractor/logging.yaml", 'rt') as f:
@@ -41,7 +42,6 @@ def read_results(resultsFilePath):
     resultDict = {}
     resultsFilePath = utils.expand_path(resultsFilePath)
     resultsFile = open(resultsFilePath, 'r')
-    print("results file path is: ",resultsFilePath)
     for line in resultsFile:
         finIndex = line.find('finished')
         if finIndex >= 0:
@@ -163,6 +163,7 @@ if __name__ == '__main__':
     while (not stopProcessing):
         print("---start of batch processing -------------")
         logger.info("---start of batch processing -------------")
+        settings.init()
         start_time = time.time()
         logPath = baseLogPath + dateFolder + 'batch' + str(batchNum)
         runner.enable_logging(logPath, baseLogPath + 'runnables')
@@ -200,7 +201,9 @@ if __name__ == '__main__':
             batchNum = 0
         else:
             batchNum += 1
+        logger.info("batch processing-- complete pdfmef extraction and ingestion for size: "+str(settings.batch_doc_count))
         print("--- end of batch processing %s seconds ---" % (time.time() - start_time))
+
 
     logger.info("--- %s seconds ---" % (time.time() - start_time))
     print("--- %s seconds ---" % (time.time() - start_time))
