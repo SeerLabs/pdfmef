@@ -163,7 +163,6 @@ if __name__ == '__main__':
     while (not stopProcessing):
         print("---start of batch processing -------------")
         logger.info("---start of batch processing -------------")
-        settings.init()
         start_time = time.time()
         logPath = baseLogPath + dateFolder + 'batch' + str(batchNum)
         runner.enable_logging(logPath, baseLogPath + 'runnables')
