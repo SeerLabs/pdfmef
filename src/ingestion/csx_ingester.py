@@ -9,7 +9,7 @@ import configparser
 from ingestion.csx_clusterer import KeyMatcherClusterer
 from ingestion.csx_extractor import CSXExtractorImpl
 from ingestion.interfaces import CSXIngester
-from models.elastic_models import Cluster, KeyMap
+from models.elastic_models import Cluster, KeyMap, Cluster_original
 from services.elastic_service import ElasticService
 from shutil import copyfile
 
@@ -37,8 +37,21 @@ def move_to_repository(filepath: str, docPath: str):
         logger.error("exception while copying files to repo server for paper id: "+paper_id)
         print("exception while copying files to repo server: "+e)
 
+def validateDocuments(papers):
+    for paper in papers:
+        if (paper.paper_id):
+            print("inside validateDocuments updating paper with id:", str(paper.paper_id))
+            found_paper = Cluster_original.get(id=paper.paper_id, using=self.elastic_service.get_connection())
+            if found_paper:
+                paper.title = found_paper.title
+                paper.year = found_paper.year
+                paper.authors = found_paper.authors
+                print("inside found paper in validateDocuments\n")
+                print(paper)
+
 def ingest_paper_parallel_func(combo):
     papers = CSXExtractorImpl().extract_textual_data(combo[0], combo[2])
+    validateDocuments(papers)
     move_to_repository(combo[0], combo[1])
     KeyMatcherClusterer().cluster_papers(papers)
 

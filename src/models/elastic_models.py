@@ -44,7 +44,6 @@ class KeyMap(Document):
     class Index:
         name = settings.KEYMAP_INDEX
 
-
 class Cluster(Document):
     paper_id = Keyword(multi=True)
     csx_doi = Keyword()
@@ -110,3 +109,17 @@ class Cluster(Document):
                 'input': [self.title],
             }
         return super().save(**kwargs)
+
+class Cluster_original(Document):
+    id = Keyword()
+    csx_doi = Keyword()
+    title = Text()
+    year = Text()
+    authors = Nested(type='authors')
+    num_cites = Integer()
+    inCitations = Keyword(multi=True)
+    outCitations = Keyword(multi=True)
+    sources = Keyword(multi=True)
+
+    class Index:
+        name = settings.ACL_CLUSTER_ORIGINAL_INDEX
