@@ -223,7 +223,9 @@ def findMatchingDocumentsS2orcLSH(papers):
             print("inside findMatchingDocumentsS2orcLSH incoming paper is ---> \n")
             print(paper.pub_info)
             print("\n")
-            if (paper.authors and len(paper.authors) > 0 and paper.pub_info and year in paper.pub_info):
+            if (paper.authors and len(paper.authors) > 0 and paper.pub_info):
+                print("year of the paper is-->\n")
+                print(paper.pub_info['year'])
                 documents = wrapper.get_s2_batch_for_lsh_matching(paper.authors[0].name, paper.pub_info.year)
                 print("inside findMatchingDocumentsS2orcLSH s2orc documents is ---> \n")
                 lsh = MinHashLSH(threshold=0.8, num_perm=128)
