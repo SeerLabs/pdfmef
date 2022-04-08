@@ -5,6 +5,7 @@ import concurrent.futures as cf
 from pathlib import Path
 import os, time
 import configparser
+from datasketch import MinHash, MinHashLSH
 
 from ingestion.csx_clusterer import KeyMatcherClusterer
 from ingestion.csx_extractor import CSXExtractorImpl
