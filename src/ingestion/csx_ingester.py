@@ -239,6 +239,7 @@ def findMatchingDocumentsS2orcLSH(papers):
                 print("inside findMatchingDocumentsS2orcLSH s2orc documents is ---> \n")
                 lsh = MinHashLSH(threshold=0.8, num_perm=128)
                 for doc in documents:
+                    print(doc)
                     title = doc['title']
                     id = doc['id']
 
