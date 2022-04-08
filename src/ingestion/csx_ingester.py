@@ -264,8 +264,6 @@ def findMatchingDocumentsS2orcLSH(papers):
                     title = doc['_source']['title']
                     id = doc['_source']['id']
 
-                    print("inside findMatchingDocumentsS2orcLSH s2orc paper title is: ", title)
-
                     d={}
                     with_wildcard = False
                     count = 0
@@ -279,14 +277,15 @@ def findMatchingDocumentsS2orcLSH(papers):
                     lsh.insert(f"{id}", min_hash)
 
                 Title = paper.title
-
-                print("inside findMatchingDocumentsS2orcLSH incoming paper title is: ", Title)
+                Title = "Unintended Consequences of Opioid Regulations in Older Adults with Multiple Chronic Conditions."
 
                 s = create_shingles(Title, 5)
                 min_hash = MinHash(num_perm=128)
                 for shingle in s:
                     min_hash.update(shingle.encode('utf8'))
                 result = lsh.query(min_hash)
+                print("matching documents from the minhash\n")
+                print(result)
                 if len(result) > 0:
                     mergeMatchingDocs(wrapper, paper, result[0])
 
