@@ -270,6 +270,53 @@ class ElasticSearchWrapper(Wrapper):
         self.file_path_source_url_map = {}
         self.batchSize = int(config['batchsize'])
         self.batch = None
+        self.s2_batch = None
+
+
+    def get_s2_doc_by_id(self, id):
+        body = {
+                 "query": {
+                    "term": {
+                      "id": {
+                        "value": id
+                      }
+                    }
+                  }
+               }
+        results = self.get_connection().search(index=settings.S2_META_INDEX, body=body)
+        self.s2_batch = results['hits']['hits']
+
+    def get_s2_batch_for_lsh_matching(self, author, year):
+        """Purpose: retrieves batch of documents to process from server"""
+        print("inside get_s2_batch_for_lsh_matching---> \n")
+        body = {
+                 "from": 0,
+                 "size": 1000,
+                 "query": {
+                   "bool": {
+                     "must": [
+                       {
+                         "nested": {
+                           "path": "authors",
+                           "query": {
+                             "match": {
+                               "authors.name.keyword": author
+                             }
+                           }
+                         }
+                       },
+                       {
+                         "term": {
+                           "year": year
+                         }
+                       }
+                     ]
+                   }
+                 }
+               }
+
+        results = self.get_connection().search(index=settings.S2_META_INDEX, body=body)
+        self.s2_batch = results['hits']['hits']
 
     def get_document_batch(self):
         """Purpose: retrieves batch of documents to process from server"""

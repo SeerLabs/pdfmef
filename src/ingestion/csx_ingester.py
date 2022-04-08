@@ -37,24 +37,69 @@ def move_to_repository(filepath: str, docPath: str):
         logger.error("exception while copying files to repo server for paper id: "+paper_id)
         print("exception while copying files to repo server: "+e)
 
-def validateDocuments(papers):
+def findMatchingDocumentsS2orcLSH(papers):
+    config = configparser.ConfigParser()
+    config.read("/pdfmef-code/src/extractor/python_wrapper/properties.config")
+    elasticConnectionProps = dict(config.items('ElasticConnectionProperties'))
+    wrapper = wrappers.ElasticSearchWrapper(elasticConnectionProps)
+
     for paper in papers:
-        if (paper.paper_id):
-            print("inside validateDocuments updating paper with id:", str(paper.paper_id))
-            found_paper = Cluster_original.get(id=paper.paper_id, using=self.elastic_service.get_connection())
-            if found_paper:
-                paper.title = found_paper.title
-                paper.year = found_paper.year
-                paper.authors = found_paper.authors
-                print("inside found paper in validateDocuments\n")
-                print(paper)
+        try:
+            print("inside findMatchingDocumentsS2orcLSH incoming paper is ---> \n")
+            print(paper)
+            print("\n")
+            if (paper.authors and paper.authors.size == 1 and paper.pub_info and year in paper.pub_info):
+                documents = wrapper.get_s2_batch_for_lsh_matching(paper.authors[0].name, paper.pub_info.year)
+                print("inside findMatchingDocumentsS2orcLSH s2orc documents is ---> \n")
+                lsh = MinHashLSH(threshold=0.8, num_perm=128)
+                for doc in documents:
+                    print(doc)
+                    print("\n")
+                    if (not (year in doc and authors in doc)):
+                        continue
+                    title = doc['title']
+                    id = doc['id']
+
+                    print("inside findMatchingDocumentsS2orcLSH s2orc paper title is: ", title)
+
+                    d={}
+                    with_wildcard = False
+                    count = 0
+
+                    s = create_shingles(title, 5)
+
+                    min_hash = MinHash(num_perm=128)
+                    for shingle in s:
+                        min_hash.update(shingle.encode('utf8'))
+
+                    lsh.insert(f"{id}", min_hash)
+
+                Title = paper.title
+
+                print("inside findMatchingDocumentsS2orcLSH incoming paper title is: ", Title)
+
+                s = create_shingles(Title, 5)
+                min_hash = MinHash(num_perm=128)
+                for shingle in s:
+                    min_hash.update(shingle.encode('utf8'))
+                result = lsh.query(res)
+                if len(result) > 0:
+                    mergeMatchingDocs(wrapper, paper, result[0])
+
+        except Exception as es:
+            print("exception in findMatchingDocumentsS2orcLSH with error msg: ", es)
+
+def mergeMatchingDocs(wrapper, paper, matching_s2org_doc_id):
+    matching_s2org_doc = wrapper.get_s2_doc_by_id(matching_s2org_doc_id)
+    paper.title = matching_s2org_doc.title
+    paper.pub_info.year = matching_s2org_doc.year
+    paper.authors = matching_s2org_doc.authors
 
 def ingest_paper_parallel_func(combo):
     papers = CSXExtractorImpl().extract_textual_data(combo[0], combo[2])
-    validateDocuments(papers)
+    findMatchingDocumentsS2orcLSH(papers)
     move_to_repository(combo[0], combo[1])
     KeyMatcherClusterer().cluster_papers(papers)
-
 
 class CSXIngesterImpl(CSXIngester):
     def __init__(self):
