@@ -212,21 +212,18 @@ def move_to_repository(filepath: str, docPath: str):
         print("exception while copying files to repo server: "+e)
 
 def findMatchingDocumentsS2orcLSH(papers):
-    print("inside findMatchingDocumentsS2orcLSH \n")
     config = configparser.ConfigParser()
     config.read("/pdfmef-code/src/extractor/python_wrapper/properties.config")
     print(config.items)
     elasticConnectionProps = dict(config.items('ElasticConnectionProperties'))
     wrapper = ElasticSearchWrapper(elasticConnectionProps)
-    print("\n paper --> \n")
-    print(papers)
 
     for paper in papers:
         try:
             print("inside findMatchingDocumentsS2orcLSH incoming paper is ---> \n")
             print(paper)
             print("\n")
-            if (paper.authors and paper.authors.size == 1 and paper.pub_info and year in paper.pub_info):
+            if (paper.authors and len(paper.authors) > 0 and paper.pub_info and year in paper.pub_info):
                 documents = wrapper.get_s2_batch_for_lsh_matching(paper.authors[0].name, paper.pub_info.year)
                 print("inside findMatchingDocumentsS2orcLSH s2orc documents is ---> \n")
                 lsh = MinHashLSH(threshold=0.8, num_perm=128)
