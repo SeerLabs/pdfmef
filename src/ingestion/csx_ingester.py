@@ -286,7 +286,7 @@ def findMatchingDocumentsS2orcLSH(papers):
                 min_hash = MinHash(num_perm=128)
                 for shingle in s:
                     min_hash.update(shingle.encode('utf8'))
-                result = lsh.query(res)
+                result = lsh.query(min_hash)
                 if len(result) > 0:
                     mergeMatchingDocs(wrapper, paper, result[0])
 
