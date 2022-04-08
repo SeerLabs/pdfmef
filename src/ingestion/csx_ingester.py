@@ -114,6 +114,8 @@ class ElasticSearchWrapper(Wrapper):
         print(str(body))
 
         results = self.get_connection().search(index=settings.S2_META_INDEX, body=body)
+        print("\n results\n")
+        print(results)
         self.s2_batch = results['hits']['hits']
 
     def get_document_batch(self):
