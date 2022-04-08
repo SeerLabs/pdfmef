@@ -117,6 +117,7 @@ class ElasticSearchWrapper(Wrapper):
         print("\n results\n")
         print(results)
         self.s2_batch = results['hits']['hits']
+        return self.s2_batch
 
     def get_document_batch(self):
         """Purpose: retrieves batch of documents to process from server"""
