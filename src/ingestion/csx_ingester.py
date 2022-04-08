@@ -217,6 +217,27 @@ def move_to_repository(filepath: str, docPath: str):
         logger.error("exception while copying files to repo server for paper id: "+paper_id)
         print("exception while copying files to repo server: "+e)
 
+def create_shingles(doc, k):
+    """
+    Creates shingles and stores them in sets
+
+    Paramaters
+    ----------
+
+    Returns
+    -------
+    """
+    shingled_set = set() # create an empty set
+
+    doc_length = len(doc)
+
+    # iterate through the string and slice it up by k-chars at a time
+    for idx in range(doc_length - k + 1):
+        doc_slice = doc[idx:idx + k]
+        shingled_set.add(doc_slice)
+
+    return shingled_set
+
 def findMatchingDocumentsS2orcLSH(papers):
     config = configparser.ConfigParser()
     config.read("/pdfmef-code/src/extractor/python_wrapper/properties.config")
