@@ -38,6 +38,7 @@ def move_to_repository(filepath: str, docPath: str):
         print("exception while copying files to repo server: "+e)
 
 def findMatchingDocumentsS2orcLSH(papers):
+    print("inside findMatchingDocumentsS2orcLSH \n")
     config = configparser.ConfigParser()
     config.read("/pdfmef-code/src/extractor/python_wrapper/properties.config")
     elasticConnectionProps = dict(config.items('ElasticConnectionProperties'))
@@ -97,6 +98,8 @@ def mergeMatchingDocs(wrapper, paper, matching_s2org_doc_id):
 
 def ingest_paper_parallel_func(combo):
     papers = CSXExtractorImpl().extract_textual_data(combo[0], combo[2])
+    print("inside ingest_paper_parallel_func--->")
+    print(papers)
     findMatchingDocumentsS2orcLSH(papers)
     move_to_repository(combo[0], combo[1])
     KeyMatcherClusterer().cluster_papers(papers)
