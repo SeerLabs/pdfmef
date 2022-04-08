@@ -130,6 +130,7 @@ def get_extraction_runner(modules):
 
 if __name__ == '__main__':
     config = configparser.ConfigParser()
+    print(os.path.join(os.path.dirname(__file__), 'python_wrapper', 'properties.config'))
     config.read(os.path.join(os.path.dirname(__file__), 'python_wrapper', 'properties.config'))
     elasticConnectionProps = dict(config.items('ElasticConnectionProperties'))
     modules = dict(config.items('Modules'))

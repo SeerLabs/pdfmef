@@ -41,6 +41,7 @@ def findMatchingDocumentsS2orcLSH(papers):
     print("inside findMatchingDocumentsS2orcLSH \n")
     config = configparser.ConfigParser()
     config.read("/pdfmef-code/src/extractor/python_wrapper/properties.config")
+    print(config)
     elasticConnectionProps = dict(config.items('ElasticConnectionProperties'))
     wrapper = wrappers.ElasticSearchWrapper(elasticConnectionProps)
 
