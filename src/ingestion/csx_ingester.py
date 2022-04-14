@@ -79,7 +79,7 @@ class ElasticSearchWrapper(Wrapper):
                     }
                   }
                }
-        results = self.get_connection_prod().search(index=settings.S2_META_INDEX, body=body)
+        results = self.get_connection().search(index=settings.S2_META_INDEX, body=body)
         self.s2_batch = results['hits']['hits']
 
     def get_s2_batch_for_lsh_matching(self, author, year):
@@ -108,7 +108,7 @@ class ElasticSearchWrapper(Wrapper):
 
         print(str(body))
 
-        results = self.get_connection_prod().search(index=settings.S2_META_INDEX, body=body)
+        results = self.get_connection().search(index=settings.S2_META_INDEX, body=body)
         print("\n results\n")
         print(results)
         self.s2_batch = results['hits']['hits']
