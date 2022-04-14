@@ -283,6 +283,7 @@ def findMatchingDocumentsS2orcLSH(papers):
                 if (result == None):
                     continue
                 if (result!=None):
+                    print("here----")
                     if len(result) > 0:
                         print("matching documents from the minhash\n")
                         print(result)
