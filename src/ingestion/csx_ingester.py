@@ -244,7 +244,7 @@ def findMatchingDocumentsS2orcLSH(papers):
         try:
             #print("inside findMatchingDocumentsS2orcLSH incoming paper is ---> \n")
             #print("\n")
-            if (paper.authors and len(paper.authors) > 0 and paper.pub_info):
+            if (paper.authors and len(paper.authors) > 0 and paper.pub_info and paper.pub_info.year):
                 #paper.title = "The beta-decay vicinity of $^{78}$Ni"
                 #paper.authors[0]['fullname'] = "Tetsuya  HAYASHI"
                 #paper.pub_info['year'] = 2011
