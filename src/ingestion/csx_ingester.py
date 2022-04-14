@@ -280,7 +280,7 @@ def findMatchingDocumentsS2orcLSH(papers):
                 result = lsh.query(min_hash)
                 #print("matching documents from the minhash\n")
                 #print(result)
-                if len(result) > 0:
+                if result and len(result) > 0:
                     print("found matching document from the minhash\n")
                     print(result)
                     mergeMatchingDocs(wrapper, paper, result[0])
