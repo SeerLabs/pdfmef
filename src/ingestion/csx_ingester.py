@@ -257,9 +257,13 @@ def findMatchingDocumentsS2orcLSH(papers):
                 print(paper.authors[0]['fullname'])
                 print("title of the paper is--->\n")
                 print(paper.title)
-                #documents = wrapper.get_s2_batch_for_lsh_matching(paper.authors[0]['fullname'], paper.pub_info['year'])
+                paper.title = "FOSTERING LOCAL IDENTITY AS A LEVERAGE FOR SUSTAINABLE DEVELOPMENT"
+                paper.authors[0]['fullname'] = "Mihaela Daniela Cazacu"
+                paper.pub_info['year'] = 2015
+                 #documents = wrapper.get_s2_batch_for_lsh_matching(paper.authors[0]['fullname'], paper.pub_info['year'])
                 documents = wrapper.get_s2_batch_for_lsh_matching(paper.authors[0]['fullname'], paper.pub_info['year'])
-                print("inside findMatchingDocumentsS2orcLSH s2orc documents is ---> \n")
+                print("inside findMatchingDocumentsS2orcLSH s2orc documents number of documents from s2org query is ---> \n")
+                print(len(documents))
                 lsh = MinHashLSH(threshold=0.8, num_perm=128)
                 for doc in documents:
                     print(doc)
@@ -279,7 +283,7 @@ def findMatchingDocumentsS2orcLSH(papers):
                     lsh.insert(f"{id}", min_hash)
 
                 Title = paper.title
-                Title = "Unintended Consequences of Opioid Regulations in Older Adults with Multiple Chronic Conditions."
+                #Title = "Unintended Consequences of Opioid Regulations in Older Adults with Multiple Chronic Conditions."
 
                 s = create_shingles(Title, 5)
                 min_hash = MinHash(num_perm=128)
