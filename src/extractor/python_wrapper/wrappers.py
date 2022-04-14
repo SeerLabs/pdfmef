@@ -295,8 +295,10 @@ class ElasticSearchWrapper(Wrapper):
                  "query": {
                    "bool": {
                      "must": [
-                      "match": {
-                        "authors.name.keyword": author
+                      {
+                          "match": {
+                            "authors.name.keyword": author
+                          }
                       },
                        {
                          "term": {
