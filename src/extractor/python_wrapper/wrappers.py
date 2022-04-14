@@ -351,8 +351,8 @@ class ElasticSearchWrapper(Wrapper):
     def get_connection(self):
         return Elasticsearch([{'host': '130.203.139.151', 'port': 9200}])
 
-     def get_connection_prod(self):
-         return Elasticsearch([{'host': '130.203.139.160', 'port': 9200}])
+    def get_connection_prod(self):
+        return Elasticsearch([{'host': '130.203.139.160', 'port': 9200}])
 
     def get_document_paths(self):
         """get_document_paths(docs)
