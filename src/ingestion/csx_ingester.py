@@ -255,6 +255,8 @@ def findMatchingDocumentsS2orcLSH(papers):
                 print(paper.pub_info['year'])
                 print("author of the paper is-->\n")
                 print(paper.authors[0]['fullname'])
+                print("title of the paper is--->\n")
+                print(paper.authors[0].title)
                 #documents = wrapper.get_s2_batch_for_lsh_matching(paper.authors[0]['fullname'], paper.pub_info['year'])
                 documents = wrapper.get_s2_batch_for_lsh_matching(paper.authors[0]['fullname'], paper.pub_info['year'])
                 print("inside findMatchingDocumentsS2orcLSH s2orc documents is ---> \n")

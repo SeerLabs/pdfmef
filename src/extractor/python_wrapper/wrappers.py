@@ -295,16 +295,9 @@ class ElasticSearchWrapper(Wrapper):
                  "query": {
                    "bool": {
                      "must": [
-                       {
-                         "nested": {
-                           "path": "authors",
-                           "query": {
-                             "match": {
-                               "authors.name.keyword": author
-                             }
-                           }
-                         }
-                       },
+                      "match": {
+                        "authors.name.keyword": author
+                      },
                        {
                          "term": {
                            "year": year
