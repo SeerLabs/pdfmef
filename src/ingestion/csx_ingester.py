@@ -91,6 +91,11 @@ class ElasticSearchWrapper(Wrapper):
                  "query": {
                    "bool": {
                      "must": [
+                        {
+                          "match": {
+                            "authors.name.keyword": author
+                          }
+                        },
                        {
                          "term": {
                            "year": year
@@ -237,7 +242,7 @@ def findMatchingDocumentsS2orcLSH(papers):
 
     for paper in papers:
         try:
-            print("inside findMatchingDocumentsS2orcLSH incoming paper is ---> \n")
+            #print("inside findMatchingDocumentsS2orcLSH incoming paper is ---> \n")
             print("\n")
             if (paper.authors and len(paper.authors) > 0 and paper.pub_info):
                 print("year of the paper is-->\n")
@@ -246,12 +251,12 @@ def findMatchingDocumentsS2orcLSH(papers):
                 print(paper.authors[0]['fullname'])
                 print("title of the paper is--->\n")
                 print(paper.title)
-                paper.title = "The beta-decay vicinity of $^{78}$Ni"
-                paper.authors[0]['fullname'] = "Tetsuya  HAYASHI"
-                paper.pub_info['year'] = 2011
+                #paper.title = "The beta-decay vicinity of $^{78}$Ni"
+                #paper.authors[0]['fullname'] = "Tetsuya  HAYASHI"
+                #paper.pub_info['year'] = 2011
                  #documents = wrapper.get_s2_batch_for_lsh_matching(paper.authors[0]['fullname'], paper.pub_info['year'])
                 documents = wrapper.get_s2_batch_for_lsh_matching(paper.authors[0]['fullname'], paper.pub_info['year'])
-                print("inside findMatchingDocumentsS2orcLSH s2orc documents number of documents from s2org query is ---> \n")
+                #print("inside findMatchingDocumentsS2orcLSH s2orc documents number of documents from s2org query is ---> \n")
                 print(len(documents))
                 lsh = MinHashLSH(threshold=0.5, num_perm=128)
                 for doc in documents:
