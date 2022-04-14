@@ -84,7 +84,7 @@ class ElasticSearchWrapper(Wrapper):
 
     def get_s2_batch_for_lsh_matching(self, author, year):
         """Purpose: retrieves batch of documents to process from server"""
-        print("inside get_s2_batch_for_lsh_matching---> \n")
+        #print("inside get_s2_batch_for_lsh_matching---> \n")
         body = {
                  "from": 0,
                  "size": 10000,
@@ -107,7 +107,7 @@ class ElasticSearchWrapper(Wrapper):
                }
 
         results = self.get_connection().search(index=settings.S2_META_INDEX, body=body)
-        print("\n results\n")
+        #print("\n results\n")
         self.s2_batch = results['hits']['hits']
         return self.s2_batch
 
@@ -243,8 +243,8 @@ def findMatchingDocumentsS2orcLSH(papers):
     for paper in papers:
         try:
             #print("inside findMatchingDocumentsS2orcLSH incoming paper is ---> \n")
-            print("\n")
-            if (paper.authors and len(paper.authors) > 0 and paper.pub_info):
+            #print("\n")
+            if (paper.authors and len(paper.authors) > 0 and paper.pub_info and paper.pub_info.year):
                 #paper.title = "The beta-decay vicinity of $^{78}$Ni"
                 #paper.authors[0]['fullname'] = "Tetsuya  HAYASHI"
                 #paper.pub_info['year'] = 2011
@@ -280,7 +280,7 @@ def findMatchingDocumentsS2orcLSH(papers):
                 result = lsh.query(min_hash)
                 print("matching documents from the minhash\n")
                 print(result)
-                if len(result) > 0:
+                if result and len(result) > 0:
                     print("matching documents from the minhash\n")
                     print(result)
                     mergeMatchingDocs(wrapper, paper, result[0])
@@ -296,8 +296,8 @@ def mergeMatchingDocs(wrapper, paper, matching_s2org_doc_id):
 
 def ingest_paper_parallel_func(combo):
     papers = CSXExtractorImpl().extract_textual_data(combo[0], combo[2])
-    print("inside ingest_paper_parallel_func--->")
-    print(papers)
+    #print("inside ingest_paper_parallel_func--->")
+    #print(papers)
     findMatchingDocumentsS2orcLSH(papers)
     move_to_repository(combo[0], combo[1])
     KeyMatcherClusterer().cluster_papers(papers)
