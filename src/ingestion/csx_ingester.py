@@ -268,7 +268,8 @@ def findMatchingDocumentsS2orcLSH(papers):
                     for shingle in s:
                         min_hash.update(shingle.encode('utf8'))
 
-                    lsh.insert(f"{id}", min_hash)
+                    if (not id in lsh):
+                        lsh.insert(f"{id}", min_hash)
 
                 Title = paper.title
                 #Title = "Unintended Consequences of Opioid Regulations in Older Adults with Multiple Chronic Conditions."
