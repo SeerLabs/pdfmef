@@ -244,7 +244,7 @@ def findMatchingDocumentsS2orcLSH(papers):
         try:
             #print("inside findMatchingDocumentsS2orcLSH incoming paper is ---> \n")
             #print("\n")
-            if (paper.authors and len(paper.authors) > 0 and paper.pub_info and paper.pub_info.year):
+            if (paper.authors!=None and len(paper.authors) > 0 and paper.pub_info and paper.pub_info.year):
                 #paper.title = "The beta-decay vicinity of $^{78}$Ni"
                 #paper.authors[0]['fullname'] = "Tetsuya  HAYASHI"
                 #paper.pub_info['year'] = 2011
@@ -278,10 +278,11 @@ def findMatchingDocumentsS2orcLSH(papers):
                 for shingle in s:
                     min_hash.update(shingle.encode('utf8'))
                 result = lsh.query(min_hash)
-                if result and len(result) > 0:
-                    print("matching documents from the minhash\n")
-                    print(result)
-                    mergeMatchingDocs(wrapper, paper, result[0])
+                if (result!=None):
+                    if len(result) > 0:
+                        print("matching documents from the minhash\n")
+                        print(result)
+                        mergeMatchingDocs(wrapper, paper, result[0])
 
         except Exception as es:
             print("exception in findMatchingDocumentsS2orcLSH with error msg: ", es)
