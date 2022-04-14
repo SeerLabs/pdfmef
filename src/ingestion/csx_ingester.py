@@ -236,7 +236,7 @@ def create_shingles(doc, k):
 def findMatchingDocumentsS2orcLSH(papers):
     config = configparser.ConfigParser()
     config.read("/pdfmef-code/src/extractor/python_wrapper/properties.config")
-    print(config.items)
+    #print(config.items)
     elasticConnectionProps = dict(config.items('ElasticConnectionProperties'))
     wrapper = ElasticSearchWrapper(elasticConnectionProps)
 
@@ -278,8 +278,6 @@ def findMatchingDocumentsS2orcLSH(papers):
                 for shingle in s:
                     min_hash.update(shingle.encode('utf8'))
                 result = lsh.query(min_hash)
-                print("matching documents from the minhash\n")
-                print(result)
                 if result and len(result) > 0:
                     print("matching documents from the minhash\n")
                     print(result)
