@@ -91,16 +91,11 @@ class ElasticSearchWrapper(Wrapper):
                  "query": {
                    "bool": {
                      "must": [
-                       {
-                         "nested": {
-                           "path": "authors",
-                           "query": {
-                             "match": {
-                               "authors.name.keyword": author
-                             }
-                           }
-                         }
-                       },
+                      {
+                          "match": {
+                            "authors.name.keyword": author
+                          }
+                      },
                        {
                          "term": {
                            "year": year
@@ -248,7 +243,6 @@ def findMatchingDocumentsS2orcLSH(papers):
     for paper in papers:
         try:
             print("inside findMatchingDocumentsS2orcLSH incoming paper is ---> \n")
-            print(paper.pub_info)
             print("\n")
             if (paper.authors and len(paper.authors) > 0 and paper.pub_info):
                 print("year of the paper is-->\n")
