@@ -253,7 +253,7 @@ def findMatchingDocumentsS2orcLSH(papers):
                 documents = wrapper.get_s2_batch_for_lsh_matching(paper.authors[0]['fullname'], paper.pub_info['year'])
                 print("inside findMatchingDocumentsS2orcLSH s2orc documents number of documents from s2org query is ---> \n")
                 print(len(documents))
-                lsh = MinHashLSH(threshold=0.7, num_perm=128)
+                lsh = MinHashLSH(threshold=0.5, num_perm=128)
                 for doc in documents:
                     title = doc['_source']['title']
                     id = doc['_source']['id']
