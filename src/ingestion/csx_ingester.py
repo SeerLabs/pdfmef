@@ -245,14 +245,9 @@ def findMatchingDocumentsS2orcLSH(papers):
             if (paper.authors == None):
                 continue
             if (paper.authors!=None and len(paper.authors) > 0 and paper.pub_info and paper.pub_info.year):
-                print('incoming paper\n')
-                print("*"+paper.authors[0]['surname']+"*")
-                print(paper.pub_info['year'])
-                print(paper.title)
-                print('\n')
                 documents = wrapper.get_s2_batch_for_lsh_matching("*"+paper.authors[0]['surname']+"*", paper.pub_info['year'])
                 print(len(documents))
-                lsh = MinHashLSH(threshold=0.5, num_perm=128)
+                lsh = MinHashLSH(threshold=0.7, num_perm=128)
                 for doc in documents:
                     title = doc['_source']['title']
                     id = doc['_source']['id']
@@ -281,8 +276,6 @@ def findMatchingDocumentsS2orcLSH(papers):
                 if (result!=None):
                     print(result)
                     if len(result) > 0:
-                        print("matching documents from the minhash\n")
-                        print(result[0])
                         mergeMatchingDocs(wrapper, paper, result[0])
 
         except Exception as es:
@@ -291,10 +284,13 @@ def findMatchingDocumentsS2orcLSH(papers):
 def mergeMatchingDocs(wrapper, paper, matching_s2org_doc_id):
     matching_s2org_doc = wrapper.get_s2_doc_by_id(matching_s2org_doc_id)
     for doc in matching_s2org_doc:
+        print('lsh match found for document id-->',matching_s2org_doc_id)
+        print('incoming paper title--->', paper.title)
+        print('matched s2 document title--->', doc['_source']['title'])
         paper.title = doc['_source']['title']
         paper.pub_info.year = doc['_source']['year']
         paper.authors = doc['_source']['authors']
-        print("merged document successfully with the document from s2org")
+        print("merged document successfully\n")
 
 def ingest_paper_parallel_func(combo):
     papers = CSXExtractorImpl().extract_textual_data(combo[0], combo[2])
