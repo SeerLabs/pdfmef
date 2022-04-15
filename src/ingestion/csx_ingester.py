@@ -253,7 +253,7 @@ def findMatchingDocumentsS2orcLSH(papers):
                 print('incoming paper\n')
                 print("*"+paper.authors[0]['surname']+"*")
                 print(paper.pub_info['year'])
-                print(paper.paper_id)
+                print(paper.source_url)
                 print(paper.title)
                 print('\n')
                  #documents = wrapper.get_s2_batch_for_lsh_matching(paper.authors[0]['fullname'], paper.pub_info['year'])
@@ -264,6 +264,8 @@ def findMatchingDocumentsS2orcLSH(papers):
                 for doc in documents:
                     title = doc['_source']['title']
                     id = doc['_source']['id']
+                    print('matched documents')
+                    print
 
                     d={}
                     with_wildcard = False
