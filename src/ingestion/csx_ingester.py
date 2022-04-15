@@ -79,7 +79,6 @@ class ElasticSearchWrapper(Wrapper):
                     }
                   }
                }
-        print(str(body))
         results = self.get_connection_prod().search(index=settings.S2_META_INDEX, body=body)
         return results['hits']['hits']
 
@@ -243,23 +242,15 @@ def findMatchingDocumentsS2orcLSH(papers):
 
     for paper in papers:
         try:
-            #print("inside findMatchingDocumentsS2orcLSH incoming paper is ---> \n")
-            #print("\n")
             if (paper.authors == None):
                 continue
             if (paper.authors!=None and len(paper.authors) > 0 and paper.pub_info and paper.pub_info.year):
-                #paper.title = "Iodine transport in the thyroid gland"
-                #paper.authors[0]['fullname'] = "Tetsuya  HAYASHI"
-                #paper.pub_info['year'] = 2011
                 print('incoming paper\n')
                 print("*"+paper.authors[0]['surname']+"*")
                 print(paper.pub_info['year'])
                 print(paper.title)
                 print('\n')
-                 #documents = wrapper.get_s2_batch_for_lsh_matching(paper.authors[0]['fullname'], paper.pub_info['year'])
                 documents = wrapper.get_s2_batch_for_lsh_matching("*"+paper.authors[0]['surname']+"*", paper.pub_info['year'])
-                #documents = wrapper.get_s2_batch_for_lsh_matching("*carrasco*", "1993")
-                #print("inside findMatchingDocumentsS2orcLSH s2orc documents number of documents from s2org query is ---> \n")
                 print(len(documents))
                 lsh = MinHashLSH(threshold=0.5, num_perm=128)
                 for doc in documents:
@@ -280,8 +271,6 @@ def findMatchingDocumentsS2orcLSH(papers):
                         lsh.insert(f"{id}", min_hash)
 
                 Title = paper.title
-                #Title = "Unintended Consequences of Opioid Regulations in Older Adults with Multiple Chronic Conditions."
-
                 s = create_shingles(Title, 5)
                 min_hash = MinHash(num_perm=128)
                 for shingle in s:
@@ -301,16 +290,13 @@ def findMatchingDocumentsS2orcLSH(papers):
 
 def mergeMatchingDocs(wrapper, paper, matching_s2org_doc_id):
     matching_s2org_doc = wrapper.get_s2_doc_by_id(matching_s2org_doc_id)
-    print("inside mergeMatchingDocs")
-    print(matching_s2org_doc)
     paper.title = matching_s2org_doc['_source']['title']
     paper.pub_info.year = matching_s2org_doc['_source']['year']
     paper.authors = matching_s2org_doc['_source']['authors']
+    print("merged document successfully with the document from s2org")
 
 def ingest_paper_parallel_func(combo):
     papers = CSXExtractorImpl().extract_textual_data(combo[0], combo[2])
-    #print("inside ingest_paper_parallel_func--->")
-    #print(papers)
     findMatchingDocumentsS2orcLSH(papers)
     move_to_repository(combo[0], combo[1])
     KeyMatcherClusterer().cluster_papers(papers)
