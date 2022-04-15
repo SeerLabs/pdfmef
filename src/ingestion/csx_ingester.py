@@ -250,6 +250,10 @@ def findMatchingDocumentsS2orcLSH(papers):
                 #paper.title = "The beta-decay vicinity of $^{78}$Ni"
                 #paper.authors[0]['fullname'] = "Tetsuya  HAYASHI"
                 #paper.pub_info['year'] = 2011
+                print('incoming paper\n')
+                print(paper.authors[0]['surname'])
+                print(paper.pub_info['year'])
+                print('\n')
                  #documents = wrapper.get_s2_batch_for_lsh_matching(paper.authors[0]['fullname'], paper.pub_info['year'])
                 documents = wrapper.get_s2_batch_for_lsh_matching(paper.authors[0]['surname'], paper.pub_info['year'])
                 #print("inside findMatchingDocumentsS2orcLSH s2orc documents number of documents from s2org query is ---> \n")
