@@ -305,7 +305,6 @@ def mergeMatchingDocs(wrapper, paper, matching_s2org_doc_id):
     paper.title = matching_s2org_doc['_source']['title']
     paper.pub_info.year = matching_s2org_doc['_source']['year']
     paper.authors = matching_s2org_doc['_source']['authors']
-    print(paper)
 
 def ingest_paper_parallel_func(combo):
     papers = CSXExtractorImpl().extract_textual_data(combo[0], combo[2])
