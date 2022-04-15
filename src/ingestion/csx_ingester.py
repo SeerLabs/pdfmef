@@ -291,9 +291,9 @@ def findMatchingDocumentsS2orcLSH(papers):
 def mergeMatchingDocs(wrapper, paper, matching_s2org_doc_id):
     matching_s2org_doc = wrapper.get_s2_doc_by_id(matching_s2org_doc_id)
     for doc in matching_s2org_doc:
-        paper.title = matching_s2org_doc['_source']['title']
-        paper.pub_info.year = matching_s2org_doc['_source']['year']
-        paper.authors = matching_s2org_doc['_source']['authors']
+        paper.title = doc['_source']['title']
+        paper.pub_info.year = doc['_source']['year']
+        paper.authors = doc['_source']['authors']
         print("merged document successfully with the document from s2org")
 
 def ingest_paper_parallel_func(combo):
