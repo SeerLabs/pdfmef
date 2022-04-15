@@ -300,6 +300,8 @@ def findMatchingDocumentsS2orcLSH(papers):
 
 def mergeMatchingDocs(wrapper, paper, matching_s2org_doc_id):
     matching_s2org_doc = wrapper.get_s2_doc_by_id(matching_s2org_doc_id)
+    print("inside mergeMatchingDocs")
+    print(matching_s2org_doc)
     paper.title = matching_s2org_doc['_source']['title']
     paper.pub_info.year = matching_s2org_doc['_source']['year']
     paper.authors = matching_s2org_doc['_source']['authors']
