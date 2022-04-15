@@ -93,7 +93,7 @@ class ElasticSearchWrapper(Wrapper):
                      "must": [
                         {
                           "wildcard": {
-                            "authors.name.keyword": author
+                            "authors.name": author
                           }
                         },
                        {
