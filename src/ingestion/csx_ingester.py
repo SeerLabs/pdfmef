@@ -79,6 +79,7 @@ class ElasticSearchWrapper(Wrapper):
                     }
                   }
                }
+        print(str(body))
         results = self.get_connection_prod().search(index=settings.S2_META_INDEX, body=body)
         self.s2_batch = results['hits']['hits']
 
