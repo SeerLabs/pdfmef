@@ -285,20 +285,21 @@ def findMatchingDocumentsS2orcLSH(papers):
                 min_hash = MinHash(num_perm=128)
                 for shingle in s:
                     min_hash.update(shingle.encode('utf8'))
-                result = lsh.query(min_hash)
+                result = lsh.query(min_hash, 1)
                 if (result == None):
                     continue
                 if (result!=None):
                     print(result)
                     if len(result) > 0:
                         print("matching documents from the minhash\n")
-                        print(result)
+                        print(result[0])
                         mergeMatchingDocs(wrapper, paper, result[0])
 
         except Exception as es:
             print("exception in findMatchingDocumentsS2orcLSH with error msg: ", es)
 
 def mergeMatchingDocs(wrapper, paper, matching_s2org_doc_id):
+    print(matching_s2org_doc_id)
     matching_s2org_doc = wrapper.get_s2_doc_by_id(matching_s2org_doc_id)
     print("inside mergeMatchingDocs")
     print(matching_s2org_doc)
