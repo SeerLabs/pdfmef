@@ -246,7 +246,6 @@ def findMatchingDocumentsS2orcLSH(papers):
                 continue
             if (paper.authors!=None and len(paper.authors) > 0 and paper.pub_info and paper.pub_info.year):
                 documents = wrapper.get_s2_batch_for_lsh_matching("*"+paper.authors[0]['surname']+"*", paper.pub_info['year'])
-                print(len(documents))
                 lsh = MinHashLSH(threshold=0.7, num_perm=128)
                 for doc in documents:
                     title = doc['_source']['title']
@@ -274,7 +273,6 @@ def findMatchingDocumentsS2orcLSH(papers):
                 if (result == None):
                     continue
                 if (result!=None):
-                    print(result)
                     if len(result) > 0:
                         mergeMatchingDocs(wrapper, paper, result[0])
 
