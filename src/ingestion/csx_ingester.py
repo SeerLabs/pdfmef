@@ -106,7 +106,6 @@ class ElasticSearchWrapper(Wrapper):
                  }
                }
 
-        print(body)
         results = self.get_connection_prod().search(index=settings.S2_META_INDEX, body=body)
         #print("\n results\n")
         self.s2_batch = results['hits']['hits']
@@ -257,8 +256,8 @@ def findMatchingDocumentsS2orcLSH(papers):
                 print(paper.title)
                 print('\n')
                  #documents = wrapper.get_s2_batch_for_lsh_matching(paper.authors[0]['fullname'], paper.pub_info['year'])
-                #documents = wrapper.get_s2_batch_for_lsh_matching("*"+paper.authors[0]['surname']+"*", paper.pub_info['year'])
-                documents = wrapper.get_s2_batch_for_lsh_matching("*carrasco*", "1993")
+                documents = wrapper.get_s2_batch_for_lsh_matching("*"+paper.authors[0]['surname']+"*", paper.pub_info['year'])
+                #documents = wrapper.get_s2_batch_for_lsh_matching("*carrasco*", "1993")
                 #print("inside findMatchingDocumentsS2orcLSH s2orc documents number of documents from s2org query is ---> \n")
                 print(len(documents))
                 lsh = MinHashLSH(threshold=0.5, num_perm=128)
@@ -290,7 +289,6 @@ def findMatchingDocumentsS2orcLSH(papers):
                 if (result == None):
                     continue
                 if (result!=None):
-                    print("here result is----")
                     print(result)
                     if len(result) > 0:
                         print("matching documents from the minhash\n")
@@ -302,9 +300,9 @@ def findMatchingDocumentsS2orcLSH(papers):
 
 def mergeMatchingDocs(wrapper, paper, matching_s2org_doc_id):
     matching_s2org_doc = wrapper.get_s2_doc_by_id(matching_s2org_doc_id)
-    paper.title = matching_s2org_doc.title
-    paper.pub_info.year = matching_s2org_doc.year
-    paper.authors = matching_s2org_doc.authors
+    paper.title = matching_s2org_doc['_source']['title']
+    paper.pub_info.year = matching_s2org_doc['_source']['year']
+    paper.authors = matching_s2org_doc['_source']['authors']
 
 def ingest_paper_parallel_func(combo):
     papers = CSXExtractorImpl().extract_textual_data(combo[0], combo[2])
