@@ -285,7 +285,7 @@ def findMatchingDocumentsS2orcLSH(papers):
                 min_hash = MinHash(num_perm=128)
                 for shingle in s:
                     min_hash.update(shingle.encode('utf8'))
-                result = lsh.query(min_hash, 1)
+                result = lsh.query(min_hash)
                 if (result == None):
                     continue
                 if (result!=None):
@@ -299,13 +299,13 @@ def findMatchingDocumentsS2orcLSH(papers):
             print("exception in findMatchingDocumentsS2orcLSH with error msg: ", es)
 
 def mergeMatchingDocs(wrapper, paper, matching_s2org_doc_id):
-    print(matching_s2org_doc_id)
     matching_s2org_doc = wrapper.get_s2_doc_by_id(matching_s2org_doc_id)
     print("inside mergeMatchingDocs")
     print(matching_s2org_doc)
     paper.title = matching_s2org_doc['_source']['title']
     paper.pub_info.year = matching_s2org_doc['_source']['year']
     paper.authors = matching_s2org_doc['_source']['authors']
+    print(paper)
 
 def ingest_paper_parallel_func(combo):
     papers = CSXExtractorImpl().extract_textual_data(combo[0], combo[2])
