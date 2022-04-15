@@ -247,7 +247,7 @@ def findMatchingDocumentsS2orcLSH(papers):
             if (paper.authors == None):
                 continue
             if (paper.authors!=None and len(paper.authors) > 0 and paper.pub_info and paper.pub_info.year):
-                paper.title = "Iodine transport in the thyroid gland"
+                #paper.title = "Iodine transport in the thyroid gland"
                 #paper.authors[0]['fullname'] = "Tetsuya  HAYASHI"
                 #paper.pub_info['year'] = 2011
                 print('incoming paper\n')
