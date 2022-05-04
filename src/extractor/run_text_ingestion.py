@@ -105,9 +105,10 @@ def on_batch_finished(resultsFileDirectory, wrapper):
 
 def get_extraction_runner(modules):
     runner = ExtractionRunner()
+    if modules['fulltext'] == 'True':
+        if modules['fulltext_pdfbox'] == 'True':
+            runner.add_runnable(pdfbox.PDFBoxPlainTextExtractor)
     if modules['academicfilter'] == 'True':
-        # runner.add_runnable(filters.SimpleAcademicPaperFilter)
-        runner.add_runnable(pdfbox.PDFBoxPlainTextExtractor)
         runner.add_runnable(filters.AcademicPaperFilter)
     if modules['fulltext'] == 'True':
         if modules['fulltext_grobid'] == 'True':

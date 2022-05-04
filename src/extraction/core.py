@@ -303,8 +303,9 @@ def _select_dependency_results(dependencies, results):
             dependency_results[DependencyClass] = result
             break
       else:
-         logger_core.error('No runnable satisfies the requirement for a {0}'.format(DependencyClass.__name__))
-         raise LookupError('No runnable satisfies the requirement for a {0}'.format(DependencyClass.__name__))
+         pass
+         #logger_core.error('No runnable satisfies the requirement for a {0}'.format(DependencyClass.__name__))
+         #raise LookupError('No runnable satisfies the requirement for a {0}'.format(DependencyClass.__name__))
 
    return dependency_results
 
