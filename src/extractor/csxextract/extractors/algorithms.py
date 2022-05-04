@@ -17,7 +17,8 @@ import logging
 
 logger = logging.getLogger(__name__)
 class AlgorithmsExtractor(Extractor):
-   dependencies = frozenset([filters.AcademicPaperFilter])
+   #dependencies = frozenset([filters.AcademicPaperFilter])
+   dependencies = frozenset([])
    result_file_name = '.algorithms'
 
    def extract(self, data, dependency_results):

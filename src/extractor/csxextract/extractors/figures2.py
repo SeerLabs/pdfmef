@@ -19,7 +19,8 @@ logger = logging.getLogger(__name__)
 
 # Returns a plain text version of a PDF file
 class PDFFigures2Extractor(Extractor):
-   dependencies = frozenset([filters.AcademicPaperFilter])
+   #dependencies = frozenset([filters.AcademicPaperFilter])
+   dependencies = frozenset([])
    result_file_name = '.figures'
 
    def extract(self, data, dependency_results):
