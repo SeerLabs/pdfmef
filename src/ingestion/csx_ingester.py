@@ -294,7 +294,6 @@ def ingest_paper_parallel_func(combo):
     papers = CSXExtractorImpl().extract_textual_data(combo[0], combo[2])
     #findMatchingDocumentsS2orcLSH(papers)
     move_to_repository(combo[0], combo[1])
-    print("here in ingest_paper_parallel_func")
     KeyMatcherClusterer().cluster_papers(papers)
 
 class CSXIngesterImpl(CSXIngester):
