@@ -22,7 +22,7 @@ class PDFBoxPlainTextExtractor(interfaces.PlainTextExtractor):
       #print config.PDF_BOX_JAR
       try:
          command_args = ['java', '-Xmx1g', '-jar', os.path.expanduser(config.PDF_BOX_JAR), 'ExtractText', '-console', '-encoding', 'UTF-8', file_path]
-         status, stdout, stderr = extraction.utils.external_process(command_args, timeout=30)
+         status, stdout, stderr = extraction.utils.external_process(command_args, timeout=5)
       except subprocess.TimeoutExpired:
          logger.error('PDFBox timed out while processing document')
          raise RunnableError('PDFBox timed out while processing document')
