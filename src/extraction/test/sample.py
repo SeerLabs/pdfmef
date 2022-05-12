@@ -30,7 +30,7 @@ class LinesStartWithNumberExtractor(Extractor):
 
    def extract(self, data, deps):
       try:
-         (status, stdout, stderr) = utils.external_process(['awk', '/^[0-9]/ {print;}', '-'], input_data=data, timeout=10)
+         (status, stdout, stderr) = utils.external_process(['awk', '/^[0-9]/ {print;}', '-'], input_data=data, timeout=20)
       except subprocess.TimeoutExpired:
          raise RunnableError('awk timed out')
 
