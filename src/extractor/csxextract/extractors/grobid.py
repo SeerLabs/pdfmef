@@ -50,7 +50,6 @@ class GrobidCitationTEIExtractor(Extractor):
 
 def _call_grobid_method(data, method):
       url = '{0}/api/{1}'.format(config.GROBID_HOST, method)
-      print("inside grobid extracting data....")
       # Write the pdf data to a temporary location so Grobid can process it
       path = extraction.utils.temp_file(data, suffix='.pdf')
       files = {'input': (path, open(path, 'rb'))}
@@ -77,7 +76,6 @@ def _call_grobid_method(data, method):
       #xml = safeET.fromstring(xml_text)
       xmlstring = re.sub(' xmlns="[^"]+"', '', resp.content.decode('utf-8'), count=1)
       xml = safeET.fromstring(xmlstring)
-      print("inside grobid returning data.")
 
       return xml
 
