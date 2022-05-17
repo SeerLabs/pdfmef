@@ -28,7 +28,6 @@ class PDFFigures2Extractor(Extractor):
       results_dir = tempfile.mkdtemp() + '/'
 
       try:
-         print("inside figure extracting data....")
          command_args = ['java', '-jar', config.PDFFIGURES2_JAR, file_path, '-m', results_dir, '-d', results_dir]
          status, stdout, stderr = extraction.utils.external_process(command_args, timeout=20)
       except subprocess.TimeoutExpired:
@@ -59,6 +58,5 @@ class PDFFigures2Extractor(Extractor):
             files[filename] = f.read()
 
       shutil.rmtree(results_dir)
-      print("inside figure extractor returning extracted data")
 
       return ExtractorResult(xml_result=None, files=files)
