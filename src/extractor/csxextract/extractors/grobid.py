@@ -54,7 +54,7 @@ def _call_grobid_method(data, method):
       path = extraction.utils.temp_file(data, suffix='.pdf')
       files = {'input': (path, open(path, 'rb'))}
       the_data = {'consolidateHeader': '1'}
-      print(url)
+      #print(url)
       try:
          resp = requests.post(url, files=files, data=the_data)
       except requests.exceptions.RequestException as ex:
