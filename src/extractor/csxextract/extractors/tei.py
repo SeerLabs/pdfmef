@@ -27,6 +27,7 @@ class TEItoHeaderExtractor(interfaces.CSXHeaderExtractor):
    # Essentilly this whole method just finds the relative info in the Grobid xml file
    # and writes it into the CSX format xml file
    def extract(self, data, dep_results):
+      print("inside TEItoHeaderExtractor....")
       tei_root = dep_results[interfaces.HeaderTEIExtractor].xml_result
       result_root = ET.Element('algorithm', {'name': 'Grobid Header Extraction', 'version': '0.1'})
 
@@ -98,6 +99,7 @@ class TEItoHeaderExtractor(interfaces.CSXHeaderExtractor):
          self.log('No abstract found')
 
       # CSX style xml document of header information
+      print("inside TEItoHeaderExtractor result...")
       return ExtractorResult(xml_result=result_root)
 
 # Takes a TEI xml file of a document and tries to generate a plain text version of the document
@@ -107,6 +109,7 @@ class TEItoPlainTextExtractor(interfaces.PlainTextExtractor):
    dependencies = frozenset([interfaces.FullTextTEIExtractor])
 
    def extract(self, data, dependency_results):
+      print("inside TEItoPlainTextExtractor....")
       xml_root = dependency_results[interfaces.FullTextTEIExtractor].xml_result
       body_node = xml_root.find('./text/body')
 
@@ -121,6 +124,7 @@ class TEItoPlainTextExtractor(interfaces.PlainTextExtractor):
       plain_text = plain_text.encode('utf-8')
       files = {'.txt': plain_text}
 
+      print("inside TEItoPlainTextExtractor result")
       return ExtractorResult(xml_result=None, files=files)
 
 

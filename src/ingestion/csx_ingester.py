@@ -291,12 +291,9 @@ def mergeMatchingDocs(wrapper, paper, matching_s2org_doc_id):
         print("merged document successfully\n")
 
 def ingest_paper_parallel_func(combo):
-    print("inside ingest_paper_parallel_func starting extract_textual_data")
     papers = CSXExtractorImpl().extract_textual_data(combo[0], combo[2])
     #findMatchingDocumentsS2orcLSH(papers)
-    print("inside ingest_paper_parallel_func moving data to repository")
     move_to_repository(combo[0], combo[1])
-    print("inside ingest_paper_parallel_func clustering papers")
     KeyMatcherClusterer().cluster_papers(papers)
 
 class CSXIngesterImpl(CSXIngester):
