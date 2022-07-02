@@ -62,6 +62,7 @@ class KeyMatcherClusterer(CSXClusterer):
 
     def create_new_paper(self, paper: Cluster):
         try:
+            print("inside create new paper")
             paper.save(using=self.elastic_service.get_connection())
             keymaps = []
             for key in paper.keys:
