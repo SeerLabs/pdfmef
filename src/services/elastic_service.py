@@ -7,13 +7,13 @@ import json
 class ElasticService:
 
     def __init__(self):
-        self.connection = Elasticsearch([{'host': '130.203.139.151', 'port': 9200}])
+        self.connection = Elasticsearch([{'host': '130.203.139.160', 'port': 9200}])
 
     def get_connection(self):
         return self.connection
 
     def test_connection(self):
-        req = requests.get('http://130.203.139.151:9200')
+        req = requests.get('http://130.203.139.160:9200')
         content = req.content
         parsed = json.loads(content)
         self.print_response(parsed)
