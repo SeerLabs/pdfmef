@@ -39,6 +39,7 @@ RUN pip install PyPDF2
 RUN pip install nltk
 RUN pip install elasticsearch_dsl
 RUN pip install PyYAML
+RUN pip install datasketch
 
 # --------------------------------------------- Java8 required for Grobid --------------------------
 
