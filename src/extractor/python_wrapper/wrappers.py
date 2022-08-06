@@ -329,9 +329,8 @@ class ElasticSearchWrapper(Wrapper):
         results = self.get_connection().search(index=settings.CRAWL_META_INDEX, body=body)
         self.batch = []
         for result in results['hits']['hits']:
-            print("here-----")
             if (result["_id"] == '_update'):
-                print(result)
+                pass
             else:
                 self.batch.append(result)
 
