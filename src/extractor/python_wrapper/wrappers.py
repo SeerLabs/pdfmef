@@ -327,10 +327,13 @@ class ElasticSearchWrapper(Wrapper):
         }
 
         results = self.get_connection().search(index=settings.CRAWL_META_INDEX, body=body)
+        self.batch = []
         for result in results['hits']['hits']:
             print("here-----")
-            print(result)
-        self.batch = results['hits']['hits']
+            if (result["_id"] == '_update'):
+                print(result)
+            else:
+                self.batch.append(result)
 
     def get_document_ids(self):
         """Purpose: parses the ids of all documents in a batch
