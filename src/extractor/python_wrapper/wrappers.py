@@ -355,12 +355,15 @@ class ElasticSearchWrapper(Wrapper):
         #Returns: list of document paths as strings"""
         paths = []
         for element in self.batch:
-            strr = str(element['_source']['pdf_path'])
-            if strr.endswith('\n'):
-                strr = strr[:-1]
-            paths.append(strr)
-            self.file_path_sha1_mapping[strr] = element['_id']
-            self.file_path_source_url_map[strr] = element['_source']['source']
+            try:
+                strr = str(element['_source']['pdf_path'])
+                if strr.endswith('\n'):
+                    strr = strr[:-1]
+                paths.append(strr)
+                self.file_path_sha1_mapping[strr] = element['_id']
+                self.file_path_source_url_map[strr] = element['_source']['source']
+            except Exception:
+                pass
         return paths
 
     def update_state(self, ids, state):
