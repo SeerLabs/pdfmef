@@ -345,7 +345,6 @@ class ElasticSearchWrapper(Wrapper):
     def get_source_urls(self):
         urls = []
         for entry in self.batch:
-            print(entry)
             urls.append(entry['_source']['source'])
         return urls
 
@@ -362,7 +361,6 @@ class ElasticSearchWrapper(Wrapper):
         paths = []
         for element in self.batch:
             try:
-                #print(element)
                 strr = str(element['_source']['pdf_path'])
                 if strr.endswith('\n'):
                     strr = strr[:-1]
@@ -370,7 +368,6 @@ class ElasticSearchWrapper(Wrapper):
                 self.file_path_sha1_mapping[strr] = element['_id']
                 self.file_path_source_url_map[strr] = element['_source']['source']
             except Exception:
-                print(element)
                 pass
         return paths
 
