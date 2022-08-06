@@ -172,11 +172,6 @@ if __name__ == '__main__':
         wrapper.get_document_batch()
         documentPaths = wrapper.get_document_paths()
         ids = wrapper.get_document_ids()
-        for id in ids:
-            print(id)
-            if (id == '_update'):
-                print("here------------------------")
-                ids.remove(id)
         source_urls = wrapper.get_source_urls()
         if len(ids) == 0:
             logger.info("---no files to extractor hence exiting---")

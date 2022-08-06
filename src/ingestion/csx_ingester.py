@@ -125,6 +125,8 @@ class ElasticSearchWrapper(Wrapper):
         }
 
         results = self.get_connection().search(index=settings.CRAWL_META_INDEX, body=body)
+        for result in results['hits']['hits']:
+            print(result)
         self.batch = results['hits']['hits']
 
     def get_document_ids(self):
