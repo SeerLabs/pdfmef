@@ -173,7 +173,9 @@ if __name__ == '__main__':
         documentPaths = wrapper.get_document_paths()
         ids = wrapper.get_document_ids()
         for id in ids:
+            print(id)
             if (id == '_update'):
+                print("here------------------------")
                 ids.remove(id)
         source_urls = wrapper.get_source_urls()
         if len(ids) == 0:
