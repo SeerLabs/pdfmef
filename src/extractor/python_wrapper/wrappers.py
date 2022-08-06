@@ -356,6 +356,7 @@ class ElasticSearchWrapper(Wrapper):
         paths = []
         for element in self.batch:
             try:
+                print(element)
                 strr = str(element['_source']['pdf_path'])
                 if strr.endswith('\n'):
                     strr = strr[:-1]
