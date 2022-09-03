@@ -28,8 +28,8 @@ class PDFFigures2Extractor(Extractor):
       results_dir = tempfile.mkdtemp() + '/'
 
       try:
-         command_args = ['java', '-jar', config.PDFFIGURES2_JAR, file_path, '-m', results_dir, '-d', results_dir]
-         status, stdout, stderr = extraction.utils.external_process(command_args, timeout=10)
+         command_args = ['java', '-jar', '-Xmx5g', config.PDFFIGURES2_JAR, file_path, '-m', results_dir, '-d', results_dir]
+         status, stdout, stderr = extraction.utils.external_process(command_args, timeout=15)
       except subprocess.TimeoutExpired:
          shutil.rmtree(results_dir)
          logger.error('PDFFigures2 timed out while processing document')

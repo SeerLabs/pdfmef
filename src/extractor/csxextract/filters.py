@@ -31,7 +31,7 @@ class AcademicPaperFilter(Filter):
         shutil.copy(config.FILTER_TRAIN_DATA_PATH, temp_dir + 'train_str_f43_paper.arff')
         try:
             status, stdout, stderr = extraction.utils.external_process(
-                ['java', '-jar', config.FILTER_JAR_PATH, temp_dir, id, 'paper'], timeout=20)
+                ['java', '-jar', '-Xmx5g', config.FILTER_JAR_PATH, temp_dir, id, 'paper'], timeout=20)
         except subprocess.TimeoutExpired as te:
             logger.error("Filter Jar timed out while processing document")
             raise RunnableError('Filter Jar timed out while processing document')
