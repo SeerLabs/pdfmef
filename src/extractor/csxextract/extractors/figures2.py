@@ -29,6 +29,7 @@ class PDFFigures2Extractor(Extractor):
 
       try:
          command_args = ['java', '-jar', '-Xms2g','-Xmx5g', config.PDFFIGURES2_JAR, file_path, '-m', results_dir, '-d', results_dir]
+         print("inside pdf figure extractor")
          status, stdout, stderr = extraction.utils.external_process(command_args, timeout=25)
       except subprocess.TimeoutExpired:
          shutil.rmtree(results_dir)
