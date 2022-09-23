@@ -21,6 +21,7 @@ class PDFBoxPlainTextExtractor(interfaces.PlainTextExtractor):
       file_path = extraction.utils.temp_file(data, suffix='.pdf')
       #print config.PDF_BOX_JAR
       try:
+         print("inside pdfbox extractor")
          command_args = ['java', '-jar', '-Xms2g','-Xmx5g', os.path.expanduser(config.PDF_BOX_JAR), 'ExtractText', '-console', '-encoding', 'UTF-8', file_path]
          status, stdout, stderr = extraction.utils.external_process(command_args, timeout=25)
       except subprocess.TimeoutExpired:
@@ -36,5 +37,7 @@ class PDFBoxPlainTextExtractor(interfaces.PlainTextExtractor):
       # We can use result from PDFBox directly, no manipulation needed
       pdf_plain_text = stdout
       files = {'.txt': pdf_plain_text}
+
+      print("inside pdfbox extractor done")
 
       return ExtractorResult(xml_result=None, files=files)
