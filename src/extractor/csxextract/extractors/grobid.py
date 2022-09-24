@@ -26,10 +26,8 @@ class GrobidTEIExtractor(interfaces.FullTextTEIExtractor):
    result_file_name = '.tei'
 
    def extract(self, data, dep_results):
-      print("inside grobid extractor")
       xml = _call_grobid_method(data, 'processFulltextDocument')
       return ExtractorResult(xml_result=xml)
-      print("inside grobid extractor done")
 
 # Returns TEI xml document only of the PDF's header info
 class GrobidHeaderTEIExtractor(interfaces.HeaderTEIExtractor):
@@ -38,9 +36,7 @@ class GrobidHeaderTEIExtractor(interfaces.HeaderTEIExtractor):
    result_file_name = '.header.tei'
 
    def extract(self, data, dep_results):
-      print("inside grobid extractor")
       xml = _call_grobid_method(data, 'processHeaderDocument')
-      print("inside grobid extractor done")
       return ExtractorResult(xml_result=xml)
 
 class GrobidCitationTEIExtractor(Extractor):
