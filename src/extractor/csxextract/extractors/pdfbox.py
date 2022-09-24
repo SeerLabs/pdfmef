@@ -37,6 +37,4 @@ class PDFBoxPlainTextExtractor(interfaces.PlainTextExtractor):
       pdf_plain_text = stdout
       files = {'.txt': pdf_plain_text}
 
-      print("inside pdfbox extractor done")
-
       return ExtractorResult(xml_result=None, files=files)
