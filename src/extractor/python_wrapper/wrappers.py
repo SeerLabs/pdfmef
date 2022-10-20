@@ -301,17 +301,18 @@ class ElasticSearchWrapper(Wrapper):
         body = {
                  "from": 0,
                  "size": 1000,
-                 "query": {
-                   "bool": {
-                     "must": [
-                       {
-                         "term": {
-                           "year": year
-                         }
-                       }
-                     ]
-                   }
-                 }
+                  "query": {
+                    "nested": {
+                      "path": "pub_info",
+                      "query": {
+                        "term": {
+                          "pub_info.year": {
+                            "value": "2008"
+                          }
+                        }
+                      }
+                    }
+                  }
                }
 
         results = self.get_connection_prod().search(index=settings.CLUSTERS_INDEX, body=body)
