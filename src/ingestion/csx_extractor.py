@@ -278,8 +278,9 @@ class CSXExtractorImpl(CSXExtractor):
             try:
                 if (paper.pub_info.year):
                     documents = wrapper.get_batch_for_lsh_matching(paper.pub_info.year)
+                    print("hereeeeeee")
                     print(documents)
-                    pass
+                    break
                     lsh = MinHashLSH(threshold=0.7, num_perm=128)
                     for doc in documents:
                         title = doc['_source']['title']
