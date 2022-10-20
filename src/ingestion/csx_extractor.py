@@ -310,7 +310,7 @@ class CSXExtractorImpl(CSXExtractor):
                         with_wildcard = False
                         count = 0
 
-                        s = create_shingles(title, 5)
+                        s = CSXExtractorImpl().create_shingles(title, 5)
 
                         min_hash = MinHash(num_perm=128)
                         for shingle in s:
