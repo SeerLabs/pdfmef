@@ -23,94 +23,6 @@ logger.info("Configured the logger!")
 class CSXExtractorImpl(CSXExtractor):
 
     @classmethod
-    def findMatchingDocumentsLSH(papers):
-        config = configparser.ConfigParser()
-        config.read("/pdfmef-code/src/extractor/python_wrapper/properties.config")
-        elasticConnectionProps = dict(config.items('ElasticConnectionProperties'))
-        wrapper = ElasticSearchWrapper(elasticConnectionProps)
-        citations = []
-        print('inside findMatchingDocumentsLSH citations processed-->\n')
-        print(papers)
-        for paper in papers:
-            try:
-                if (paper.pub_info.year):
-                    documents = wrapper.get_batch_for_lsh_matching(paper.pub_info['year'])
-                    lsh = MinHashLSH(threshold=0.7, num_perm=128)
-                    for doc in documents:
-                        title = doc['_source']['title']
-                        id = doc['_source']['paper_id'][0]
-
-                        d={}
-                        with_wildcard = False
-                        count = 0
-
-                        s = create_shingles(title, 5)
-
-                        min_hash = MinHash(num_perm=128)
-                        for shingle in s:
-                            min_hash.update(shingle.encode('utf8'))
-
-                        if (not id in lsh):
-                            lsh.insert(f"{id}", min_hash)
-
-                    Title = paper.title
-                    s = create_shingles(Title, 5)
-                    min_hash = MinHash(num_perm=128)
-                    for shingle in s:
-                        min_hash.update(shingle.encode('utf8'))
-                    result = lsh.query(min_hash)
-                    print("inside findMatchingDocumentsLSH result is-->\n")
-                    print(result)
-                    if (result == None):
-                        continue
-                    if (result!=None):
-                        if len(result) > 0:
-                            result[0]
-                            self.mergeMatchingDocs(wrapper, paper, result[0])
-                        else:
-                            citations.append(paper)
-
-            except Exception as es:
-                print("exception in findMatchingDocumentsLSH with error msg: ", es)
-        return citations
-
-    @classmethod
-    def mergeMatchingDocs(wrapper, paper, matching_s2org_doc_id):
-        print("found matching document for the citation------>\n")
-        print("actual paper-->\n")
-        print(paper)
-        matching_doc = wrapper.get_doc_by_id(matching_s2org_doc_id)
-        print("matched paper-->\n")
-        print(matching_doc)
-        for doc in matching_doc:
-            cited_by = doc['_source']['cited_by']
-            cited_by.append(paper.get_cites[0])
-            wrapper.update_document_with_citation(doc['_id'], cited_by)
-            print("merged document successfully\n")
-
-    def batch_extract_textual_data(self, dirPath):
-        pass
-
-    def extract_figures(self, filepath):
-        pass
-
-    def batch_extract_figures(self, dirPath):
-        pass
-
-    def extract_textual_data(self, filepath, source_url):
-        try:
-            papers = []
-            print(filepath)
-            tei_root = parse(filepath)
-            tei_filename = str(filepath[str(filepath).rfind('/')+1:])
-            paper_id = tei_filename[:tei_filename.rfind('.')]
-            citations = self.extract_citations_from_tei_root(tei_root=tei_root, paper_id=paper_id)
-            papers.extend(citations)
-        except Exception as e:
-            logger.error("exception occured while extracting textual data for filepath: "+filepath+" with error message: "+e)
-        return papers
-
-    @classmethod
     def extract_affiliations(cls, affiliation_node):
         org_name_nodes = affiliation_node.findall('./orgName')
 
@@ -310,6 +222,92 @@ class CSXExtractorImpl(CSXExtractor):
                     pub_info.date = date_found
                     pub_info.year = date_found[-4:]
         return pub_info
+
+    def batch_extract_textual_data(self, dirPath):
+        pass
+
+    def extract_figures(self, filepath):
+        pass
+
+    def batch_extract_figures(self, dirPath):
+        pass
+
+    def extract_textual_data(self, filepath, source_url):
+        try:
+            papers = []
+            print(filepath)
+            tei_root = parse(filepath)
+            tei_filename = str(filepath[str(filepath).rfind('/')+1:])
+            paper_id = tei_filename[:tei_filename.rfind('.')]
+            citations = self.extract_citations_from_tei_root(tei_root=tei_root, paper_id=paper_id)
+            papers.extend(citations)
+        except Exception as e:
+            logger.error("exception occured while extracting textual data for filepath: "+filepath+" with error message: "+e)
+        return papers
+
+    def mergeMatchingDocs(self, wrapper, paper, matching_s2org_doc_id):
+        print("found matching document for the citation------>\n")
+        print("actual paper-->\n")
+        print(paper)
+        matching_doc = wrapper.get_doc_by_id(matching_s2org_doc_id)
+        print("matched paper-->\n")
+        print(matching_doc)
+        for doc in matching_doc:
+            cited_by = doc['_source']['cited_by']
+            cited_by.append(paper.get_cites[0])
+            wrapper.update_document_with_citation(doc['_id'], cited_by)
+            print("merged document successfully\n")
+
+    def findMatchingDocumentsLSH(self, papers):
+        print('inside findMatchingDocumentsLSH citations processed-->\n')
+        config = configparser.ConfigParser()
+        config.read("/pdfmef-code/src/extractor/python_wrapper/properties.config")
+        elasticConnectionProps = dict(config.items('ElasticConnectionProperties'))
+        wrapper = ElasticSearchWrapper(elasticConnectionProps)
+        citations = []
+        print(papers)
+        for paper in papers:
+            try:
+                if (paper.pub_info.year):
+                    documents = wrapper.get_batch_for_lsh_matching(paper.pub_info['year'])
+                    lsh = MinHashLSH(threshold=0.7, num_perm=128)
+                    for doc in documents:
+                        title = doc['_source']['title']
+                        id = doc['_source']['paper_id'][0]
+
+                        d={}
+                        with_wildcard = False
+                        count = 0
+
+                        s = create_shingles(title, 5)
+
+                        min_hash = MinHash(num_perm=128)
+                        for shingle in s:
+                            min_hash.update(shingle.encode('utf8'))
+
+                        if (not id in lsh):
+                            lsh.insert(f"{id}", min_hash)
+
+                    Title = paper.title
+                    s = create_shingles(Title, 5)
+                    min_hash = MinHash(num_perm=128)
+                    for shingle in s:
+                        min_hash.update(shingle.encode('utf8'))
+                    result = lsh.query(min_hash)
+                    print("inside findMatchingDocumentsLSH result is-->\n")
+                    print(result)
+                    if (result == None):
+                        continue
+                    if (result!=None):
+                        if len(result) > 0:
+                            result[0]
+                            self.mergeMatchingDocs(wrapper, paper, result[0])
+                        else:
+                            citations.append(paper)
+
+            except Exception as es:
+                print("exception in findMatchingDocumentsLSH with error msg: ", es)
+        return citations
 
 
 if __name__ == "__main__":
