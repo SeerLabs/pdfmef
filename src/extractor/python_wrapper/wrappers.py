@@ -294,7 +294,7 @@ class ElasticSearchWrapper(Wrapper):
                 "cited_by" : cited_by
             }
         }
-        response = self.get_connection_prod().update(index=settings.CLUSTERS_INDEX, doc_type="_doc", id=doc_id, body=source_to_update)
+        response = self.get_connection_prod().update(index=settings.CLUSTERS_INDEX, doc_type="_update", id=doc_id, body=source_to_update)
 
     def get_batch_for_lsh_matching(self, year):
         """Purpose: retrieves batch of documents to process from server"""
