@@ -288,9 +288,9 @@ class ElasticSearchWrapper(Wrapper):
 
     def update_document_with_citation(self, doc_id, cited_by):
         source_to_update = {
-        ""doc"" : {
-        ""cited_by"" : cited_by
-        }
+            "doc" : {
+                "cited_by" : cited_by
+            }
         }
         response = elastic_client.update(index=Settings.CLUSTERS_INDEX, doc_type=""_doc"", id=doc_id, body=source_to_update)
         print ('response:', response)
