@@ -315,7 +315,7 @@ class ElasticSearchWrapper(Wrapper):
                   }
                }
 
-        results = self.get_connection_prod().search(index=settings.CLUSTERS_INDEX, body=body.encode("utf-8"))
+        results = self.get_connection_prod().search(index=settings.CLUSTERS_INDEX, body=body)
         print("here----------->")
         print(body)
         #print(results)
