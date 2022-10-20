@@ -16,6 +16,7 @@ from xml.etree.ElementTree import parse, tostring
 from models.elastic_models import Cluster, Author, PubInfo
 import functools
 import logging
+import configparser
 
 logger = logging.getLogger(__name__)
 logger.info("Configured the logger!")
@@ -263,11 +264,8 @@ class CSXExtractorImpl(CSXExtractor):
         config = configparser.ConfigParser()
         config.read("/pdfmef-code/src/extractor/python_wrapper/properties.config")
         elasticConnectionProps = dict(config.items('ElasticConnectionProperties'))
-        print(elasticConnectionProps)
         wrapper = ElasticSearchWrapper(elasticConnectionProps)
         citations = []
-        print("all citations-->\n")
-        print(len(papers))
         for paper in papers:
             print("inside processing papers--->\n")
             print(paper)
