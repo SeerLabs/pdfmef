@@ -24,6 +24,7 @@ class CSXExtractorImpl(CSXExtractor):
 
     def findMatchingDocumentsLSH(papers):
         config = configparser.ConfigParser()
+        print('inside begin findMatchingDocumentsLSH citations processed-->\n')
         config.read("/pdfmef-code/src/extractor/python_wrapper/properties.config")
         elasticConnectionProps = dict(config.items('ElasticConnectionProperties'))
         wrapper = ElasticSearchWrapper(elasticConnectionProps)
