@@ -254,7 +254,6 @@ class CSXExtractorImpl(CSXExtractor):
         matching_doc = wrapper.get_doc_by_id(matching_doc_id)
         if matching_doc:
             for doc in matching_doc:
-                print(str(doc))
                 cited_by = doc['_source']['cited_by']
                 print(cited_by)
                 cited_by.append(paper.get_cites[0])
