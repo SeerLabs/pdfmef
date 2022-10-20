@@ -265,6 +265,8 @@ class CSXExtractorImpl(CSXExtractor):
         elasticConnectionProps = dict(config.items('ElasticConnectionProperties'))
         wrapper = ElasticSearchWrapper(elasticConnectionProps)
         citations = []
+        print("all citations-->\n")
+        print(len(papers))
         for paper in papers:
             print("inside processing papers--->\n")
             print(paper)
