@@ -353,7 +353,7 @@ class ElasticSearchWrapper(Wrapper):
         return urls
 
     def get_connection(self):
-        return Elasticsearch([{'host': '130.203.139.160', 'port': 9200}])
+        return Elasticsearch([{'host': '130.203.139.151', 'port': 9200}])
 
     def get_connection_prod(self):
         return Elasticsearch([{'host': '130.203.139.160', 'port': 9200}])
