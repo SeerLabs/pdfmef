@@ -292,7 +292,7 @@ class ElasticSearchWrapper(Wrapper):
                 "cited_by" : cited_by
             }
         }
-        response = elastic_client.update(index=Settings.CLUSTERS_INDEX, doc_type=""_doc"", id=doc_id, body=source_to_update)
+        response = elastic_client.update(index=Settings.CLUSTERS_INDEX, doc_type="_doc", id=doc_id, body=source_to_update)
         print ('response:', response)
 
     def get_batch_for_lsh_matching(self, year):
