@@ -100,6 +100,8 @@ class CSXExtractorImpl(CSXExtractor):
             papers = []
             tei_root = parse(filepath)
             paper_id = tei_filename[:tei_filename.rfind('.')]
+            print("inside extract_textual_data-->")
+            print(paper_id)
             citations = self.extract_citations_from_tei_root(tei_root=tei_root, paper_id=paper_id)
             papers.extend(citations)
         except Exception as e:
