@@ -282,7 +282,7 @@ class CSXExtractorImpl(CSXExtractor):
             config.read("/pdfmef-code/src/extractor/python_wrapper/properties.config")
         except Exception as ex:
             print(ex)
-        elasticConnectionProps = dict(config.items('ElasticConnectionProperties')))
+        elasticConnectionProps = dict(config.items('ElasticConnectionProperties'))
         wrapper = wrappers.ElasticSearchWrapper(elasticConnectionProps)
         citations = []
         for paper in papers:
