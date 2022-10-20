@@ -157,7 +157,7 @@ class CSXExtractorImpl(CSXExtractor):
             citation.has_pdf = False
             citations.append(citation)
         print("inside citation extraction finding matching documents")
-        citations = extractor.findMatchingDocumentsLSH(citations)
+        citations = CSXExtractorImpl().findMatchingDocumentsLSH(citations)
         return citations
 
     @classmethod
@@ -301,7 +301,7 @@ class CSXExtractorImpl(CSXExtractor):
                     if (result!=None):
                         if len(result) > 0:
                             result[0]
-                            extractor.mergeMatchingDocs(wrapper, paper, result[0])
+                            CSXExtractorImpl().mergeMatchingDocs(wrapper, paper, result[0])
                         else:
                             citations.append(paper)
 
