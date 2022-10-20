@@ -319,6 +319,7 @@ class CSXExtractorImpl(CSXExtractor):
                             lsh.insert(f"{id}", min_hash)
 
                     Title = paper.title
+                    print(Title)
                     s = CSXExtractorImpl().create_shingles(Title, 5)
                     min_hash = MinHash(num_perm=128)
                     print("step1")
