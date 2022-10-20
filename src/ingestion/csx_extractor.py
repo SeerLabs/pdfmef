@@ -300,27 +300,24 @@ class CSXExtractorImpl(CSXExtractor):
                     documents = wrapper.get_batch_for_lsh_matching(paper.pub_info.year)
                     lsh = MinHashLSH(threshold=0.7, num_perm=128)
                     for doc in documents:
-                        print('here in for doc\n')
-                        title = doc['_source']['title']
-                        id = doc['_source']['paper_id'][0]
-                        title = paper.title
+                        try:
+                            print('here in for doc\n')
+                            title = doc['_source']['title']
+                            id = doc['_source']['paper_id'][0]
+                            d={}
+                            with_wildcard = False
+                            count = 0
+                            s = CSXExtractorImpl().create_shingles(title, 5)
+                            min_hash = MinHash(num_perm=128)
+                            for shingle in s:
+                                min_hash.update(shingle.encode('utf8'))
+                            if (not id in lsh):
+                                lsh.insert(f"{id}", min_hash)
+                        except Exception:
+                            pass
 
-                        d={}
-                        with_wildcard = False
-                        count = 0
-
-                        print("step1")
-                        s = CSXExtractorImpl().create_shingles(title, 5)
-                        print("step2")
-                        min_hash = MinHash(num_perm=128)
-                        for shingle in s:
-                            min_hash.update(shingle.encode('utf8'))
-                        print("step3")
-                        if (not id in lsh):
-                            lsh.insert(f"{id}", min_hash)
-                        print("step4")
-
-                    Title = paper.title
+                    #Title = paper.title
+                    Title = "Padhy “Comparison of Particle Swarm and Genetic Algorithm for FACTS-based Controller Design"
                     print(Title)
                     s = CSXExtractorImpl().create_shingles(Title, 5)
                     min_hash = MinHash(num_perm=128)
