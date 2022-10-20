@@ -261,6 +261,27 @@ class CSXExtractorImpl(CSXExtractor):
             wrapper.update_document_with_citation(doc['_id'], cited_by)
             print("merged document successfully\n")
 
+    def create_shingles(self, doc, k):
+        """
+        Creates shingles and stores them in sets
+
+        Paramaters
+        ----------
+
+        Returns
+        -------
+        """
+        shingled_set = set() # create an empty set
+
+        doc_length = len(doc)
+
+        # iterate through the string and slice it up by k-chars at a time
+        for idx in range(doc_length - k + 1):
+            doc_slice = doc[idx:idx + k]
+            shingled_set.add(doc_slice)
+
+        return shingled_set
+
     def findMatchingDocumentsLSH(self, papers):
         print('inside findMatchingDocumentsLSH citations processed-->\n')
         config = configparser.ConfigParser()
@@ -299,7 +320,7 @@ class CSXExtractorImpl(CSXExtractor):
                             lsh.insert(f"{id}", min_hash)
 
                     Title = paper.title
-                    s = create_shingles(Title, 5)
+                    s = CSXExtractorImpl().create_shingles(Title, 5)
                     min_hash = MinHash(num_perm=128)
                     for shingle in s:
                         min_hash.update(shingle.encode('utf8'))
@@ -319,26 +340,6 @@ class CSXExtractorImpl(CSXExtractor):
                 print("exception in findMatchingDocumentsLSH with error msg: ", es)
         return citations
 
-    def create_shingles(doc, k):
-        """
-        Creates shingles and stores them in sets
-
-        Paramaters
-        ----------
-
-        Returns
-        -------
-        """
-        shingled_set = set() # create an empty set
-
-        doc_length = len(doc)
-
-        # iterate through the string and slice it up by k-chars at a time
-        for idx in range(doc_length - k + 1):
-            doc_slice = doc[idx:idx + k]
-            shingled_set.add(doc_slice)
-
-        return shingled_set
 
 
 if __name__ == "__main__":
