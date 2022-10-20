@@ -317,17 +317,13 @@ class CSXExtractorImpl(CSXExtractor):
                             pass
 
                     #Title = paper.title
-                    Title = "Padhy “Comparison of Particle Swarm and Genetic Algorithm for FACTS-based Controller Design"
+                    Title = "Padhy Comparison of Particle Swarm and Genetic Algorithm for FACTS-based Controller Design"
                     print(Title)
                     s = CSXExtractorImpl().create_shingles(Title, 5)
                     min_hash = MinHash(num_perm=128)
-                    print("step1")
                     for shingle in s:
                         min_hash.update(shingle.encode('utf8'))
-                    print("step2")
                     result = lsh.query(min_hash)
-                    print('min has result')
-                    print(result)
                     if (result == None):
                         continue
                     if (result!=None):
