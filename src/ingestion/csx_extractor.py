@@ -250,11 +250,7 @@ class CSXExtractorImpl(CSXExtractor):
 
     def mergeMatchingDocs(self, wrapper, paper, matching_s2org_doc_id):
         print("found matching document for the citation------>\n")
-        print("actual paper-->\n")
-        print(paper)
         matching_doc = wrapper.get_doc_by_id(matching_s2org_doc_id)
-        print("matched paper-->\n")
-        print(matching_doc)
         for doc in matching_doc:
             cited_by = doc['_source']['cited_by']
             cited_by.append(paper.get_cites[0])

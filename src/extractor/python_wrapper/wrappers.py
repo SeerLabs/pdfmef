@@ -283,7 +283,7 @@ class ElasticSearchWrapper(Wrapper):
                     }
                   }
                }
-        results = self.get_connection().search(index=settings.CLUSTERS_INDEX, body=body)
+        results = self.get_connection_prod().search(index=settings.CLUSTERS_INDEX, body=body)
         self.s2_batch = results['hits']['hits']
 
     def update_document_with_citation(self, doc_id, cited_by):
@@ -293,7 +293,6 @@ class ElasticSearchWrapper(Wrapper):
             }
         }
         response = self.get_connection_prod().update(index=Settings.CLUSTERS_INDEX, doc_type="_doc", id=doc_id, body=source_to_update)
-        print ('response:', response)
 
     def get_batch_for_lsh_matching(self, year):
         """Purpose: retrieves batch of documents to process from server"""
