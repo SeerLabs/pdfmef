@@ -304,8 +304,6 @@ class CSXExtractorImpl(CSXExtractor):
                         title = doc['_source']['title']
                         id = doc['_source']['paper_id'][0]
                         title = paper.title
-                        print("loveee")
-                        print(id)
 
                         d={}
                         with_wildcard = False
@@ -323,8 +321,10 @@ class CSXExtractorImpl(CSXExtractor):
                     Title = paper.title
                     s = CSXExtractorImpl().create_shingles(Title, 5)
                     min_hash = MinHash(num_perm=128)
+                    print("step1")
                     for shingle in s:
                         min_hash.update(shingle.encode('utf8'))
+                    print("step2")
                     result = lsh.query(min_hash)
                     print('min has result')
                     print(result)
