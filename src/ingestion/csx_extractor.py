@@ -324,8 +324,6 @@ class CSXExtractorImpl(CSXExtractor):
                     for shingle in s:
                         min_hash.update(shingle.encode('utf8'))
                     result = lsh.query(min_hash)
-                    print("inside findMatchingDocumentsLSH result is-->\n")
-                    print(result)
                     if (result == None):
                         continue
                     if (result!=None):
