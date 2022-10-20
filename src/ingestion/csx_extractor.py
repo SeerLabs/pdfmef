@@ -263,6 +263,7 @@ class CSXExtractorImpl(CSXExtractor):
         config = configparser.ConfigParser()
         config.read("/pdfmef-code/src/extractor/python_wrapper/properties.config")
         elasticConnectionProps = dict(config.items('ElasticConnectionProperties'))
+        print(elasticConnectionProps)
         wrapper = ElasticSearchWrapper(elasticConnectionProps)
         citations = []
         print("all citations-->\n")
