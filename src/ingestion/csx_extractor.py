@@ -21,6 +21,199 @@ import configparser
 logger = logging.getLogger(__name__)
 logger.info("Configured the logger!")
 
+import time
+from multiprocessing import Pool
+import concurrent.futures as cf
+
+from pathlib import Path
+import os, time
+import configparser
+from datasketch import MinHash, MinHashLSH
+
+from models.elastic_models import Cluster, KeyMap, Cluster_original
+from services.elastic_service import ElasticService
+from shutil import copyfile
+
+from elasticsearch import Elasticsearch
+import settings
+
+from settings import REPOSITORY_BASE_PATH
+
+import logging
+
+logger = logging.getLogger(__name__)
+
+
+class Wrapper:
+
+    #get_document_batch()
+    #Purpose: retrieves batch of documents to process from server
+    def get_document_batch(self):
+        raise NotImplementedError('Extend me!')
+
+    #get_document_ids()
+    #
+    #Purpose: parses the ids of all documents in a batch
+    #Returns: list of string ids
+    def get_document_ids(self):
+        raise NotImplementedError('Extend me!')
+
+    #get_document_paths()
+    #
+    #Purpose: parses the paths of all documents in a batch
+    #Returns: list of document paths as strings
+    def get_document_paths(self):
+        raise NotImplementedError('Extend me!')
+
+    #update_state(ids, state)
+    #
+    #Purpose: updates the extraction state of the given documents in the database
+    #Parameters: ids - list of documents ids, state - the int state to assignt to each document
+    def update_state(self, ids, state):
+        raise NotImplementedError('Extend me!')
+
+    #on_stop()
+    #
+    #Purpose: performs any necessary closing statements to free up connections and such
+    def on_stop(self):
+        raise NotImplementedError('Extend me!')
+
+
+class ElasticSearchWrapper(Wrapper):
+    def __init__(self, config):
+        self.curr_index = 0
+        self.file_path_sha1_mapping = {}
+        self.file_path_source_url_map = {}
+        self.batchSize = int(config['batchsize'])
+        self.batch = None
+        self.s2_batch = None
+
+
+    def get_s2_doc_by_id(self, id):
+        body = {
+                 "query": {
+                    "term": {
+                      "id": {
+                        "value": id
+                      }
+                    }
+                  }
+               }
+        results = self.get_connection_prod().search(index=settings.S2_META_INDEX, body=body)
+        return results['hits']['hits']
+
+    def get_s2_batch_for_lsh_matching(self, author, year):
+        """Purpose: retrieves batch of documents to process from server"""
+        #print("inside get_s2_batch_for_lsh_matching---> \n")
+        body = {
+                 "from": 0,
+                 "size": 10000,
+                 "query": {
+                   "bool": {
+                     "must": [
+                        {
+                          "wildcard": {
+                            "authors.name": author
+                          }
+                        },
+                       {
+                         "term": {
+                           "year": year
+                         }
+                       }
+                     ]
+                   }
+                 }
+               }
+
+        results = self.get_connection_prod().search(index=settings.S2_META_INDEX, body=body)
+        #print("\n results\n")
+        self.s2_batch = results['hits']['hits']
+        return self.s2_batch
+
+    def get_document_batch(self):
+        """Purpose: retrieves batch of documents to process from server"""
+        body = {
+            "from": 0,
+            "size": self.batchSize,
+            "query": {
+                "multi_match": {
+                    "query": "fresh",
+                    "fields": "text_status"
+                }
+            }
+        }
+
+        results = self.get_connection().search(index=settings.CRAWL_META_INDEX, body=body)
+        self.batch = results['hits']['hits']
+
+    def get_document_ids(self):
+        """Purpose: parses the ids of all documents in a batch
+            Returns: list of string ids"""
+        ids = []
+        for element in self.batch:
+            ids.append(element['_id'])
+        return ids
+
+    def get_source_urls(self):
+        urls = []
+        for entry in self.batch:
+            urls.append(entry['_source']['source'])
+        return urls
+
+    def get_connection(self):
+        return Elasticsearch([{'host': '130.203.139.151', 'port': 9200}])
+
+    def get_connection_prod(self):
+        return Elasticsearch([{'host': '130.203.139.160', 'port': 9200}])
+
+    def get_document_paths(self):
+        """get_document_paths(docs)
+        Purpose: parses the paths of all documents in a batch
+        #Returns: list of document paths as strings"""
+        paths = []
+        for element in self.batch:
+            strr = str(element['_source']['pdf_path'])
+            if strr.endswith('\n'):
+                strr = strr[:-1]
+            paths.append(strr)
+            self.file_path_sha1_mapping[strr] = element['_id']
+            self.file_path_source_url_map[strr] = element['_source']['source']
+        return paths
+
+    def update_state(self, ids, state):
+        """update_state(ids, state)
+        Purpose: updates the extraction state of the given documents in the database
+        Parameters: ids - list of documents ids, state - the int state to assignt to each document"""
+        body = {
+            "script": {
+                "source": "ctx._source.text_status=" + "'" + state + "'",
+                "lang": "painless"
+            },
+            "query": {
+                "terms": {
+                    "_id": ids
+                }
+            }
+        }
+        print(body['script'])
+        try:
+            status = self.get_connection().update_by_query(index=settings.CRAWL_META_INDEX, body=body,
+                                                           request_timeout=1000, refresh=True)
+        except Exception as e:
+            print(e)
+
+    def on_stop(self):
+        """Purpose: perform necessary closing statements
+         Behavior: nothing to do"""
+        print('closed')
+
+    def file_path_to_id(self, fileName):
+        return self.file_path_sha1_mapping[fileName]
+
+    def file_path_to_source_url(self, filePath):
+        return self.file_path_source_url_map[filePath]
+
 class CSXExtractorImpl(CSXExtractor):
 
     @classmethod
@@ -266,9 +459,8 @@ class CSXExtractorImpl(CSXExtractor):
             config.read("/pdfmef-code/src/extractor/python_wrapper/properties.config")
         except Exception as ex:
             print(ex)
-        print("here--------------\n")
-        print(config)
         elasticConnectionProps = dict(config.items('ElasticConnectionProperties'))
+        print(elasticConnectionProps)
         wrapper = ElasticSearchWrapper(elasticConnectionProps)
         citations = []
         for paper in papers:
