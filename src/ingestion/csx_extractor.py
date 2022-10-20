@@ -254,6 +254,7 @@ class CSXExtractorImpl(CSXExtractor):
         matching_doc = wrapper.get_doc_by_id(matching_s2org_doc_id)
         if matching_doc:
             for doc in matching_doc:
+                print(doc)
                 cited_by = doc['_source']['cited_by']
                 cited_by.append(paper.get_cites[0])
                 wrapper.update_document_with_citation(doc['_id'], cited_by)
