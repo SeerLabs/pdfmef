@@ -159,7 +159,6 @@ class CSXExtractorImpl(CSXExtractor):
             citation.is_citation = True
             citation.has_pdf = False
             citations.append(citation)
-        print("inside citation extraction finding matching documents")
         citations = CSXExtractorImpl().findMatchingDocumentsLSH(citations)
         return citations
 
@@ -238,7 +237,6 @@ class CSXExtractorImpl(CSXExtractor):
     def extract_textual_data(self, filepath, source_url):
         try:
             papers = []
-            print(filepath)
             tei_root = parse(filepath)
             tei_filename = str(filepath[str(filepath).rfind('/')+1:])
             paper_id = tei_filename[:tei_filename.rfind('.')]
@@ -249,16 +247,13 @@ class CSXExtractorImpl(CSXExtractor):
         return papers
 
     def mergeMatchingDocs(self, wrapper, paper, matching_doc_id):
-        print("found matching document for the citation------>\n")
-        print(matching_doc_id)
         matching_doc = wrapper.get_doc_by_id(matching_doc_id)
         if matching_doc:
             for doc in matching_doc:
                 cited_by = doc['_source']['cited_by']
                 cited_by.append(paper.cited_by[0])
-                print(cited_by)
                 wrapper.update_document_with_citation(doc['_id'], cited_by)
-                print("merged document successfully\n")
+                print("updated citation successfully\n")
 
     def create_shingles(self, doc, k):
         """
@@ -282,18 +277,15 @@ class CSXExtractorImpl(CSXExtractor):
         return shingled_set
 
     def findMatchingDocumentsLSH(self, papers):
-        print('inside findMatchingDocumentsLSH citations processed-->\n')
         config = configparser.ConfigParser()
         try:
             config.read("/pdfmef-code/src/extractor/python_wrapper/properties.config")
         except Exception as ex:
             print(ex)
-        elasticConnectionProps = dict(config.items('ElasticConnectionProperties'))
-        print(elasticConnectionProps)
+        elasticConnectionProps = dict(config.items('ElasticConnectionProperties')))
         wrapper = wrappers.ElasticSearchWrapper(elasticConnectionProps)
         citations = []
         for paper in papers:
-            print("inside processing papers--->\n")
             paper.pub_info = {'year': '2008'}
             try:
                 if (paper.pub_info.year):
@@ -301,7 +293,6 @@ class CSXExtractorImpl(CSXExtractor):
                     lsh = MinHashLSH(threshold=0.7, num_perm=128)
                     for doc in documents:
                         try:
-                            print('here in for doc\n')
                             title = doc['_source']['title']
                             id = doc['_source']['paper_id'][0]
                             d={}
@@ -318,7 +309,6 @@ class CSXExtractorImpl(CSXExtractor):
 
                     #Title = paper.title
                     Title = "Comparison of Particle Swarm and Genetic Algorithm for based Controller Design"
-                    print(Title)
                     s = CSXExtractorImpl().create_shingles(Title, 5)
                     min_hash = MinHash(num_perm=128)
                     for shingle in s:
