@@ -308,7 +308,7 @@ class CSXExtractorImpl(CSXExtractor):
                             pass
 
                     #Title = paper.title
-                    Title = "Comparison of Particle Swarm and Genetic Algorithm for based Controller Design"
+                    Title = "Comparison of Particle Swarm Optimization and Genetic Algorithm for FACTS-based Controller"
                     s = CSXExtractorImpl().create_shingles(Title, 5)
                     min_hash = MinHash(num_perm=128)
                     for shingle in s:
