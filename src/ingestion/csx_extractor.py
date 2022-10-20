@@ -22,6 +22,68 @@ logger.info("Configured the logger!")
 
 class CSXExtractorImpl(CSXExtractor):
 
+    def findMatchingDocumentsLSH(papers):
+        config = configparser.ConfigParser()
+        config.read("/pdfmef-code/src/extractor/python_wrapper/properties.config")
+        elasticConnectionProps = dict(config.items('ElasticConnectionProperties'))
+        wrapper = ElasticSearchWrapper(elasticConnectionProps)
+        citations = []
+        for paper in papers:
+            try:
+                if (paper.pub_info.year):
+                    documents = wrapper.get_batch_for_lsh_matching(paper.pub_info['year'])
+                    lsh = MinHashLSH(threshold=0.7, num_perm=128)
+                    for doc in documents:
+                        title = doc['_source']['title']
+                        id = doc['_source']['paper_id'][0]
+
+                        d={}
+                        with_wildcard = False
+                        count = 0
+
+                        s = create_shingles(title, 5)
+
+                        min_hash = MinHash(num_perm=128)
+                        for shingle in s:
+                            min_hash.update(shingle.encode('utf8'))
+
+                        if (not id in lsh):
+                            lsh.insert(f"{id}", min_hash)
+
+                    Title = paper.title
+                    s = create_shingles(Title, 5)
+                    min_hash = MinHash(num_perm=128)
+                    for shingle in s:
+                        min_hash.update(shingle.encode('utf8'))
+                    result = lsh.query(min_hash)
+                    print("inside findMatchingDocumentsLSH result is-->\n")
+                    print(result)
+                    if (result == None):
+                        continue
+                    if (result!=None):
+                        if len(result) > 0:
+                            result[0]
+                            mergeMatchingDocs(wrapper, paper, result[0])
+                        else:
+                            citations.append(paper)
+
+            except Exception as es:
+                print("exception in findMatchingDocumentsLSH with error msg: ", es)
+        return citations
+
+    def mergeMatchingDocs(wrapper, paper, matching_s2org_doc_id):
+        print("found matching document for the citation------>\n")
+        print("actual paper-->\n")
+        print(paper)
+        matching_doc = wrapper.get_doc_by_id(matching_s2org_doc_id)
+        print("matched paper-->\n")
+        print(matching_doc)
+        for doc in matching_doc:
+            cited_by = doc['_source']['cited_by']
+            cited_by.append(paper.get_cites[0])
+            wrapper.update_document_with_citation(doc['_id'], cited_by)
+            print("merged document successfully\n")
+
     def batch_extract_textual_data(self, dirPath):
         pass
 
@@ -33,23 +95,10 @@ class CSXExtractorImpl(CSXExtractor):
 
     def extract_textual_data(self, filepath, source_url):
         try:
-            tei_root = parse(filepath)
             papers = []
-            paper = Cluster()
-            paper.source_url = source_url
-            tei_filename = str(filepath[str(filepath).rfind('/')+1:])
-            paper_id = tei_filename[:tei_filename.rfind('.')]
-            paper.add_paper_id(paper_id)
-            paper.title = self.extract_title_from_tei_root(tei_root)
-            paper.abstract = self.extract_abstract(tei_root)
-            paper.pub_info = self.extract_paper_pub_info_from_tei_root(tei_root)
-            paper.authors = self.extract_authors_from_tei_root(tei_root)
-            paper.has_pdf = True
-            paper.is_citation = False
+            tei_root = parse(filepath)
+            paper_id = tei_filename[:tei_filename.rfind('.')]x
             citations = self.extract_citations_from_tei_root(tei_root=tei_root, paper_id=paper_id)
-            paper.text = self.extract_text_from_tei_root(tei_root)
-            paper.keys = KeyGenerator().get_keys(paper.title, paper.authors)
-            papers.append(paper)
             papers.extend(citations)
         except Exception as e:
             logger.error("exception occured while extracting textual data for filepath: "+filepath+" with error message: "+e)
@@ -189,6 +238,7 @@ class CSXExtractorImpl(CSXExtractor):
             citation.is_citation = True
             citation.has_pdf = False
             citations.append(citation)
+        citations = findMatchingDocumentsLSH(citations)
         return citations
 
     @classmethod

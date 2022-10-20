@@ -273,20 +273,29 @@ class ElasticSearchWrapper(Wrapper):
         self.s2_batch = None
 
 
-    def get_s2_doc_by_id(self, id):
+    def get_doc_by_id(self, id):
         body = {
                  "query": {
                     "term": {
-                      "id": {
+                      "paper_id": {
                         "value": id
                       }
                     }
                   }
                }
-        results = self.get_connection().search(index=settings.S2_META_INDEX, body=body)
+        results = self.get_connection().search(index=settings.CLUSTERS_INDEX, body=body)
         self.s2_batch = results['hits']['hits']
 
-    def get_s2_batch_for_lsh_matching(self, author, year):
+    def update_document_with_citation(self, doc_id, cited_by):
+        source_to_update = {
+        ""doc"" : {
+        ""cited_by"" : cited_by
+        }
+        }
+        response = elastic_client.update(index=Settings.CLUSTERS_INDEX, doc_type=""_doc"", id=doc_id, body=source_to_update)
+        print ('response:', response)
+
+    def get_batch_for_lsh_matching(self, year):
         """Purpose: retrieves batch of documents to process from server"""
         print("inside get_s2_batch_for_lsh_matching---> \n")
         body = {
@@ -295,11 +304,6 @@ class ElasticSearchWrapper(Wrapper):
                  "query": {
                    "bool": {
                      "must": [
-                      {
-                          "match": {
-                            "authors.name.keyword": author
-                          }
-                      },
                        {
                          "term": {
                            "year": year
@@ -310,7 +314,7 @@ class ElasticSearchWrapper(Wrapper):
                  }
                }
 
-        results = self.get_connection_prod().search(index=settings.S2_META_INDEX, body=body)
+        results = self.get_connection_prod().search(index=settings.CLUSTERS_INDEX, body=body)
         self.s2_batch = results['hits']['hits']
 
     def get_document_batch(self):
@@ -349,7 +353,7 @@ class ElasticSearchWrapper(Wrapper):
         return urls
 
     def get_connection(self):
-        return Elasticsearch([{'host': '130.203.139.151', 'port': 9200}])
+        return Elasticsearch([{'host': '130.203.139.160', 'port': 9200}])
 
     def get_connection_prod(self):
         return Elasticsearch([{'host': '130.203.139.160', 'port': 9200}])
