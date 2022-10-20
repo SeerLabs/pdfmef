@@ -304,6 +304,8 @@ class CSXExtractorImpl(CSXExtractor):
                         title = doc['_source']['title']
                         id = doc['_source']['paper_id'][0]
                         title = paper.title
+                        print('paper title is--->\n')
+                        print(title)
 
                         d={}
                         with_wildcard = False
