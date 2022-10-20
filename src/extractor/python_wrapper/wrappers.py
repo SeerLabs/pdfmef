@@ -316,11 +316,11 @@ class ElasticSearchWrapper(Wrapper):
                   }
                }
 
-        results = self.get_connection_prod().search(index=settings.CLUSTERS_INDEX, body={})
+        results = self.get_connection_prod().search(index=settings.CLUSTERS_INDEX, body=body)
         print("here----------->")
-        print(body)
         #print(results)
         self.s2_batch = results['hits']['hits']
+        return self.s2_batch
 
     def get_document_batch(self):
         """Purpose: retrieves batch of documents to process from server"""
