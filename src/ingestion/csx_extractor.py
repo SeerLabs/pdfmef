@@ -97,13 +97,11 @@ class CSXExtractorImpl(CSXExtractor):
 
     def extract_textual_data(self, filepath, source_url):
         try:
-            print("inside extract_textual_data-->")
             papers = []
             print(filepath)
             tei_root = parse(filepath)
+            tei_filename = str(filepath[str(filepath).rfind('/')+1:])
             paper_id = tei_filename[:tei_filename.rfind('.')]
-            print(tei_filename)
-            print(paper_id)
             citations = self.extract_citations_from_tei_root(tei_root=tei_root, paper_id=paper_id)
             papers.extend(citations)
         except Exception as e:
