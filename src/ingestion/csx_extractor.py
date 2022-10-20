@@ -265,8 +265,9 @@ class CSXExtractorImpl(CSXExtractor):
         elasticConnectionProps = dict(config.items('ElasticConnectionProperties'))
         wrapper = ElasticSearchWrapper(elasticConnectionProps)
         citations = []
-        print(papers)
         for paper in papers:
+            print("inside processing papers--->\n")
+            print(paper)
             try:
                 if (paper.pub_info.year):
                     documents = wrapper.get_batch_for_lsh_matching(paper.pub_info['year'])
