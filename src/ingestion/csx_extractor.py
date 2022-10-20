@@ -255,7 +255,7 @@ class CSXExtractorImpl(CSXExtractor):
         if matching_doc:
             for doc in matching_doc:
                 cited_by = doc['_source']['cited_by']
-                cited_by.extend(paper.get_cites)
+                cited_by.extend(paper.cited_by[0])
                 print(cited_by)
                 wrapper.update_document_with_citation(doc['_id'], cited_by)
                 print("merged document successfully\n")
