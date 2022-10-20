@@ -112,7 +112,6 @@ def get_extraction_runner(modules):
     if modules['academicfilter'] == 'True':
         runner.add_runnable(filters.AcademicPaperFilter)
     if modules['fulltext'] == 'True':
-        print("inside adding full text extractor")
         if modules['fulltext_grobid'] == 'True':
             runner.add_runnable(grobid.GrobidTEIExtractor)
     if modules['header'] == 'True':

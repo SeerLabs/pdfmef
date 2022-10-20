@@ -97,6 +97,7 @@ class CSXExtractorImpl(CSXExtractor):
 
     def extract_textual_data(self, filepath, source_url):
         try:
+            print("inside extract_textual_data-->")
             papers = []
             tei_root = parse(filepath)
             paper_id = tei_filename[:tei_filename.rfind('.')]
