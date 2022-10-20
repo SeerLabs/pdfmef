@@ -282,6 +282,7 @@ class CSXExtractorImpl(CSXExtractor):
                     for doc in documents:
                         title = doc['_source']['title']
                         id = doc['_source']['paper_id'][0]
+                        title = paper.title
 
                         d={}
                         with_wildcard = False
