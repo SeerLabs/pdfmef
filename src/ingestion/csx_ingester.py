@@ -291,6 +291,7 @@ def mergeMatchingDocs(wrapper, paper, matching_s2org_doc_id):
         print("merged document successfully\n")
 
 def ingest_paper_parallel_func(combo):
+    print("inside here------------------------>")
     papers = CSXExtractorImpl().extract_textual_data(combo[0], combo[2])
     #findMatchingDocumentsS2orcLSH(papers)
     #move_to_repository(combo[0], combo[1])
