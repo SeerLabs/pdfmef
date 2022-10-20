@@ -298,6 +298,7 @@ class ElasticSearchWrapper(Wrapper):
     def get_batch_for_lsh_matching(self, year):
         """Purpose: retrieves batch of documents to process from server"""
         print("inside get_s2_batch_for_lsh_matching---> \n")
+        print(year)
         body = {
                  "from": 0,
                  "size": 1000,
@@ -319,6 +320,7 @@ class ElasticSearchWrapper(Wrapper):
         print("here----------->")
         print(body)
         #print(results)
+        print(str(results))
         self.s2_batch = results['hits']['hits']
 
     def get_document_batch(self):
