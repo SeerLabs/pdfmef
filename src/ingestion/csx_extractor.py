@@ -18,6 +18,7 @@ from extractor.python_wrapper import utils, wrappers
 import functools
 import logging
 import configparser
+from datasketch import MinHash, MinHashLSH
 
 logger = logging.getLogger(__name__)
 logger.info("Configured the logger!")
