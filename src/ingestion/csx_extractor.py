@@ -28,6 +28,8 @@ class CSXExtractorImpl(CSXExtractor):
         elasticConnectionProps = dict(config.items('ElasticConnectionProperties'))
         wrapper = ElasticSearchWrapper(elasticConnectionProps)
         citations = []
+        print('inside findMatchingDocumentsLSH citations processed-->\n')
+        print(papers)
         for paper in papers:
             try:
                 if (paper.pub_info.year):
