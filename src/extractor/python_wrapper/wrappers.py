@@ -315,10 +315,10 @@ class ElasticSearchWrapper(Wrapper):
                   }
                }
 
-        results = self.get_connection_prod().search(index=settings.CLUSTERS_INDEX, body=body)
+        results = self.get_connection_prod().search(index=settings.CLUSTERS_INDEX, body=body.encode("utf-8"))
         print("here----------->")
         print(body)
-        print(results)
+        #print(results)
         self.s2_batch = results['hits']['hits']
 
     def get_document_batch(self):
