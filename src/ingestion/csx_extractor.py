@@ -22,6 +22,7 @@ logger.info("Configured the logger!")
 
 class CSXExtractorImpl(CSXExtractor):
 
+    @classmethod
     def findMatchingDocumentsLSH(self, papers):
         config = configparser.ConfigParser()
         config.read("/pdfmef-code/src/extractor/python_wrapper/properties.config")
@@ -73,6 +74,7 @@ class CSXExtractorImpl(CSXExtractor):
                 print("exception in findMatchingDocumentsLSH with error msg: ", es)
         return citations
 
+    @classmethod
     def mergeMatchingDocs(self, wrapper, paper, matching_s2org_doc_id):
         print("found matching document for the citation------>\n")
         print("actual paper-->\n")
