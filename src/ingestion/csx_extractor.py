@@ -303,6 +303,7 @@ class CSXExtractorImpl(CSXExtractor):
                         print('here in for doc\n')
                         title = doc['_source']['title']
                         id = doc['_source']['paper_id'][0]
+                        title = paper.title
 
                         print(id)
 
@@ -319,8 +320,7 @@ class CSXExtractorImpl(CSXExtractor):
                         if (not id in lsh):
                             lsh.insert(f"{id}", min_hash)
 
-                    #Title = paper.title
-                    Title = "Padhy “Comparison of Particle Swarm Optimization and Algorithm for FACTS-based Controller Design"
+                    Title = paper.title
                     s = CSXExtractorImpl().create_shingles(Title, 5)
                     min_hash = MinHash(num_perm=128)
                     for shingle in s:
