@@ -284,6 +284,7 @@ class ElasticSearchWrapper(Wrapper):
                   }
                }
         results = self.get_connection_prod().search(index=settings.CLUSTERS_INDEX, body=body)
+        print(body)
         self.s2_batch = results['hits']['hits']
 
     def update_document_with_citation(self, doc_id, cited_by):

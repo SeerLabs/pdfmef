@@ -250,12 +250,14 @@ class CSXExtractorImpl(CSXExtractor):
 
     def mergeMatchingDocs(self, wrapper, paper, matching_s2org_doc_id):
         print("found matching document for the citation------>\n")
+        print(matching_s2org_doc_id)
         matching_doc = wrapper.get_doc_by_id(matching_s2org_doc_id)
-        for doc in matching_doc:
-            cited_by = doc['_source']['cited_by']
-            cited_by.append(paper.get_cites[0])
-            wrapper.update_document_with_citation(doc['_id'], cited_by)
-            print("merged document successfully\n")
+        if matching_doc:
+            for doc in matching_doc:
+                cited_by = doc['_source']['cited_by']
+                cited_by.append(paper.get_cites[0])
+                wrapper.update_document_with_citation(doc['_id'], cited_by)
+                print("merged document successfully\n")
 
     def create_shingles(self, doc, k):
         """
