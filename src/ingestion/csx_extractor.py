@@ -274,10 +274,10 @@ class CSXExtractorImpl(CSXExtractor):
         citations = []
         for paper in papers:
             print("inside processing papers--->\n")
-            print(paper.pub_info)
+            paper.pub_info = {'year': '2008'}
             try:
                 if (paper.pub_info.year):
-                    documents = wrapper.get_batch_for_lsh_matching('2008')
+                    documents = wrapper.get_batch_for_lsh_matching(paper.pub_info.year)
                     lsh = MinHashLSH(threshold=0.7, num_perm=128)
                     print(documents)
                     for doc in documents:

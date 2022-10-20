@@ -307,7 +307,7 @@ class ElasticSearchWrapper(Wrapper):
                       "query": {
                         "term": {
                           "pub_info.year": {
-                            "value": "2008"
+                            "value": year
                           }
                         }
                       }
@@ -316,6 +316,7 @@ class ElasticSearchWrapper(Wrapper):
                }
 
         results = self.get_connection_prod().search(index=settings.CLUSTERS_INDEX, body=body)
+        print(results)
         self.s2_batch = results['hits']['hits']
 
     def get_document_batch(self):
