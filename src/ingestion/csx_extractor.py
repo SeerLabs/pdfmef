@@ -286,7 +286,7 @@ class CSXExtractorImpl(CSXExtractor):
         wrapper = wrappers.ElasticSearchWrapper(elasticConnectionProps)
         citations = []
         for paper in papers:
-            paper.pub_info = {'year': '2008'}
+            paper.pub_info = {'year': '2020'}
             try:
                 if (paper.pub_info.year):
                     documents = wrapper.get_batch_for_lsh_matching(paper.pub_info.year)
@@ -307,8 +307,8 @@ class CSXExtractorImpl(CSXExtractor):
                         except Exception:
                             pass
 
-                    #Title = paper.title
-                    Title = "Comparison of Particle Swarm Optimization and Genetic Algorithm for FACTS-based Controller"
+                    Title = paper.title
+                    #Title = "Comparison of Particle Swarm Optimization and Genetic Algorithm for FACTS-based Controller"
                     s = CSXExtractorImpl().create_shingles(Title, 5)
                     min_hash = MinHash(num_perm=128)
                     for shingle in s:
