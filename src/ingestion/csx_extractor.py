@@ -293,6 +293,8 @@ class CSXExtractorImpl(CSXExtractor):
                     lsh = MinHashLSH(threshold=0.7, num_perm=128)
                     for doc in documents:
                         try:
+                            print("inside findMatchingDocumentsLSH")
+                            print(doc['_source']['title'])
                             title = doc['_source']['title']
                             id = doc['_source']['paper_id'][0]
                             d={}
@@ -314,6 +316,8 @@ class CSXExtractorImpl(CSXExtractor):
                     for shingle in s:
                         min_hash.update(shingle.encode('utf8'))
                     result = lsh.query(min_hash)
+                    print("inside lsh query result")
+                    print(result)
                     if (result == None):
                         continue
                     if (result!=None):
