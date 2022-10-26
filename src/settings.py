@@ -1,4 +1,4 @@
-CLUSTERS_INDEX = "csx_citeseer_papers"
+CLUSTERS_INDEX = "csx_citeseer_papers_test"
 ACL_CLUSTER_ORIGINAL_INDEX = "acl_metadata_bib2"
 KEYMAP_INDEX = "csx_citeseer_papers_keymap"
 PUB_INFO_TYPE = "pub_info"
