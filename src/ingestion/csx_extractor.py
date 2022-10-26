@@ -295,7 +295,8 @@ class CSXExtractorImpl(CSXExtractor):
                         try:
                             print("inside findMatchingDocumentsLSH")
                             print(doc['_source']['title'])
-                            title = doc['_source']['title']
+                            #title = doc['_source']['title']
+                            title = paper.title
                             id = doc['_source']['paper_id'][0]
                             d={}
                             with_wildcard = False
