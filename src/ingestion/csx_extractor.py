@@ -294,9 +294,9 @@ class CSXExtractorImpl(CSXExtractor):
                     for doc in documents:
                         try:
                             print("inside findMatchingDocumentsLSH")
-                            print(doc['_source']['title'])
                             #title = doc['_source']['title']
                             title = paper.title
+                            print(title)
                             id = doc['_source']['paper_id'][0]
                             d={}
                             with_wildcard = False
@@ -311,6 +311,7 @@ class CSXExtractorImpl(CSXExtractor):
                             pass
 
                     Title = paper.title
+                    print(Title)
                     #Title = "Comparison of Particle Swarm Optimization and Genetic Algorithm for FACTS-based Controller"
                     s = CSXExtractorImpl().create_shingles(Title, 5)
                     min_hash = MinHash(num_perm=128)
