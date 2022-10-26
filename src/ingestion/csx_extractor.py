@@ -250,9 +250,12 @@ class CSXExtractorImpl(CSXExtractor):
         matching_doc = wrapper.get_doc_by_id(matching_doc_id)
         if matching_doc:
             for doc in matching_doc:
-                cited_by = doc['_source']['cited_by']
-                cited_by.append(paper.cited_by[0])
-                wrapper.update_document_with_citation(doc['_id'], cited_by)
+                try:
+                    cited_by = doc['_source']['cited_by']
+                    cited_by.append(paper.cited_by[0])
+                    wrapper.update_document_with_citation(doc['_id'], cited_by)
+                except Exception:
+                    wrapper.update_document_with_citation(doc['_id'], [paper.cited_by[0]])
                 print("updated citation successfully\n")
 
     def create_shingles(self, doc, k):
