@@ -295,7 +295,7 @@ class CSXExtractorImpl(CSXExtractor):
         for paper in papers:
             try:
                 if (paper.pub_info.year):
-                    paper.title = "The duty to secure independent and impartial careers guidance for people in schools"
+                    paper.title = "The duty to secure independent and impartial careers guidance for young people in schools"
                     documents = wrapper.get_batch_for_lsh_matching(paper.title)
                     lsh = MinHashLSH(threshold=0.80, num_perm=128)
                     for doc in documents:
