@@ -248,9 +248,13 @@ class CSXExtractorImpl(CSXExtractor):
 
     def mergeMatchingDocs(self, wrapper, paper, matching_doc_id):
         matching_doc = wrapper.get_doc_by_id(matching_doc_id)
+        print("<-------------------incoming and matched titles---------------->\n")
+        print(paper.title)
+        print("---\n-------")
         if matching_doc:
             for doc in matching_doc:
                 try:
+                    print(doc['_source']['title'])
                     cited_by = doc['_source']['cited_by']
                     cited_by.append(paper.cited_by[0])
                     wrapper.update_document_with_citation(doc['_id'], cited_by)
@@ -291,6 +295,7 @@ class CSXExtractorImpl(CSXExtractor):
         for paper in papers:
             try:
                 if (paper.pub_info.year):
+                    paper.title = "Securing independent careers guidance: a practical guide for schools"
                     documents = wrapper.get_batch_for_lsh_matching(paper.title)
                     lsh = MinHashLSH(threshold=0.95, num_perm=128)
                     for doc in documents:
