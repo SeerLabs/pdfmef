@@ -300,8 +300,11 @@ class CSXExtractorImpl(CSXExtractor):
                     lsh = MinHashLSH(threshold=0.95, num_perm=128)
                     for doc in documents:
                         try:
+                            print("here in lsh model training---\n")
                             title = doc['_source']['title']
                             id = doc['_source']['paper_id'][0]
+                            print(title)
+                            print(id)
                             d={}
                             with_wildcard = False
                             count = 0
