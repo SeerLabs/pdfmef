@@ -315,6 +315,8 @@ class CSXExtractorImpl(CSXExtractor):
                             pass
 
                     Title = paper.title
+                    print("trying to match title-----\n")
+                    print(Title)
                     s = CSXExtractorImpl().create_shingles(Title, 5)
                     min_hash = MinHash(num_perm=128)
                     for shingle in s:
