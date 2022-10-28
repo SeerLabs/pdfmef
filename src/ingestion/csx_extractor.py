@@ -289,16 +289,13 @@ class CSXExtractorImpl(CSXExtractor):
         wrapper = wrappers.ElasticSearchWrapper(elasticConnectionProps)
         citations = []
         for paper in papers:
-            paper.pub_info = {'year': '2020'}
             try:
                 if (paper.pub_info.year):
-                    documents = wrapper.get_batch_for_lsh_matching(paper.pub_info.year)
-                    lsh = MinHashLSH(threshold=0.7, num_perm=128)
+                    documents = wrapper.get_batch_for_lsh_matching(paper.title)
+                    lsh = MinHashLSH(threshold=0.95, num_perm=128)
                     for doc in documents:
                         try:
-                            print("inside findMatchingDocumentsLSH \n")
                             title = doc['_source']['title']
-                            print(title)
                             id = doc['_source']['paper_id'][0]
                             d={}
                             with_wildcard = False
@@ -312,10 +309,7 @@ class CSXExtractorImpl(CSXExtractor):
                         except Exception:
                             pass
 
-                    #Title = paper.title
-                    Title = "LETTER TO THE EDITOR"
-                    print("inside matching doc\n")
-                    print(Title)
+                    Title = paper.title
                     s = CSXExtractorImpl().create_shingles(Title, 5)
                     min_hash = MinHash(num_perm=128)
                     for shingle in s:

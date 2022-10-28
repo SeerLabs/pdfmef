@@ -296,25 +296,45 @@ class ElasticSearchWrapper(Wrapper):
         }
         response = self.get_connection_prod().update(index=settings.CLUSTERS_INDEX, id=doc_id, body=source_to_update)
 
-    def get_batch_for_lsh_matching(self, year):
-        """Purpose: retrieves batch of documents to process from server"""
-        body = {
-                 "from": 0,
-                 "size": 1000,
-                  "query": {
-                    "nested": {
-                      "path": "pub_info",
+    def get_batch_for_lsh_matching(self, title):
+        """Purpose: retrieves batch of documents to process from server
+
+        body = ""
+        try:
+            year = int(year)
+            body = {
                       "query": {
-                        "term": {
-                          "pub_info.year": {
-                            "value": year
+                        "nested": {
+                          "path": "pub_info",
+                          "query": {
+                            range": {
+                                  "pub_info.year": {
+                                    "gte": 10,
+                                    "lte": 20,
+                                    "boost": 2.0
+                                  }
+                                }
+                              }
                           }
                         }
                       }
-                    }
-                  }
-               }
-
+                   }
+        except Exception:
+            pass
+        """
+        "query":{
+          "bool":{
+             "should":
+                {
+                   "match":{
+                      "title":{
+                         "query": title,
+                         "minimum_should_match":"85%"
+                      }
+                   }
+                }
+          }
+        }
         results = self.get_connection_prod().search(index=settings.CLUSTERS_INDEX, body=body)
         self.s2_batch = results['hits']['hits']
         return self.s2_batch
