@@ -248,9 +248,6 @@ class CSXExtractorImpl(CSXExtractor):
 
     def mergeMatchingDocs(self, wrapper, paper, matching_doc_id):
         matching_doc = wrapper.get_doc_by_id(matching_doc_id)
-        print("<-------------------incoming and matched titles---------------->\n")
-        print(paper.title)
-        print("---\n-------")
         if matching_doc:
             for doc in matching_doc:
                 try:
@@ -260,7 +257,6 @@ class CSXExtractorImpl(CSXExtractor):
                     wrapper.update_document_with_citation(doc['_id'], cited_by)
                 except Exception:
                     wrapper.update_document_with_citation(doc['_id'], [paper.cited_by[0]])
-                print("updated citation successfully\n")
 
     def create_shingles(self, doc, k):
         """
@@ -295,16 +291,12 @@ class CSXExtractorImpl(CSXExtractor):
         for paper in papers:
             try:
                 if (paper.pub_info.year):
-                    paper.title = "The duty to secure independent and impartial careers guidance for young people in schools"
                     documents = wrapper.get_batch_for_lsh_matching(paper.title)
-                    lsh = MinHashLSH(threshold=0.80, num_perm=128)
+                    lsh = MinHashLSH(threshold=0.90, num_perm=128)
                     for doc in documents:
                         try:
-                            print("here in lsh model training---\n")
                             title = doc['_source']['title']
                             id = doc['_source']['paper_id'][0]
-                            print(title)
-                            print(id)
                             d={}
                             with_wildcard = False
                             count = 0
@@ -318,15 +310,11 @@ class CSXExtractorImpl(CSXExtractor):
                             pass
 
                     Title = paper.title
-                    print("trying to match title-----\n")
-                    print(Title)
                     s = CSXExtractorImpl().create_shingles(Title, 5)
                     min_hash = MinHash(num_perm=128)
                     for shingle in s:
                         min_hash.update(shingle.encode('utf8'))
                     result = lsh.query(min_hash)
-                    print("inside lsh query result")
-                    print(result)
                     if (result == None):
                         continue
                     if (result!=None):
