@@ -20,6 +20,7 @@ import logging
 import logging.config
 import yaml
 import settings
+import cProfile
 
 # Initialize the logger once as the application starts up.
 with open("/pdfmef-code/src/extractor/logging.yaml", 'rt') as f:
@@ -132,7 +133,7 @@ def get_extraction_runner(modules):
         runner.add_runnable(algorithms.AlgorithmsExtractor)
     return runner
 
-if __name__ == '__main__':
+def main():
     config = configparser.ConfigParser()
     print(os.path.join(os.path.dirname(__file__), 'python_wrapper', 'properties.config'))
     config.read(os.path.join(os.path.dirname(__file__), 'python_wrapper', 'properties.config'))
@@ -215,3 +216,12 @@ if __name__ == '__main__':
     print("--- %s seconds ---" % (time.time() - start_time))
     stopProcessing = config.getboolean('ExtractionConfigurations', 'stopProcessing')
     wrapper.on_stop()
+
+if __name__ == '__main__':
+    import cProfile, pstats
+    profiler = cProfile.Profile()
+    profiler.enable()
+    main()
+    profiler.disable()
+    stats = pstats.Stats(profiler).sort_stats('ncalls')
+    stats.print_stats()
