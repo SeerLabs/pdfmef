@@ -133,7 +133,10 @@ def get_extraction_runner(modules):
         runner.add_runnable(algorithms.AlgorithmsExtractor)
     return runner
 
-def main():
+if __name__ == '__main__':
+    import cProfile, pstats
+    profiler = cProfile.Profile()
+    profiler.enable()
     config = configparser.ConfigParser()
     print(os.path.join(os.path.dirname(__file__), 'python_wrapper', 'properties.config'))
     config.read(os.path.join(os.path.dirname(__file__), 'python_wrapper', 'properties.config'))
@@ -211,19 +214,11 @@ def main():
         print("--- end of batch processing %s seconds ---" % (time.time() - start_time))
         #break
 
-
     logger.info("--- %s seconds ---" % (time.time() - start_time))
     print("--- %s seconds ---" % (time.time() - start_time))
     stopProcessing = config.getboolean('ExtractionConfigurations', 'stopProcessing')
     stopProcessing = True
     wrapper.on_stop()
-
-if __name__ == '__main__':
-    import cProfile, pstats
-    profiler = cProfile.Profile()
-    profiler.enable()
-    print("heree-----")
-    main()
     profiler.disable()
     stats = pstats.Stats(profiler).sort_stats('ncalls')
     stats.print_stats()
