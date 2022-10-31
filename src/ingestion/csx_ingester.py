@@ -19,6 +19,8 @@ import settings
 
 from settings import REPOSITORY_BASE_PATH
 
+from multiprocessing import Process
+
 import logging
 
 logger = logging.getLogger(__name__)
