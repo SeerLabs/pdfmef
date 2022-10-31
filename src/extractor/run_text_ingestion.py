@@ -215,6 +215,7 @@ def main():
     logger.info("--- %s seconds ---" % (time.time() - start_time))
     print("--- %s seconds ---" % (time.time() - start_time))
     stopProcessing = config.getboolean('ExtractionConfigurations', 'stopProcessing')
+    stopProcessing = True
     wrapper.on_stop()
 
 if __name__ == '__main__':
