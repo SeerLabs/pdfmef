@@ -341,6 +341,9 @@ class CSXIngesterImpl(CSXIngester):
         for objProcess in lstProcesses:
             objProcess.start()
 
+        # Wait for all processes to complete
+        for objProcess in lstProcesses:
+            objProcess.join()
         fTimePrefCountEnd = time.perf_counter()
         print(f"Delta ingestion time {fTimePrefCountEnd - fTimePrefCountStart} [s]")
 
