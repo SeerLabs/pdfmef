@@ -333,7 +333,7 @@ class CSXIngesterImpl(CSXIngester):
 
         # Create eight processes
         for idx in range(len(fileList)):
-            lstProcesses.append(Process(target=ingest_paper_parallel_func(fileList[idx], documentPaths[idx], source_urls[idx])))
+            lstProcesses.append(Process(target=ingest_paper_parallel_func((fileList[idx], documentPaths[idx], source_urls[idx]))))
 
         fTimePrefCountStart = time.perf_counter()
 
