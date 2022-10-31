@@ -221,6 +221,7 @@ if __name__ == '__main__':
     import cProfile, pstats
     profiler = cProfile.Profile()
     profiler.enable()
+    print("heree-----")
     main()
     profiler.disable()
     stats = pstats.Stats(profiler).sort_stats('ncalls')
