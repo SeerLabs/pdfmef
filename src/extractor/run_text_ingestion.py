@@ -213,12 +213,12 @@ if __name__ == '__main__':
         logger.info("batch processing-- completed pdfmef extraction and ingestion")
         print("--- end of batch processing %s seconds ---" % (time.time() - start_time))
         #break
+        stopProcessing = True
+        profiler.disable()
+        stats = pstats.Stats(profiler).sort_stats('ncalls')
+        stats.print_stats()
 
     logger.info("--- %s seconds ---" % (time.time() - start_time))
     print("--- %s seconds ---" % (time.time() - start_time))
     stopProcessing = config.getboolean('ExtractionConfigurations', 'stopProcessing')
-    stopProcessing = True
     wrapper.on_stop()
-    profiler.disable()
-    stats = pstats.Stats(profiler).sort_stats('ncalls')
-    stats.print_stats()
