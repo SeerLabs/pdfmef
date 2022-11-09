@@ -349,7 +349,8 @@ class CSXIngesterImpl(CSXIngester):
 
     def ingest_paper(self, filePath):
         papers = CSXExtractorImpl().extract_textual_data(filePath)
-        KeyMatcherClusterer().cluster_papers(papers)
+        print("done extraction!")
+        #KeyMatcherClusterer().cluster_papers(papers)
 
     def ingest_batch(self, dirpath):
         count = 0

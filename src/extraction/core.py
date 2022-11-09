@@ -144,7 +144,7 @@ class ExtractionRunner(object):
       batch_id = utils.random_letters(10)
       self.result_logger.info("Starting Batch {0} Run with {1} processes".format(batch_id, num_processes))
 
-      pool = mp.Pool(1)
+      pool = mp.Pool(num_processes)
       for i, (data, dir) in enumerate(zip(list_of_data, output_dirs)):
          run_name = 'Batch {0} Item {1}'.format(batch_id, i)
          args = (self.runnables, self.runnable_props, data, dir)
