@@ -294,9 +294,10 @@ def mergeMatchingDocs(wrapper, paper, matching_s2org_doc_id):
 
 def ingest_paper_parallel_func(combo):
     papers = CSXExtractorImpl().extract_textual_data(combo[0], combo[2])
+    print("done extraction!")
     #findMatchingDocumentsS2orcLSH(papers)
-    move_to_repository(combo[0], combo[1])
-    KeyMatcherClusterer().cluster_papers(papers)
+    #move_to_repository(combo[0], combo[1])
+    #KeyMatcherClusterer().cluster_papers(papers)
 
 class CSXIngesterImpl(CSXIngester):
     def __init__(self):
@@ -350,7 +351,7 @@ class CSXIngesterImpl(CSXIngester):
     def ingest_paper(self, filePath):
         papers = CSXExtractorImpl().extract_textual_data(filePath)
         print("done extraction!")
-        #KeyMatcherClusterer().cluster_papers(papers)
+        KeyMatcherClusterer().cluster_papers(papers)
 
     def ingest_batch(self, dirpath):
         count = 0
