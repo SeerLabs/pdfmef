@@ -202,7 +202,7 @@ if __name__ == '__main__':
         for file in files:
             readpdf = PyPDF2.PdfFileReader(file)
             totalpages = readpdf.numPages
-            print('page count is --->'+totalpages)
+            print('page count is --->'+str(totalpages))
             if (totalpages<=4):
                  files_to_process.append(file)
 
