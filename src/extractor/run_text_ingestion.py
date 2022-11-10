@@ -203,7 +203,7 @@ if __name__ == '__main__':
             readpdf = PyPDF2.PdfFileReader(file)
             totalpages = readpdf.numPages
             print('page count is --->'+str(totalpages))
-            if (totalpages<=4):
+            if (totalpages<=7):
                  files_to_process.append(file)
 
         runner.run_from_file_batch(files_to_process, outputPaths, num_processes=numProcesses, file_prefixes=prefixes)
