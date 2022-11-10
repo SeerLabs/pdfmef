@@ -21,6 +21,7 @@ import logging.config
 import yaml
 import settings
 import cProfile
+import PyPDF2
 
 # Initialize the logger once as the application starts up.
 with open("/pdfmef-code/src/extractor/logging.yaml", 'rt') as f:
@@ -197,7 +198,15 @@ if __name__ == '__main__':
         for path in documentPaths:
             files.append(baseDocumentPath + path)
 
-        runner.run_from_file_batch(files, outputPaths, num_processes=numProcesses, file_prefixes=prefixes)
+        files_to_process = []
+        for file in files:
+            readpdf = PyPDF2.PdfFileReader(file)
+            totalpages = readpdf.numPages
+            print('page count is --->'+totalpages)
+            if (totalpages<=4):
+                 files_to_process.append(file)
+
+        runner.run_from_file_batch(files_to_process, outputPaths, num_processes=numProcesses, file_prefixes=prefixes)
         on_batch_finished(logPath, wrapper)
         numDocs += config.getint('ConnectionProperties', 'batchSize')
 
