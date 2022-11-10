@@ -327,26 +327,29 @@ class CSXIngesterImpl(CSXIngester):
         '''
 
         print(" ------- Starting Ingestion -------")
-        start_time = time.time()
-        logger.info("------ starting batch parallel file ingestion for file size: "+ str(len(fileList)) + " start time: "+str(start_time))
-        start_time = time.time()
-        lstProcesses = []
+        try:
+            start_time = time.time()
+            logger.info("------ starting batch parallel file ingestion for file size: "+ str(len(fileList)) + " start time: "+str(start_time))
+            start_time = time.time()
+            lstProcesses = []
 
-        # Create eight processes
-        for idx in range(len(fileList)):
-            lstProcesses.append(Process(target=ingest_paper_parallel_func((fileList[idx], documentPaths[idx], source_urls[idx]))))
+            # Create eight processes
+            for idx in range(len(fileList)):
+                lstProcesses.append(Process(target=ingest_paper_parallel_func((fileList[idx], documentPaths[idx], source_urls[idx]))))
 
-        fTimePrefCountStart = time.perf_counter()
+            fTimePrefCountStart = time.perf_counter()
 
-        # Start all the processes
-        for objProcess in lstProcesses:
-            objProcess.start()
+            # Start all the processes
+            for objProcess in lstProcesses:
+                objProcess.start()
 
-        # Wait for all processes to complete
-        for objProcess in lstProcesses:
-            objProcess.join()
-        fTimePrefCountEnd = time.perf_counter()
-        print(f"Delta ingestion time {fTimePrefCountEnd - fTimePrefCountStart} [s]")
+            # Wait for all processes to complete
+            for objProcess in lstProcesses:
+                objProcess.join()
+            fTimePrefCountEnd = time.perf_counter()
+            print(f"Delta ingestion time {fTimePrefCountEnd - fTimePrefCountStart} [s]")
+        except Exception:
+            pass
 
     def ingest_paper(self, filePath):
         papers = CSXExtractorImpl().extract_textual_data(filePath)
