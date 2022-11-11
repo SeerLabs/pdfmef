@@ -54,9 +54,9 @@ def _call_grobid_method(data, method):
       path = extraction.utils.temp_file(data, suffix='.pdf')
       files = {'input': (path, open(path, 'rb'))}
       the_data = {'consolidateHeader': '1'}
-      #print(url)
+      print(data)
       try:
-         print(files)
+         #print(files)
          resp = requests.post(url, files=files, data=the_data)
          if (method == 'processFulltextDocument'):
             print('inside _call_grobid_method grobid time taken----------------------------------->\n')
