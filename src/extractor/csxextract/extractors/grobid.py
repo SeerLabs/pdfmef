@@ -55,7 +55,7 @@ def _call_grobid_method(data, method):
       files = {'input': (path, open(path, 'rb'))}
       the_data = {'consolidateHeader': '1'}
       try:
-         #print(files)
+         print(path)
          resp = requests.post(url, files=files, data=the_data)
          if (method == 'processFulltextDocument'):
             print('inside _call_grobid_method grobid time taken----------------------------------->\n')
@@ -66,7 +66,8 @@ def _call_grobid_method(data, method):
          logger.error('Request to Grobid server failed')
          raise RunnableError('Request to Grobid server failed')
       finally:
-         os.remove(path)
+         pass
+         #os.remove(path)
 
       if resp.status_code != 200:
          logger.error('Grobid returned status {0} instead of 200\nPossible Error:\n{1}'.format(resp.status_code, resp.text))
