@@ -198,13 +198,6 @@ if __name__ == '__main__':
             files.append(baseDocumentPath + path)
 
         files_to_process = []
-        for file in files:
-            #readpdf = PyPDF2.PdfFileReader(file)
-            #totalpages = readpdf.numPages
-            #print('page count is --->'+str(totalpages))
-            #if (totalpages<=5):
-            #     files_to_process.append(file)
-
         runner.run_from_file_batch(files_to_process, outputPaths, num_processes=numProcesses, file_prefixes=prefixes)
         on_batch_finished(logPath, wrapper)
         numDocs += config.getint('ConnectionProperties', 'batchSize')
