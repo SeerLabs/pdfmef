@@ -196,6 +196,7 @@ class ExtractionRunner(object):
       err_check = []
 
       for i, (path, dir) in enumerate(zip(file_paths, output_dirs)):
+         print(path)
          args = (self.runnables, self.runnable_props, open(path, 'rb').read(), dir)
          kws = {'run_name': path}
          if 'file_prefixes' in kwargs: kws['file_prefix'] = kwargs['file_prefixes'][i]
