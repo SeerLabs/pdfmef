@@ -57,9 +57,10 @@ def _call_grobid_method(data, method):
       #print(url)
       try:
          print(files)
-         print('inside _call_grobid_method grobid time taken----------------------------------->\n')
          resp = requests.post(url, files=files, data=the_data)
-         print(resp.elapsed.total_seconds())
+         if (method == 'processFulltextDocument'):
+            print('inside _call_grobid_method grobid time taken----------------------------------->\n')
+            print(resp.elapsed.total_seconds())
       except requests.exceptions.RequestException as ex:
          print(ex)
          # logging.error("exception while calling Grobid", ex)
