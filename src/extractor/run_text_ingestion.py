@@ -197,7 +197,7 @@ if __name__ == '__main__':
         for path in documentPaths:
             files.append(baseDocumentPath + path)
 
-        files_to_process = []
+        files_to_process = files
         runner.run_from_file_batch(files_to_process, outputPaths, num_processes=numProcesses, file_prefixes=prefixes)
         on_batch_finished(logPath, wrapper)
         numDocs += config.getint('ConnectionProperties', 'batchSize')
