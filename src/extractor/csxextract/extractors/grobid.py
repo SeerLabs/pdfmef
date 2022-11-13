@@ -51,15 +51,15 @@ class GrobidCitationTEIExtractor(Extractor):
 def _call_grobid_method(data, method):
       url = '{0}/api/{1}'.format(config.GROBID_HOST, method)
       # Write the pdf data to a temporary location so Grobid can process it
-      import time
-      start_time = time.time()
       path = extraction.utils.temp_file(data, suffix='.pdf')
       files = {'input': (path, open(path, 'rb'))}
       the_data = {'consolidateHeader': '1', 'end': 2}
-      print("--- %s creating file seconds ---" % (time.time() - start_time))
       try:
          print(path)
+         import time
+         start_time = time.time()
          resp = requests.post(url, files=files, data=the_data)
+         print("--- %s creating file seconds ---" % (time.time() - start_time))
          if (method == 'processFulltextDocument'):
             print('inside _call_grobid_method grobid time taken----------------------------------->\n')
             print(resp.elapsed.total_seconds())
