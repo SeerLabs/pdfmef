@@ -53,7 +53,7 @@ def _call_grobid_method(data, method):
       # Write the pdf data to a temporary location so Grobid can process it
       path = extraction.utils.temp_file(data, suffix='.pdf')
       files = {'input': (path, open(path, 'rb'))}
-      the_data = {'consolidateHeader': '1', 'start': 0, 'end': 3}
+      the_data = {'consolidateHeader': '1', 'end': 2}
       try:
          print(path)
          resp = requests.post(url, files=files, data=the_data)
