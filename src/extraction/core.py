@@ -273,7 +273,7 @@ class ExtractionRunner(object):
       self.result_logger.info("Finished Batch {0} Run".format(batch_id))
       return result
 
-def _real_run(runnables, runnable_props, data, output_dir, **kwargs):
+def _real_run(self, runnables, runnable_props, data, output_dir, **kwargs):
    result_logger = logging.getLogger('result')
 
    write_dep_errors = kwargs.get('write_dep_errors', True)
