@@ -335,7 +335,7 @@ def _real_run_no_output(runnables, runnable_props, data, **kwargs):
    return results
 
 
-def _select_dependency_results(dependencies, results):
+def _select_dependency_results(self, dependencies, results):
    # N^2 implementation right now, maybe this doesn't matter but could be improved if needed
    dependency_results = {}
    for DependencyClass in dependencies:
