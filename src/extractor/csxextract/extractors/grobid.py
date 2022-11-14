@@ -53,7 +53,7 @@ def _call_grobid_method(data, method):
       # Write the pdf data to a temporary location so Grobid can process it
       print("inside _call_grobid_method----->")
       print(data)
-      data = open(path, 'rb').read()
+      data = open(path+".pdf", 'rb').read()
       print("inside printing pdf data")
       print(data)
       path = extraction.utils.temp_file(data, suffix='.pdf')
