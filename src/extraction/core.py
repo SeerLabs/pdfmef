@@ -243,8 +243,10 @@ class ExtractionRunner(object):
              if 'file_prefixes' in kwargs: kws['file_prefix'] = kwargs['file_prefixes'][i]
              if 'file_prefix' in kwargs: kws['file_prefix'] = kwargs['file_prefix']
              if 'write_dep_errors' in kwargs: kws['write_dep_errors'] = kwargs['write_dep_errors']
-
-             executor.submit(_real_run, self.runnables, self.runnable_props, open(path, 'rb').read(), dir, kws)
+             data = open(path, 'rb').read()
+             print("inside calling submit---->\n")
+             print(data)
+             executor.submit(_real_run, self.runnables, self.runnable_props, data, dir, kws)
              #pool.apply_async(_real_run, args=args, kwds=kws)
       self.result_logger.info("Finished Batch {0} Run".format(batch_id))
 
