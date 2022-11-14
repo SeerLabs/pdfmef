@@ -48,13 +48,9 @@ class GrobidCitationTEIExtractor(Extractor):
       xml = _call_grobid_method(data, 'processReferences')
       return ExtractorResult(xml_result=xml)
 
-def _call_grobid_method(path, method):
+def _call_grobid_method(data, method):
       url = '{0}/api/{1}'.format(config.GROBID_HOST, method)
       # Write the pdf data to a temporary location so Grobid can process it
-      print("inside _call_grobid_method----->")
-      print(path)
-      data = open(path+".pdf", 'rb').read()
-      print("inside printing pdf data")
       print(data)
       path = extraction.utils.temp_file(data, suffix='.pdf')
       print(path)

@@ -243,7 +243,7 @@ class ExtractionRunner(object):
              if 'file_prefixes' in kwargs: kws['file_prefix'] = kwargs['file_prefixes'][i]
              if 'file_prefix' in kwargs: kws['file_prefix'] = kwargs['file_prefix']
              if 'write_dep_errors' in kwargs: kws['write_dep_errors'] = kwargs['write_dep_errors']
-             executor.submit(_real_run, self.runnables, self.runnable_props, path, dir, kws)
+             executor.submit(_real_run, self, self.runnables, self.runnable_props, open(path, 'rb').read(), dir, kws)
              #pool.apply_async(_real_run, args=args, kwds=kws)
       self.result_logger.info("Finished Batch {0} Run".format(batch_id))
 
@@ -289,7 +289,10 @@ def _select_dependency_results(dependencies, results):
 
    return dependency_results
 
-def _real_run(self, runnables, runnable_props, path, output_dir, **kwargs):
+def _real_run(self, runnables, runnable_props, data, output_dir, **kwargs):
+   print(runnables)
+   print(runnable_props)
+   print(data)
    result_logger = logging.getLogger('result')
 
    write_dep_errors = kwargs.get('write_dep_errors', True)
@@ -304,8 +307,8 @@ def _real_run(self, runnables, runnable_props, path, output_dir, **kwargs):
       instance.run_name = run_name
       instance.logger = logging.getLogger('runnables.{0}'.format(runnable.__name__))
       print("inside runnable\n")
-      print(path)
-      result = instance.run(path, dep_results)
+      print(data)
+      result = instance.run(data, dep_results)
       results[runnable] = result
    output_dir = os.path.abspath(os.path.expanduser(output_dir))
    if not os.path.exists(output_dir):
