@@ -51,12 +51,9 @@ class GrobidCitationTEIExtractor(Extractor):
 def _call_grobid_method(data, method):
       url = '{0}/api/{1}'.format(config.GROBID_HOST, method)
       # Write the pdf data to a temporary location so Grobid can process it
-      print(data)
       path = extraction.utils.temp_file(data, suffix='.pdf')
-      print(path)
       files = {'input': (path, open(path, 'rb'))}
       the_data = {'consolidateHeader': '1'}
-      print("----------done-------------")
       try:
          print(path)
          import time

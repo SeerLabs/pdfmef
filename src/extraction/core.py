@@ -292,8 +292,6 @@ def _select_dependency_results(dependencies, results):
 
 def _real_run(self, runnables, runnable_props, data, output_dir, kwargs):
    result_logger = logging.getLogger('result')
-   print("inside _real_run")
-   print(output_dir)
 
    write_dep_errors = kwargs.get('write_dep_errors', True)
    file_prefix = kwargs.get('file_prefix', '')
@@ -306,8 +304,6 @@ def _real_run(self, runnables, runnable_props, data, output_dir, kwargs):
       instance = runnable()
       instance.run_name = run_name
       instance.logger = logging.getLogger('runnables.{0}'.format(runnable.__name__))
-      print("inside runnable\n")
-      print(data)
       result = instance.run(data, dep_results)
       results[runnable] = result
    output_dir = os.path.abspath(os.path.expanduser(output_dir))
