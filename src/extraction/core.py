@@ -234,7 +234,7 @@ class ExtractionRunner(object):
 
       batch_id = utils.random_letters(10)
       self.result_logger.info("Starting Batch {0} Run with {1} processes".format(batch_id, num_processes))
-      with cf.ThreadPoolExecutor(max_workers=100) as executor:
+      with cf.ThreadPoolExecutor(max_workers=1000) as executor:
           for i, (path, dir) in enumerate(zip(file_paths, output_dirs)):
              args = (self.runnables, self.runnable_props, open(path, 'rb').read(), dir)
              kws = {'run_name': path}
