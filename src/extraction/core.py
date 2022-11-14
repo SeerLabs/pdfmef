@@ -3,6 +3,7 @@ import sys
 import os
 import logging
 import multiprocessing as mp
+import concurrent.futures as cf
 import xml.etree.ElementTree as ET
 from extraction.runnables import *
 import extraction.utils as utils
@@ -143,7 +144,7 @@ class ExtractionRunner(object):
       num_processes = kwargs.get('num_processes', mp.cpu_count())
       batch_id = utils.random_letters(10)
       self.result_logger.info("Starting Batch {0} Run with {1} processes".format(batch_id, num_processes))
-
+      '''
       pool = mp.Pool(num_processes)
       for i, (data, dir) in enumerate(zip(list_of_data, output_dirs)):
          run_name = 'Batch {0} Item {1}'.format(batch_id, i)
@@ -159,6 +160,20 @@ class ExtractionRunner(object):
       pool.close()
       pool.join()
 
+      self.result_logger.info("Finished Batch {0} Run".format(batch_id))
+      '''
+      with cf.ThreadPoolExecutor(max_workers=100) as executor:
+          for i, (data, dir) in enumerate(zip(list_of_data, output_dirs)):
+             run_name = 'Batch {0} Item {1}'.format(batch_id, i)
+             args = (self.runnables, self.runnable_props, data, dir)
+
+             kws = {'run_name': run_name}
+             if 'file_prefixes' in kwargs: kws['file_prefix'] = kwargs['file_prefixes'][i]
+             if 'file_prefix' in kwargs: kws['file_prefix'] = kwargs['file_prefix']
+             if 'write_dep_errors' in kwargs: kws['write_dep_errors'] = kwargs['write_dep_errors']
+
+             executor.submit(_real_run, self.runnables, self.runnable_props, data, dir, kws)
+             #pool.apply_async(_real_run, args=args, kwds=kws)
       self.result_logger.info("Finished Batch {0} Run".format(batch_id))
 
    def safeStr(self, obj):
