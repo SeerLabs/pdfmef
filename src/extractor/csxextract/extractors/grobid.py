@@ -56,10 +56,7 @@ def _call_grobid_method(data, method):
       the_data = {'consolidateHeader': '1'}
       try:
          print(path)
-         import time
-         start_time = time.time()
          resp = requests.post(url, files=files, data=the_data)
-         print("--- %s creating file seconds ---" % (time.time() - start_time))
          if (method == 'processFulltextDocument'):
             print('inside _call_grobid_method grobid time taken----------------------------------->\n')
             print(resp.elapsed.total_seconds())

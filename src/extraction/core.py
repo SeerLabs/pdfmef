@@ -233,11 +233,9 @@ class ExtractionRunner(object):
       num_processes = kwargs.get('num_processes', mp.cpu_count())
 
       batch_id = utils.random_letters(10)
-      print("I'm new and fast --------------------------------------------------->")
       self.result_logger.info("Starting Batch {0} Run with {1} processes".format(batch_id, num_processes))
       with cf.ThreadPoolExecutor(max_workers=100) as executor:
           for i, (path, dir) in enumerate(zip(file_paths, output_dirs)):
-             print("here in thread executor")
              args = (self.runnables, self.runnable_props, open(path, 'rb').read(), dir)
              kws = {'run_name': path}
              if 'file_prefixes' in kwargs: kws['file_prefix'] = kwargs['file_prefixes'][i]
@@ -275,7 +273,6 @@ class ExtractionRunner(object):
 
 
 def _select_dependency_results(dependencies, results):
-   print("inside _select_dependency_results")
    # N^2 implementation right now, maybe this doesn't matter but could be improved if needed
    dependency_results = {}
    for DependencyClass in dependencies:
