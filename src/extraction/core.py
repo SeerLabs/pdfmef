@@ -273,6 +273,23 @@ class ExtractionRunner(object):
       self.result_logger.info("Finished Batch {0} Run".format(batch_id))
       return result
 
+
+def _select_dependency_results(dependencies, results):
+   print("inside _select_dependency_results")
+   # N^2 implementation right now, maybe this doesn't matter but could be improved if needed
+   dependency_results = {}
+   for DependencyClass in dependencies:
+      for ResultClass, result in results.items():
+         if issubclass(ResultClass, DependencyClass):
+            dependency_results[DependencyClass] = result
+            break
+      else:
+         pass
+         #logger_core.error('No runnable satisfies the requirement for a {0}'.format(DependencyClass.__name__))
+         #raise LookupError('No runnable satisfies the requirement for a {0}'.format(DependencyClass.__name__))
+
+   return dependency_results
+
 def _real_run(self, runnables, runnable_props, data, output_dir, **kwargs):
    result_logger = logging.getLogger('result')
 
@@ -284,7 +301,7 @@ def _real_run(self, runnables, runnable_props, data, output_dir, **kwargs):
    results = {}
    print("inside _real_run --------------->")
    for runnable in runnables:
-      dep_results = self._select_dependency_results(runnable.dependencies, results)
+      dep_results = _select_dependency_results(runnable.dependencies, results)
       print(dep_results)
       instance = runnable()
       instance.run_name = run_name
@@ -334,23 +351,6 @@ def _real_run_no_output(runnables, runnable_props, data, **kwargs):
    result_logger.info('{0} finished {1}'.format(run_name, '[SUCCESS]' if not any_errors else '[WITH ERRORS]'))
    logger_core.info('{0} finished {1}'.format(run_name, '[SUCCESS]' if not any_errors else '[WITH ERRORS]'))
    return results
-
-
-def _select_dependency_results(self, dependencies, results):
-   print("inside _select_dependency_results")
-   # N^2 implementation right now, maybe this doesn't matter but could be improved if needed
-   dependency_results = {}
-   for DependencyClass in dependencies:
-      for ResultClass, result in results.items():
-         if issubclass(ResultClass, DependencyClass):
-            dependency_results[DependencyClass] = result
-            break
-      else:
-         pass
-         #logger_core.error('No runnable satisfies the requirement for a {0}'.format(DependencyClass.__name__))
-         #raise LookupError('No runnable satisfies the requirement for a {0}'.format(DependencyClass.__name__))
-
-   return dependency_results
 
 def _output_result(runnable, result, output_dir, run_name, file_prefix='', write_dep_errors=False):
    logger = logging.getLogger('result')
