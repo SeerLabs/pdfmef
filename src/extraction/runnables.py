@@ -40,6 +40,7 @@ class Runnable(object):
       self.logger.info('{0} for run {1}: {2}'.format(self.__class__.__name__, self.run_name, msg))
 
    def run(self, data, dep_results):
+      print("inside runnable run------------->")
       dep_error =  self.check_dep_errors(dep_results)
       if dep_error:
          return dep_error
