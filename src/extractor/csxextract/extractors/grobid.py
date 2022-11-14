@@ -26,6 +26,7 @@ class GrobidTEIExtractor(interfaces.FullTextTEIExtractor):
    result_file_name = '.tei'
 
    def extract(self, data, dep_results):
+      print("inside grobid extractor =----------->")
       xml = _call_grobid_method(data, 'processFulltextDocument')
       return ExtractorResult(xml_result=xml)
 
