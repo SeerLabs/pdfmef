@@ -244,7 +244,6 @@ class ExtractionRunner(object):
              if 'file_prefix' in kwargs: kws['file_prefix'] = kwargs['file_prefix']
              if 'write_dep_errors' in kwargs: kws['write_dep_errors'] = kwargs['write_dep_errors']
              data = open(path, 'rb').read()
-             print(data)
              executor.submit(_real_run, self.runnables, self.runnable_props, data, dir, kws)
              #pool.apply_async(_real_run, args=args, kwds=kws)
       self.result_logger.info("Finished Batch {0} Run".format(batch_id))
@@ -291,7 +290,7 @@ def _select_dependency_results(dependencies, results):
 
    return dependency_results
 
-def _real_run(self, runnables, runnable_props, data, output_dir, **kwargs):
+def _real_run(runnables, runnable_props, data, output_dir, **kwargs):
    result_logger = logging.getLogger('result')
 
    write_dep_errors = kwargs.get('write_dep_errors', True)
