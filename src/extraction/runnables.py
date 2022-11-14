@@ -46,6 +46,7 @@ class Runnable(object):
          return dep_error
 
       try:
+         print(self)
          if isinstance(self, Filter):
             return self.filter(data, dep_results)
          elif isinstance(self, Extractor):
