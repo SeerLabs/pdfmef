@@ -285,6 +285,8 @@ def _real_run(self, runnables, runnable_props, data, output_dir, **kwargs):
    print("inside _real_run --------------->")
    for runnable in runnables:
       dep_results = _select_dependency_results(runnable.dependencies, results)
+      print("inside runnable loop \n")
+      print(dep_results)
       instance = runnable()
       instance.run_name = run_name
       instance.logger = logging.getLogger('runnables.{0}'.format(runnable.__name__))
