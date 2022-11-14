@@ -285,8 +285,7 @@ def _real_run(self, runnables, runnable_props, data, output_dir, **kwargs):
    print("inside _real_run --------------->")
    print(runnables)
    for runnable in runnables:
-      dep_results = _select_dependency_results(runnable.dependencies, results)
-      print("inside runnable loop \n")
+      dep_results = self._select_dependency_results(runnable.dependencies, results)
       print(dep_results)
       instance = runnable()
       instance.run_name = run_name
@@ -339,6 +338,7 @@ def _real_run_no_output(runnables, runnable_props, data, **kwargs):
 
 
 def _select_dependency_results(self, dependencies, results):
+   print("inside _select_dependency_results")
    # N^2 implementation right now, maybe this doesn't matter but could be improved if needed
    dependency_results = {}
    for DependencyClass in dependencies:
