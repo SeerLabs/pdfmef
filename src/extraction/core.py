@@ -283,6 +283,7 @@ def _real_run(self, runnables, runnable_props, data, output_dir, **kwargs):
    result_logger.info('{0} started'.format(run_name))
    results = {}
    print("inside _real_run --------------->")
+   print(runnables)
    for runnable in runnables:
       dep_results = _select_dependency_results(runnable.dependencies, results)
       print("inside runnable loop \n")
