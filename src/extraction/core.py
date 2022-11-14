@@ -200,7 +200,7 @@ class ExtractionRunner(object):
             write_dep_errors: A Boolean. If True, extractors that fail because dependencies fail
                will still write a short xml file with this error to disk. (Good for clarity)
                If False, extractors with failing dependencies won't write anything to disk
-      """
+
       file_paths = list(map(utils.expand_path, file_paths))
       num_processes = kwargs.get('num_processes', mp.cpu_count())
 
@@ -226,6 +226,29 @@ class ExtractionRunner(object):
          return self.safeStr(e.get())
 
       self.result_logger.info("Finished Batch {0} Run".format(batch_id))
+
+      """
+
+      file_paths = list(map(utils.expand_path, file_paths))
+      num_processes = kwargs.get('num_processes', mp.cpu_count())
+
+      batch_id = utils.random_letters(10)
+      print("I'm new and fast --------------------------------------------------->")
+      self.result_logger.info("Starting Batch {0} Run with {1} processes".format(batch_id, num_processes))
+      with cf.ThreadPoolExecutor(max_workers=100) as executor:
+          for i, (path, dir) in enumerate(zip(file_paths, output_dirs)):
+             args = (self.runnables, self.runnable_props, open(path, 'rb').read(), dir)
+             kws = {'run_name': path}
+             if 'file_prefixes' in kwargs: kws['file_prefix'] = kwargs['file_prefixes'][i]
+             if 'file_prefix' in kwargs: kws['file_prefix'] = kwargs['file_prefix']
+             if 'write_dep_errors' in kwargs: kws['write_dep_errors'] = kwargs['write_dep_errors']
+
+             executor.submit(_real_run, self.runnables, self.runnable_props, open(path, 'rb').read(), dir, kws)
+             #pool.apply_async(_real_run, args=args, kwds=kws)
+      self.result_logger.info("Finished Batch {0} Run".format(batch_id))
+
+
+
 
    def run_from_file_batch_no_output(self, file_path, **kwargs):
       """Run the extractor on a batch of files without writing output to files
