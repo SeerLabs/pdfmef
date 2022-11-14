@@ -237,6 +237,7 @@ class ExtractionRunner(object):
       self.result_logger.info("Starting Batch {0} Run with {1} processes".format(batch_id, num_processes))
       with cf.ThreadPoolExecutor(max_workers=100) as executor:
           for i, (path, dir) in enumerate(zip(file_paths, output_dirs)):
+             print("here in thread executor")
              args = (self.runnables, self.runnable_props, open(path, 'rb').read(), dir)
              kws = {'run_name': path}
              if 'file_prefixes' in kwargs: kws['file_prefix'] = kwargs['file_prefixes'][i]
@@ -281,6 +282,7 @@ def _real_run(runnables, runnable_props, data, output_dir, **kwargs):
 
    result_logger.info('{0} started'.format(run_name))
    results = {}
+   print("inside _real_run --------------->")
    for runnable in runnables:
       dep_results = _select_dependency_results(runnable.dependencies, results)
       instance = runnable()
