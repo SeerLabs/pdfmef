@@ -292,7 +292,8 @@ def _select_dependency_results(dependencies, results):
 
 def _real_run(self, runnables, runnable_props, data, output_dir, **kwargs):
    result_logger = logging.getLogger('result')
-   print(data)
+   print("inside _real_run")
+   print(output_dir)
 
    write_dep_errors = kwargs.get('write_dep_errors', True)
    file_prefix = kwargs.get('file_prefix', '')
