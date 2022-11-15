@@ -144,7 +144,7 @@ class ExtractionRunner(object):
       num_processes = kwargs.get('num_processes', mp.cpu_count())
       batch_id = utils.random_letters(10)
       self.result_logger.info("Starting Batch {0} Run with {1} processes".format(batch_id, num_processes))
-      '''
+
       pool = mp.Pool(num_processes)
       for i, (data, dir) in enumerate(zip(list_of_data, output_dirs)):
          run_name = 'Batch {0} Item {1}'.format(batch_id, i)
@@ -174,7 +174,9 @@ class ExtractionRunner(object):
 
              executor.submit(_real_run, self.runnables, self.runnable_props, data, dir, kws)
              #pool.apply_async(_real_run, args=args, kwds=kws)
+
       self.result_logger.info("Finished Batch {0} Run".format(batch_id))
+      '''
 
    def safeStr(self, obj):
         try:
@@ -287,7 +289,7 @@ def _select_dependency_results(dependencies, results):
 
    return dependency_results
 
-def _real_run(self, runnables, runnable_props, data, output_dir, kwargs):
+def _real_run(runnables, runnable_props, data, output_dir, kwargs):
    result_logger = logging.getLogger('result')
 
    write_dep_errors = kwargs.get('write_dep_errors', True)
