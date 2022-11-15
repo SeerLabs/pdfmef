@@ -134,9 +134,9 @@ def get_extraction_runner(modules):
     return runner
 
 if __name__ == '__main__':
-    import cProfile, pstats
-    profiler = cProfile.Profile()
-    profiler.enable()
+    #import cProfile, pstats
+    #profiler = cProfile.Profile()
+    #profiler.enable()
     config = configparser.ConfigParser()
     print(os.path.join(os.path.dirname(__file__), 'python_wrapper', 'properties.config'))
     config.read(os.path.join(os.path.dirname(__file__), 'python_wrapper', 'properties.config'))
@@ -214,10 +214,10 @@ if __name__ == '__main__':
         logger.info("batch processing-- completed pdfmef extraction and ingestion")
         print("--- end of batch processing %s seconds ---" % (time.time() - start_time))
         #break
-        stopProcessing = True
-        profiler.disable()
-        stats = pstats.Stats(profiler).sort_stats('ncalls')
-        stats.print_stats()
+        #stopProcessing = True
+        #profiler.disable()
+        #stats = pstats.Stats(profiler).sort_stats('ncalls')
+        #stats.print_stats()
 
     logger.info("--- %s seconds ---" % (time.time() - start_time))
     print("--- %s seconds ---" % (time.time() - start_time))
