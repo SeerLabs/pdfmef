@@ -3,7 +3,6 @@ import sys
 import os
 import logging
 import multiprocessing as mp
-import concurrent.futures as cf
 import xml.etree.ElementTree as ET
 from extraction.runnables import *
 import extraction.utils as utils
@@ -161,22 +160,6 @@ class ExtractionRunner(object):
       pool.join()
 
       self.result_logger.info("Finished Batch {0} Run".format(batch_id))
-      '''
-      with cf.ThreadPoolExecutor(max_workers=100) as executor:
-          for i, (data, dir) in enumerate(zip(list_of_data, output_dirs)):
-             run_name = 'Batch {0} Item {1}'.format(batch_id, i)
-             args = (self.runnables, self.runnable_props, data, dir)
-
-             kws = {'run_name': run_name}
-             if 'file_prefixes' in kwargs: kws['file_prefix'] = kwargs['file_prefixes'][i]
-             if 'file_prefix' in kwargs: kws['file_prefix'] = kwargs['file_prefix']
-             if 'write_dep_errors' in kwargs: kws['write_dep_errors'] = kwargs['write_dep_errors']
-
-             executor.submit(_real_run, self.runnables, self.runnable_props, data, dir, kws)
-             #pool.apply_async(_real_run, args=args, kwds=kws)
-
-      self.result_logger.info("Finished Batch {0} Run".format(batch_id))
-      '''
 
    def safeStr(self, obj):
         try:
@@ -202,7 +185,7 @@ class ExtractionRunner(object):
             write_dep_errors: A Boolean. If True, extractors that fail because dependencies fail
                will still write a short xml file with this error to disk. (Good for clarity)
                If False, extractors with failing dependencies won't write anything to disk
-
+      """
       file_paths = list(map(utils.expand_path, file_paths))
       num_processes = kwargs.get('num_processes', mp.cpu_count())
 
@@ -213,7 +196,6 @@ class ExtractionRunner(object):
       err_check = []
 
       for i, (path, dir) in enumerate(zip(file_paths, output_dirs)):
-         #print(path)
          args = (self.runnables, self.runnable_props, open(path, 'rb').read(), dir)
          kws = {'run_name': path}
          if 'file_prefixes' in kwargs: kws['file_prefix'] = kwargs['file_prefixes'][i]
@@ -228,28 +210,6 @@ class ExtractionRunner(object):
          return self.safeStr(e.get())
 
       self.result_logger.info("Finished Batch {0} Run".format(batch_id))
-
-      """
-
-      file_paths = list(map(utils.expand_path, file_paths))
-      num_processes = kwargs.get('num_processes', mp.cpu_count())
-
-      batch_id = utils.random_letters(10)
-      self.result_logger.info("Starting Batch {0} Run with {1} processes".format(batch_id, num_processes))
-      with cf.ThreadPoolExecutor(max_workers=1000) as executor:
-          for i, (path, dir) in enumerate(zip(file_paths, output_dirs)):
-             args = (self.runnables, self.runnable_props, open(path, 'rb').read(), dir)
-             kws = {'run_name': path}
-             if 'file_prefixes' in kwargs: kws['file_prefix'] = kwargs['file_prefixes'][i]
-             if 'file_prefix' in kwargs: kws['file_prefix'] = kwargs['file_prefix']
-             if 'write_dep_errors' in kwargs: kws['write_dep_errors'] = kwargs['write_dep_errors']
-             data = open(path, 'rb').read()
-             executor.submit(_real_run(self, self.runnables, self.runnable_props, data, dir, kws))
-             #pool.apply_async(_real_run, args=args, kwds=kws)
-      self.result_logger.info("Finished Batch {0} Run".format(batch_id))
-
-
-
 
    def run_from_file_batch_no_output(self, file_path, **kwargs):
       """Run the extractor on a batch of files without writing output to files
@@ -273,23 +233,7 @@ class ExtractionRunner(object):
       self.result_logger.info("Finished Batch {0} Run".format(batch_id))
       return result
 
-
-def _select_dependency_results(dependencies, results):
-   # N^2 implementation right now, maybe this doesn't matter but could be improved if needed
-   dependency_results = {}
-   for DependencyClass in dependencies:
-      for ResultClass, result in results.items():
-         if issubclass(ResultClass, DependencyClass):
-            dependency_results[DependencyClass] = result
-            break
-      else:
-         pass
-         #logger_core.error('No runnable satisfies the requirement for a {0}'.format(DependencyClass.__name__))
-         #raise LookupError('No runnable satisfies the requirement for a {0}'.format(DependencyClass.__name__))
-
-   return dependency_results
-
-def _real_run(self, runnables, runnable_props, data, output_dir, kwargs):
+def _real_run(runnables, runnable_props, data, output_dir, **kwargs):
    result_logger = logging.getLogger('result')
 
    write_dep_errors = kwargs.get('write_dep_errors', True)
@@ -348,6 +292,22 @@ def _real_run_no_output(runnables, runnable_props, data, **kwargs):
    result_logger.info('{0} finished {1}'.format(run_name, '[SUCCESS]' if not any_errors else '[WITH ERRORS]'))
    logger_core.info('{0} finished {1}'.format(run_name, '[SUCCESS]' if not any_errors else '[WITH ERRORS]'))
    return results
+
+
+def _select_dependency_results(dependencies, results):
+   # N^2 implementation right now, maybe this doesn't matter but could be improved if needed
+   dependency_results = {}
+   for DependencyClass in dependencies:
+      for ResultClass, result in results.items():
+         if issubclass(ResultClass, DependencyClass):
+            dependency_results[DependencyClass] = result
+            break
+      else:
+         pass
+         #logger_core.error('No runnable satisfies the requirement for a {0}'.format(DependencyClass.__name__))
+         #raise LookupError('No runnable satisfies the requirement for a {0}'.format(DependencyClass.__name__))
+
+   return dependency_results
 
 def _output_result(runnable, result, output_dir, run_name, file_prefix='', write_dep_errors=False):
    logger = logging.getLogger('result')
