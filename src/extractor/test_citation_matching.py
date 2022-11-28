@@ -33,7 +33,7 @@ def get_batch_for_lsh_matching(self, title):
     self.s2_batch = results['hits']['hits']
     return self.s2_batch
 
-def findMatchingDocumentsLSH(self, papers):
+def findMatchingDocumentsLSH(papers):
     config = configparser.ConfigParser()
     mismatch_count = 0
     try:
@@ -64,6 +64,7 @@ def findMatchingDocumentsLSH(self, papers):
                         pass
 
                 Title = paper['_source']['original_title']
+                print(Title)
                 s = CSXExtractorImpl().create_shingles(Title, 5)
                 min_hash = MinHash(num_perm=128)
                 for shingle in s:
@@ -87,7 +88,7 @@ def findMatchingDocumentsLSH(self, papers):
 if __name__ == "__main__":
     es = Elasticsearch([{'host': '130.203.139.160', 'port': 9200}])
     res = es.search(index="dedupe_test", body = {
-    'size' : 1000,
+    'size' : 10,
     'query': {
         'match_all' : {}
     }
