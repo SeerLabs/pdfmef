@@ -7,31 +7,31 @@ from extractor.python_wrapper import utils, wrappers
 from ingestion.csx_extractor import CSXExtractorImpl
 
 def get_batch_for_lsh_matching(self, title):
-"""Purpose: retrieves batch of documents to process from server"""
+    """Purpose: retrieves batch of documents to process from server"""
 
-body = ""
-try:
-    body = {
-                "query":{
-                  "bool":{
-                     "should":
-                        {
-                           "match":{
-                              "title":{
-                                 "query": title,
-                                 "minimum_should_match":"85%"
-                              }
-                           }
-                        }
-                  }
-                }
-           }
-except Exception:
-    pass
-print(body)
-results = self.get_connection_prod().search(index=settings.CLUSTERS_INDEX, body=body)
-self.s2_batch = results['hits']['hits']
-return self.s2_batch
+    body = ""
+    try:
+        body = {
+                    "query":{
+                      "bool":{
+                         "should":
+                            {
+                               "match":{
+                                  "title":{
+                                     "query": title,
+                                     "minimum_should_match":"85%"
+                                  }
+                               }
+                            }
+                      }
+                    }
+               }
+    except Exception:
+        pass
+    print(body)
+    results = self.get_connection_prod().search(index=settings.CLUSTERS_INDEX, body=body)
+    self.s2_batch = results['hits']['hits']
+    return self.s2_batch
 
 def findMatchingDocumentsLSH(self, papers):
     config = configparser.ConfigParser()
