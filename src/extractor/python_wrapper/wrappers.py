@@ -318,7 +318,7 @@ class ElasticSearchWrapper(Wrapper):
                    }
         except Exception:
             pass
-        print(body)
+        #print(body)
         results = self.get_connection_prod().search(index=settings.CLUSTERS_INDEX, body=body)
         self.s2_batch = results['hits']['hits']
         return self.s2_batch
