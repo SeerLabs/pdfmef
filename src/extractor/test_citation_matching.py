@@ -93,7 +93,7 @@ if __name__ == "__main__":
     }
     })
     #print(res)
-    print("%d documents found" % res['hits']['total'])
+    print("%d documents found" % res['hits']['total']['value'])
     data = [doc for doc in res['hits']['hits']]
     mismatch_count = findMatchingDocumentsLSH(data)
     print('miss classified documents --->', mismatch_count)
