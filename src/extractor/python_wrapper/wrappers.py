@@ -307,7 +307,7 @@ class ElasticSearchWrapper(Wrapper):
                              "should":
                                 {
                                    "match":{
-                                      "title":{
+                                      "original_title":{
                                          "query": title,
                                          "minimum_should_match":"85%"
                                       }
