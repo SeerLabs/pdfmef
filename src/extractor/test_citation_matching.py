@@ -109,7 +109,7 @@ def findMatchingDocumentsLSH(papers):
 if __name__ == "__main__":
     es = Elasticsearch([{'host': '130.203.139.160', 'port': 9200}])
     mismatch_count = 0
-    for i in range(9, 10):
+    for i in range(0, 10):
         res = es.search(index="dedupe_test", body = {
         "from": i*10000,
         'size' : 10000,
