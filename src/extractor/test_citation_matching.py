@@ -67,7 +67,7 @@ def findMatchingDocumentsLSH(papers):
 
                 Title = paper['_source']['original_title'].lower()
                 Title = re.sub(r'\s+', ' ', Title)
-                #print(Title)
+                print(Title)
                 s = CSXExtractorImpl().create_shingles(Title, 5)
                 min_hash = MinHash(num_perm=128)
                 for shingle in s:
