@@ -5,6 +5,7 @@ from datasketch import MinHash, MinHashLSH
 from elasticsearch import Elasticsearch
 from extractor.python_wrapper import utils, wrappers
 from ingestion.csx_extractor import CSXExtractorImpl
+import re
 
 def get_batch_for_lsh_matching(self, title):
     """Purpose: retrieves batch of documents to process from server"""
@@ -50,6 +51,7 @@ def findMatchingDocumentsLSH(papers):
                 for doc in documents:
                     try:
                         title = doc['_source']['original_title'].lower()
+                        title = re.sub(r'\s+', ' ', title)
                         id = doc['_source']['core_id']
                         d={}
                         with_wildcard = False
@@ -64,6 +66,7 @@ def findMatchingDocumentsLSH(papers):
                         pass
 
                 Title = paper['_source']['original_title'].lower()
+                Title = re.sub(r'\s+', ' ', Title)
                 #print(Title)
                 s = CSXExtractorImpl().create_shingles(Title, 5)
                 min_hash = MinHash(num_perm=128)
@@ -92,6 +95,7 @@ def findMatchingDocumentsLSH(papers):
                     else:
                         print(paper)
                         print(expected_result)
+
                         print(paper['_source']['labelled_duplicates'])
                         print(">>>>>>>>>>>>>>>>>>>>>>>>>>")
                         print(result)
