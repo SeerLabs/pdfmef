@@ -85,6 +85,7 @@ def findMatchingDocumentsLSH(self, papers):
     return mismatch_count
 
 if __name__ == "__main__":
+    es = Elasticsearch([{'host': '130.203.139.160', 'port': 9200}])
     res = es.search(index="dedupe_test", doc_type="_doc", body = {
     'size' : 1000,
     'query': {
