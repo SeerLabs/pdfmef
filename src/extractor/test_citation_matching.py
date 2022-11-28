@@ -90,6 +90,7 @@ def findMatchingDocumentsLSH(papers):
                         if expected_match_id[0] not in result:
                             mismatch_count += 1
                     else:
+                        print(paper)
                         print(expected_result)
                         print(paper['_source']['labelled_duplicates'])
                         print(">>>>>>>>>>>>>>>>>>>>>>>>>>")
