@@ -49,7 +49,7 @@ def findMatchingDocumentsLSH(papers):
                 lsh = MinHashLSH(threshold=0.90, num_perm=128)
                 for doc in documents:
                     try:
-                        title = doc['_source']['original_title']
+                        title = lower(doc['_source']['original_title'])
                         id = doc['_source']['core_id']
                         d={}
                         with_wildcard = False
@@ -63,7 +63,7 @@ def findMatchingDocumentsLSH(papers):
                     except Exception:
                         pass
 
-                Title = paper['_source']['original_title']
+                Title = lower(paper['_source']['original_title'])
                 print(Title)
                 s = CSXExtractorImpl().create_shingles(Title, 5)
                 min_hash = MinHash(num_perm=128)
