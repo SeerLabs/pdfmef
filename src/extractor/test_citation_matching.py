@@ -71,17 +71,17 @@ def findMatchingDocumentsLSH(papers):
                     min_hash.update(shingle.encode('utf8'))
                 result = lsh.query(min_hash)
                 expected_result = paper['_source']['cat']
-                print(paper)
-                print('<---------------------------------------------------------->')
+                #print(paper)
+                #print('<---------------------------------------------------------->')
                 if (len(result) <=1 and expected_result != "non_dup"):
                     mismatch_count += 1
                 if (result!=None):
                     if len(result) >= 1 and expected_result != "non_dup":
                         expected_match_id = paper['_source']['labelled_duplicates']
-                        print(expected_match_id)
-                        print(">>>>>>>>>>>>>>>>>>>>>>>>>>")
-                        print(result)
-                        print("\n")
+                        #print(expected_match_id)
+                        #print(">>>>>>>>>>>>>>>>>>>>>>>>>>")
+                        #print(result)
+                        #print("\n")
                         if expected_match_id[0] not in result:
                             mismatch_count += 1
                     else:
