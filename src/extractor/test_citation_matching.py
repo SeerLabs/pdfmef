@@ -92,7 +92,7 @@ if __name__ == "__main__":
         'match_all' : {}
     }
     })
-    print(res)
+    #print(res)
     print("%d documents found" % res['hits']['total'])
     data = [doc for doc in res['hits']['hits']]
     mismatch_count = findMatchingDocumentsLSH(data)
