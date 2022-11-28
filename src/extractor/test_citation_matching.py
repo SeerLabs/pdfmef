@@ -82,7 +82,7 @@ def findMatchingDocumentsLSH(papers):
                         print(">>>>>>>>>>>>>>>>>>>>>>>>>>")
                         print(result)
                         print("\n")
-                        if expected_match_id not in result:
+                        if expected_match_id[0] not in result:
                             mismatch_count += 1
                     else:
                         mismatch_count += 1
