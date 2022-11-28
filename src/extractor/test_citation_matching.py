@@ -94,7 +94,7 @@ def findMatchingDocumentsLSH(papers):
 if __name__ == "__main__":
     es = Elasticsearch([{'host': '130.203.139.160', 'port': 9200}])
     res = es.search(index="dedupe_test", body = {
-    'size' : 1000,
+    'size' : 100000,
     'query': {
         'match_all' : {}
     }
