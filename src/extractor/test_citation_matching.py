@@ -66,44 +66,44 @@ def findMatchingDocumentsLSH(papers):
                     except Exception:
                         pass
 
-            Title = paper['_source']['original_abstract'].lower()
-            Title = re.sub(r'\s+', ' ', Title)
-            print(Title)
-            s = CSXExtractorImpl().create_shingles(Title, 5)
-            min_hash = MinHash(num_perm=128)
-            for shingle in s:
-                min_hash.update(shingle.encode('utf8'))
-            result = lsh.query(min_hash)
-            expected_result = paper['_source']['cat']
-            #print(paper)
-            #print('<---------------------------------------------------------->')
-            if (len(result) <=1 and expected_result != "non_dup"):
-                print(expected_result)
-                print(paper['_source']['labelled_duplicates'])
-                print(">>>>>>>>>>>>>>>>>>>>>>>>>>")
-                print(result)
-                print("\n")
-                mismatch_count += 1
-            if (result!=None):
-                if len(result) > 1 and expected_result != "non_dup":
-                    expected_match_id = paper['_source']['labelled_duplicates']
-                    #print(expected_match_id)
-                    #print(">>>>>>>>>>>>>>>>>>>>>>>>>>")
-                    #print(result)
-                    #print("\n")
-                    if expected_match_id[0] not in result:
-                        mismatch_count += 1
-                elif len(result) == 1 and expected_result == "non_dup":
-                    pass
-                else:
-                    print(paper)
+                Title = paper['_source']['original_abstract'].lower()
+                Title = re.sub(r'\s+', ' ', Title)
+                print(Title)
+                s = CSXExtractorImpl().create_shingles(Title, 5)
+                min_hash = MinHash(num_perm=128)
+                for shingle in s:
+                    min_hash.update(shingle.encode('utf8'))
+                result = lsh.query(min_hash)
+                expected_result = paper['_source']['cat']
+                #print(paper)
+                #print('<---------------------------------------------------------->')
+                if (len(result) <=1 and expected_result != "non_dup"):
                     print(expected_result)
-
                     print(paper['_source']['labelled_duplicates'])
                     print(">>>>>>>>>>>>>>>>>>>>>>>>>>")
                     print(result)
                     print("\n")
                     mismatch_count += 1
+                elif (result!=None):
+                    if len(result) > 1 and expected_result != "non_dup":
+                        expected_match_id = paper['_source']['labelled_duplicates']
+                        #print(expected_match_id)
+                        #print(">>>>>>>>>>>>>>>>>>>>>>>>>>")
+                        #print(result)
+                        #print("\n")
+                        if expected_match_id[0] not in result:
+                            mismatch_count += 1
+                    elif len(result) == 1 and expected_result == "non_dup":
+                        pass
+                    else:
+                        print(paper)
+                        print(expected_result)
+
+                        print(paper['_source']['labelled_duplicates'])
+                        print(">>>>>>>>>>>>>>>>>>>>>>>>>>")
+                        print(result)
+                        print("\n")
+                        mismatch_count += 1
 
         except Exception as es:
             print("exception in findMatchingDocumentsLSH with error msg: ", es)
