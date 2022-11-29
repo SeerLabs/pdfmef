@@ -7,7 +7,7 @@ from extractor.python_wrapper import utils, wrappers
 from ingestion.csx_extractor import CSXExtractorImpl
 import re
 
-def findMatchingDocumentsLSH(papers):
+def findMatchingDocumentsLSH(papers, miss_cat_count):
     config = configparser.ConfigParser()
     try:
         config.read("/pdfmef-code/src/extractor/python_wrapper/properties.config")
@@ -114,6 +114,6 @@ if __name__ == "__main__":
         #print(res)
         print("%d documents found" % res['hits']['total']['value'])
         data = [doc for doc in res['hits']['hits']]
-        mismatch_count += findMatchingDocumentsLSH(data)
+        mismatch_count += findMatchingDocumentsLSH(data, miss_cat_count)
         miss_cat_count[data["source"]["cat"]] += 1
     print('miss classified documents --->', miss_cat_count)
