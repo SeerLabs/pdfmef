@@ -87,7 +87,7 @@ def findMatchingDocumentsLSH(papers, miss_cat_count):
 if __name__ == "__main__":
     es = Elasticsearch([{'host': '130.203.139.160', 'port': 9200}])
     mismatch_count = 0
-    l = [0, 4, 9]
+    l = [0]
     miss_cat_count = {"exact_dup": 0, "near_exact_dup": 0, "non_dup": 0}
 
     for i in l:
@@ -95,7 +95,8 @@ if __name__ == "__main__":
         "from": i*10000,
         'size' : 10000,
         'query': {
-             "match_all": {
+             "match": {
+                "core_id.keyword": "86414873"
              }
         }
         })
