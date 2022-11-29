@@ -23,6 +23,7 @@ def findMatchingDocumentsLSH(papers):
                 lsh = MinHashLSH(threshold=0.90, num_perm=128)
                 for doc in documents:
                     try:
+                        print("----------here--------------")
                         title = doc['_source']['processed_title']
                         print(title)
                         #title = re.sub(r'\s+', ' ', title)
