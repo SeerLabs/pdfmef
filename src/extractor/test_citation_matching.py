@@ -21,13 +21,13 @@ def findMatchingDocumentsLSH(papers, miss_cat_count):
         try:
             if (True):
                 title = paper['_source']['processed_title']
-                title = re.sub(r"[^a-zA-Z0-9 ]", "", title)
+                title = re.sub(r"[^a-zA-Z0-9 ]", " ", title)
                 documents = wrapper.get_batch_for_lsh_matching(title)
                 lsh = MinHashLSH(threshold=0.5, num_perm=128)
                 for doc in documents:
                     try:
                         title = doc['_source']['processed_title']
-                        title = re.sub(r"[^a-zA-Z0-9 ]", "", title)
+                        title = re.sub(r"[^a-zA-Z0-9 ]", " ", title)
                         #title = re.sub(r'\s+', ' ', title)
                         id = doc['_source']['core_id']
                         d={}
@@ -43,7 +43,7 @@ def findMatchingDocumentsLSH(papers, miss_cat_count):
                         pass
 
                 Title = paper['_source']['processed_title']
-                Title = re.sub(r"[^a-zA-Z0-9 ]", "", Title)
+                Title = re.sub(r"[^a-zA-Z0-9 ]", " ", Title)
                 #Title = re.sub(r'\s+', ' ', Title)
                 s = CSXExtractorImpl().create_shingles(Title, 5)
                 min_hash = MinHash(num_perm=128)
