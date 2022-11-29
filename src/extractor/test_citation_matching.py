@@ -38,7 +38,7 @@ def findMatchingDocumentsLSH(papers):
                         with_wildcard = False
                         count = 0
                         s = CSXExtractorImpl().create_shingles(title, 15)
-                        min_hash = MinHash(num_perm=128)
+                        min_hash = MinHash(num_perm=256)
                         for shingle in s:
                             min_hash.update(shingle.encode('utf8'))
                         if (not id in lsh):
