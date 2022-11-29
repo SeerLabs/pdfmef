@@ -16,6 +16,7 @@ def findMatchingDocumentsLSH(papers):
         print(ex)
     elasticConnectionProps = dict(config.items('ElasticConnectionProperties'))
     wrapper = wrappers.ElasticSearchWrapper(elasticConnectionProps)
+    import re
     for paper in papers:
         try:
             if (True):
@@ -26,6 +27,7 @@ def findMatchingDocumentsLSH(papers):
                     try:
                         print("----------here--------------")
                         title = doc['_source']['processed_title']
+                        title = re.sub(r"[^a-zA-Z0-9 ]", "", title)
                         print(title)
                         #title = re.sub(r'\s+', ' ', title)
                         id = doc['_source']['core_id']
@@ -43,7 +45,8 @@ def findMatchingDocumentsLSH(papers):
 
                 print("------------------incoming document title---------------------------")
                 Title = paper['_source']['processed_title']
-                #print(Title)
+                Title = re.sub(r"[^a-zA-Z0-9 ]", "", Title)
+                print(Title)
                 #Title = re.sub(r'\s+', ' ', Title)
                 s = CSXExtractorImpl().create_shingles(Title, 5)
                 min_hash = MinHash(num_perm=128)
