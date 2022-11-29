@@ -24,6 +24,7 @@ def findMatchingDocumentsLSH(papers):
                 for doc in documents:
                     try:
                         title = doc['_source']['processed_title']
+                        print(title)
                         #title = re.sub(r'\s+', ' ', title)
                         id = doc['_source']['core_id']
                         d={}
@@ -38,7 +39,9 @@ def findMatchingDocumentsLSH(papers):
                     except Exception:
                         pass
 
+                print("------------------incoming document title---------------------------")
                 Title = paper['_source']['processed_title']
+                print(Title)
                 #Title = re.sub(r'\s+', ' ', Title)
                 s = CSXExtractorImpl().create_shingles(Title, 5)
                 min_hash = MinHash(num_perm=128)
@@ -85,12 +88,15 @@ def findMatchingDocumentsLSH(papers):
 if __name__ == "__main__":
     es = Elasticsearch([{'host': '130.203.139.160', 'port': 9200}])
     mismatch_count = 0
-    for i in range(4, 5):
+    l = [0]
+    for i in l:
         res = es.search(index="dedupe_test", body = {
         "from": i*10000,
         'size' : 10,
         'query': {
-            'match_all' : {}
+             "match": {
+                "core_id.keyword": "30342858"
+             }
         }
         })
         #print(res)
