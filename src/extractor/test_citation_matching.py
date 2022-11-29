@@ -19,7 +19,7 @@ def findMatchingDocumentsLSH(papers):
     for paper in papers:
         try:
             if (True):
-                documents = wrapper.get_batch_for_lsh_matching(paper['_source']['original_abstract'].lower()
+                documents = wrapper.get_batch_for_lsh_matching(paper['_source']['original_abstract'])
                 lsh = MinHashLSH(threshold=0.90, num_perm=128)
                 for doc in documents:
                     try:
