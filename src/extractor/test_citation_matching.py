@@ -19,11 +19,11 @@ def findMatchingDocumentsLSH(papers):
     for paper in papers:
         try:
             if (True):
-                documents = wrapper.get_batch_for_lsh_matching(paper['_source']['original_abstract'])
+                documents = wrapper.get_batch_for_lsh_matching(paper['_source']['original_title'])
                 lsh = MinHashLSH(threshold=0.90, num_perm=128)
                 for doc in documents:
                     try:
-                        title = doc['_source']['original_abstract'].lower()
+                        title = doc['_source']['original_title'].lower()
                         title = re.sub(r'\s+', ' ', title)
                         id = doc['_source']['core_id']
                         d={}
@@ -38,7 +38,7 @@ def findMatchingDocumentsLSH(papers):
                     except Exception:
                         pass
 
-                Title = paper['_source']['original_abstract'].lower()
+                Title = paper['_source']['original_title'].lower()
                 Title = re.sub(r'\s+', ' ', Title)
                 s = CSXExtractorImpl().create_shingles(Title, 5)
                 min_hash = MinHash(num_perm=128)
