@@ -102,8 +102,7 @@ if __name__ == "__main__":
         "from": i*10000,
         'size' : 10,
         'query': {
-             "match": {
-                "core_id.keyword": "29509937"
+             "match_all": {
              }
         }
         })
