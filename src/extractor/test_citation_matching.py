@@ -46,7 +46,7 @@ def findMatchingDocumentsLSH(papers):
                     min_hash.update(shingle.encode('utf8'))
                 result = lsh.query(min_hash)
                 expected_result = paper['_source']['cat']
-                #print(expected_result)
+                print(expected_result)
                 #print(paper)
                 #print('<---------------------------------------------------------->')
                 if (len(result) <=1 and expected_result != "non_dup"):
@@ -85,7 +85,7 @@ def findMatchingDocumentsLSH(papers):
 if __name__ == "__main__":
     es = Elasticsearch([{'host': '130.203.139.160', 'port': 9200}])
     mismatch_count = 0
-    for i in range(0, 2):
+    for i in range(4, 5):
         res = es.search(index="dedupe_test", body = {
         "from": i*10000,
         'size' : 10000,
