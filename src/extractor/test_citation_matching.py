@@ -25,7 +25,7 @@ def findMatchingDocumentsLSH(papers):
                 for doc in documents:
                     try:
                         print("----------here--------------")
-                        title = doc['_source']['processed_title']
+                        title = doc['_source']['processed_title'])
                         print(title)
                         #title = re.sub(r'\s+', ' ', title)
                         id = doc['_source']['core_id']
