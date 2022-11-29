@@ -7,34 +7,6 @@ from extractor.python_wrapper import utils, wrappers
 from ingestion.csx_extractor import CSXExtractorImpl
 import re
 
-def get_batch_for_lsh_matching(self, title):
-    """Purpose: retrieves batch of documents to process from server"""
-
-    body = ""
-    try:
-        body = {
-                    "query":{
-                      "bool":{
-                         "should":
-                            {
-                               "match":{
-                                  "original_abstract":{
-                                     "query": title,
-                                     "minimum_should_match":"85%"
-                                  }
-                               }
-                            }
-                      }
-                    }
-               }
-        print(body)
-    except Exception:
-        pass
-    print(body)
-    results = self.get_connection_prod().search(index=settings.CLUSTERS_INDEX, body=body)
-    self.s2_batch = results['hits']['hits']
-    return self.s2_batch
-
 def findMatchingDocumentsLSH(papers):
     config = configparser.ConfigParser()
     mismatch_count = 0
@@ -113,8 +85,8 @@ if __name__ == "__main__":
     mismatch_count = 0
     for i in range(0, 1):
         res = es.search(index="dedupe_test", body = {
-        "from": 0,
-        'size' : 10,
+        "from": i*10000,
+        'size' : 10000,
         'query': {
             'match_all' : {}
         }
