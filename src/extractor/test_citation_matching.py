@@ -23,7 +23,7 @@ def findMatchingDocumentsLSH(papers, miss_cat_count):
                 title = paper['_source']['processed_title']
                 #title = re.sub(r"[^a-zA-Z0-9 ]", " ", title)
                 documents = wrapper.get_batch_for_lsh_matching(title)
-                lsh = MinHashLSH(threshold=0.8, num_perm=128)
+                lsh = MinHashLSH(threshold=0.7, num_perm=128)
                 for doc in documents:
                     try:
                         title = doc['_source']['processed_title']
