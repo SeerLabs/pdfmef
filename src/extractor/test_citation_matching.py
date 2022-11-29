@@ -21,7 +21,7 @@ def findMatchingDocumentsLSH(papers):
             if (True):
                 documents = wrapper.get_batch_for_lsh_matching(paper['_source']['processed_title'])
                 lsh = MinHashLSH(threshold=0.90, num_perm=128)
-                print(len(documents)
+                print(len(documents))
                 for doc in documents:
                     try:
                         print("----------here--------------")
