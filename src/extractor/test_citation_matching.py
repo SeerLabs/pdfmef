@@ -24,7 +24,7 @@ def findMatchingDocumentsLSH(papers):
                 title = re.sub(r"[^a-zA-Z0-9 ]", "", title)
                 print(title)
                 documents = wrapper.get_batch_for_lsh_matching(title)
-                lsh = MinHashLSH(threshold=0.7, num_perm=256)
+                lsh = MinHashLSH(threshold=0.5, num_perm=256)
                 print(len(documents))
                 for doc in documents:
                     try:
@@ -96,13 +96,14 @@ def findMatchingDocumentsLSH(papers):
 if __name__ == "__main__":
     es = Elasticsearch([{'host': '130.203.139.160', 'port': 9200}])
     mismatch_count = 0
-    l = [4]
+    l = [0]
     for i in l:
         res = es.search(index="dedupe_test", body = {
         "from": i*10000,
         'size' : 1000,
         'query': {
-             "match_all": {
+             "match": {
+                "core_id.keyword": "82125502"
              }
         }
         })
