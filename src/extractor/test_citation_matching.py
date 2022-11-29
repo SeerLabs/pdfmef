@@ -9,7 +9,6 @@ import re
 
 def findMatchingDocumentsLSH(papers):
     config = configparser.ConfigParser()
-    mismatch_count = 0
     try:
         config.read("/pdfmef-code/src/extractor/python_wrapper/properties.config")
     except Exception as ex:
@@ -18,6 +17,7 @@ def findMatchingDocumentsLSH(papers):
     wrapper = wrappers.ElasticSearchWrapper(elasticConnectionProps)
     import re
     for paper in papers:
+        miss = False
         try:
             if (True):
                 title = paper['_source']['processed_title']
@@ -66,7 +66,8 @@ def findMatchingDocumentsLSH(papers):
                     print(">>>>>>>>>>>>>>>>>>>>>>>>>>")
                     print(result)
                     print("\n")
-                    mismatch_count += 1
+                    miss = True
+                    #mismatch_count += 1
                 elif (result!=None):
                     if len(result) > 1 and expected_result != "non_dup":
                         expected_match_id = paper['_source']['labelled_duplicates']
@@ -76,7 +77,7 @@ def findMatchingDocumentsLSH(papers):
                         print(result)
                         print("\n")
                         if expected_match_id[0] not in result:
-                            mismatch_count += 1
+                            miss = True
                     elif len(result) == 1 and expected_result == "non_dup":
                         pass
                     else:
@@ -87,7 +88,8 @@ def findMatchingDocumentsLSH(papers):
                         print(">>>>>>>>>>>>>>>>>>>>>>>>>>")
                         print(result)
                         print("\n")
-                        mismatch_count += 1
+                        miss = True
+                miss_cat_count[paper["source"]["cat"]] += if (miss == True) 1 else 0
 
         except Exception as es:
             print("exception in findMatchingDocumentsLSH with error msg: ", es)
@@ -96,11 +98,13 @@ def findMatchingDocumentsLSH(papers):
 if __name__ == "__main__":
     es = Elasticsearch([{'host': '130.203.139.160', 'port': 9200}])
     mismatch_count = 0
-    l = [0]
+    l = [0, 4, 9]
+    miss_cat_count = {"exact_dup": 0, "near_exact_dup": 0, "non_dup": 0}
+
     for i in l:
         res = es.search(index="dedupe_test", body = {
         "from": i*10000,
-        'size' : 1000,
+        'size' : 10,
         'query': {
              "match": {
                 "core_id.keyword": "82125502"
@@ -111,4 +115,5 @@ if __name__ == "__main__":
         print("%d documents found" % res['hits']['total']['value'])
         data = [doc for doc in res['hits']['hits']]
         mismatch_count += findMatchingDocumentsLSH(data)
-    print('miss classified documents --->', mismatch_count)
+        miss_cat_count[data["source"]["cat"]] += 1
+    print('miss classified documents --->', miss_cat_count)
