@@ -309,7 +309,7 @@ class ElasticSearchWrapper(Wrapper):
                                    "match":{
                                       "processed_title":{
                                          "query": title,
-                                         "minimum_should_match":"85%"
+                                         "minimum_should_match":"75%"
                                       }
                                    }
                                 }
