@@ -42,7 +42,7 @@ def findMatchingDocumentsLSH(papers):
                         pass
 
                 print("------------------incoming document title---------------------------")
-                Title = paper['_source']['processed_title'])
+                Title = paper['_source']['processed_title']
                 #print(Title)
                 #Title = re.sub(r'\s+', ' ', Title)
                 s = CSXExtractorImpl().create_shingles(Title, 5)
