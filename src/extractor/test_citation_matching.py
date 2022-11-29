@@ -24,7 +24,7 @@ def findMatchingDocumentsLSH(papers):
                 title = re.sub(r"[^a-zA-Z0-9 ]", "", title)
                 print(title)
                 documents = wrapper.get_batch_for_lsh_matching(title)
-                lsh = MinHashLSH(threshold=0.9, num_perm=256)
+                lsh = MinHashLSH(threshold=0.7, num_perm=256)
                 print(len(documents))
                 for doc in documents:
                     try:
