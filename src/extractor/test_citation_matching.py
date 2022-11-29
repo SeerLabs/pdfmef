@@ -113,7 +113,7 @@ if __name__ == "__main__":
     mismatch_count = 0
     for i in range(0, 1):
         res = es.search(index="dedupe_test", body = {
-        "from": i*10000,
+        "from": 0,
         'size' : 10,
         'query': {
             'match_all' : {}
