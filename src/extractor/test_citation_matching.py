@@ -112,7 +112,7 @@ if __name__ == "__main__":
     for i in range(1, 10):
         res = es.search(index="dedupe_test", body = {
         "from": i*10000,
-        'size' : 10000,
+        'size' : 10,
         'query': {
             'match_all' : {}
         }
