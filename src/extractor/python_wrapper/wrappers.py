@@ -316,8 +316,6 @@ class ElasticSearchWrapper(Wrapper):
                           }
                         }
                    }
-            print("printing---------")
-            print(body)
         except Exception:
             pass
         #print(body)
