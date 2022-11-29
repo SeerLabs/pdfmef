@@ -24,7 +24,7 @@ def findMatchingDocumentsLSH(papers):
                 for doc in documents:
                     try:
                         print("----------here--------------")
-                        title = doc['_source']['processed_title']
+                        title = doc['_source']['processed_title'].encode('utf-8')
                         print(title)
                         #title = re.sub(r'\s+', ' ', title)
                         id = doc['_source']['core_id']
@@ -41,7 +41,7 @@ def findMatchingDocumentsLSH(papers):
                         pass
 
                 print("------------------incoming document title---------------------------")
-                Title = paper['_source']['processed_title']
+                Title = paper['_source']['processed_title'].encode('utf-8')
                 print(Title)
                 #Title = re.sub(r'\s+', ' ', Title)
                 s = CSXExtractorImpl().create_shingles(Title, 5)
