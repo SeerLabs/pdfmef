@@ -52,11 +52,12 @@ def findMatchingDocumentsLSH(papers):
                     try:
                         title = doc['_source']['original_abstract'].lower()
                         title = re.sub(r'\s+', ' ', title)
+                        print(title)
                         id = doc['_source']['core_id']
                         d={}
                         with_wildcard = False
                         count = 0
-                        s = CSXExtractorImpl().create_shingles(title, 5)
+                        s = CSXExtractorImpl().create_shingles(title, 15)
                         min_hash = MinHash(num_perm=128)
                         for shingle in s:
                             min_hash.update(shingle.encode('utf8'))
@@ -67,8 +68,8 @@ def findMatchingDocumentsLSH(papers):
 
                 Title = paper['_source']['original_abstract'].lower()
                 Title = re.sub(r'\s+', ' ', Title)
-                #print(Title)
-                s = CSXExtractorImpl().create_shingles(Title, 5)
+                print(Title)
+                s = CSXExtractorImpl().create_shingles(Title, 15)
                 min_hash = MinHash(num_perm=128)
                 for shingle in s:
                     min_hash.update(shingle.encode('utf8'))
@@ -114,7 +115,7 @@ if __name__ == "__main__":
     for i in range(0, 1):
         res = es.search(index="dedupe_test", body = {
         "from": 0,
-        'size' : 10,
+        'size' : 1,
         'query': {
             'match_all' : {}
         }
