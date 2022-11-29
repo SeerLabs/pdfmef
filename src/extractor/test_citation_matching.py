@@ -84,7 +84,7 @@ def findMatchingDocumentsLSH(papers):
                     print("\n")
                     mismatch_count += 1
                 if (result!=None):
-                    if len(result) >= 1 and expected_result != "non_dup":
+                    if len(result) > 1 and expected_result != "non_dup":
                         expected_match_id = paper['_source']['labelled_duplicates']
                         #print(expected_match_id)
                         #print(">>>>>>>>>>>>>>>>>>>>>>>>>>")
@@ -92,6 +92,8 @@ def findMatchingDocumentsLSH(papers):
                         #print("\n")
                         if expected_match_id[0] not in result:
                             mismatch_count += 1
+                    elif len(result) == 1 and expected_result == "non_dup":
+                        pass
                     else:
                         print(paper)
                         print(expected_result)
