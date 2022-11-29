@@ -22,16 +22,12 @@ def findMatchingDocumentsLSH(papers, miss_cat_count):
             if (True):
                 title = paper['_source']['processed_title']
                 title = re.sub(r"[^a-zA-Z0-9 ]", "", title)
-                print(title)
                 documents = wrapper.get_batch_for_lsh_matching(title)
                 lsh = MinHashLSH(threshold=0.5, num_perm=128)
-                print(len(documents))
                 for doc in documents:
                     try:
-                        print("----------here--------------")
                         title = doc['_source']['processed_title']
                         title = re.sub(r"[^a-zA-Z0-9 ]", "", title)
-                        print(title)
                         #title = re.sub(r'\s+', ' ', title)
                         id = doc['_source']['core_id']
                         d={}
@@ -46,10 +42,8 @@ def findMatchingDocumentsLSH(papers, miss_cat_count):
                     except Exception:
                         pass
 
-                print("------------------incoming document title---------------------------")
                 Title = paper['_source']['processed_title']
                 Title = re.sub(r"[^a-zA-Z0-9 ]", "", Title)
-                print(Title)
                 #Title = re.sub(r'\s+', ' ', Title)
                 s = CSXExtractorImpl().create_shingles(Title, 5)
                 min_hash = MinHash(num_perm=128)
@@ -57,7 +51,6 @@ def findMatchingDocumentsLSH(papers, miss_cat_count):
                     min_hash.update(shingle.encode('utf8'))
                 result = lsh.query(min_hash)
                 expected_result = paper['_source']['cat']
-                print(expected_result)
                 #print(paper)
                 #print('<---------------------------------------------------------->')
                 if (len(result) <=1 and expected_result != "non_dup"):
@@ -71,11 +64,6 @@ def findMatchingDocumentsLSH(papers, miss_cat_count):
                 elif (result!=None):
                     if len(result) > 1 and expected_result != "non_dup":
                         expected_match_id = paper['_source']['labelled_duplicates']
-                        print(paper['_source']['cat'])
-                        print(expected_match_id)
-                        print(">>>>>>>>>>>>>>>>>>>>>>>>>>")
-                        print(result)
-                        print("\n")
                         if expected_match_id[0] not in result:
                             miss = True
                     elif len(result) == 1 and expected_result == "non_dup":
@@ -91,7 +79,6 @@ def findMatchingDocumentsLSH(papers, miss_cat_count):
                         miss = True
                 #print(miss_cat_count["non_dup"])
                 cat = paper['_source']['cat']
-                print(cat)
                 miss_cat_count[cat] += 1 if (miss == True) else 0
 
         except Exception as es:
