@@ -53,7 +53,6 @@ def findMatchingDocumentsLSH(papers):
                     try:
                         title = doc['_source']['original_abstract'].lower()
                         title = re.sub(r'\s+', ' ', title)
-                        print(title)
                         id = doc['_source']['core_id']
                         d={}
                         with_wildcard = False
@@ -69,7 +68,6 @@ def findMatchingDocumentsLSH(papers):
 
                 Title = paper['_source']['original_abstract'].lower()
                 Title = re.sub(r'\s+', ' ', Title)
-                print(Title)
                 s = CSXExtractorImpl().create_shingles(Title, 5)
                 min_hash = MinHash(num_perm=128)
                 for shingle in s:
@@ -88,10 +86,10 @@ def findMatchingDocumentsLSH(papers):
                 elif (result!=None):
                     if len(result) > 1 and expected_result != "non_dup":
                         expected_match_id = paper['_source']['labelled_duplicates']
-                        #print(expected_match_id)
-                        #print(">>>>>>>>>>>>>>>>>>>>>>>>>>")
-                        #print(result)
-                        #print("\n")
+                        print(expected_match_id)
+                        print(">>>>>>>>>>>>>>>>>>>>>>>>>>")
+                        print(result)
+                        print("\n")
                         if expected_match_id[0] not in result:
                             mismatch_count += 1
                     elif len(result) == 1 and expected_result == "non_dup":
