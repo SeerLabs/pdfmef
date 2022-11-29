@@ -89,7 +89,7 @@ def findMatchingDocumentsLSH(papers, miss_cat_count):
                         print(result)
                         print("\n")
                         miss = True
-                miss_cat_count[paper["source"]["cat"]] += if (miss == True) 1 else 0
+                miss_cat_count[paper["source"]["cat"]] += 1 if (miss == True) else 0
 
         except Exception as es:
             print("exception in findMatchingDocumentsLSH with error msg: ", es)
