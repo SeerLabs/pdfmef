@@ -26,6 +26,7 @@ def findMatchingDocumentsLSH(papers):
                         title = doc['_source']['original_abstract'].lower()
                         title = re.sub(r'\s+', ' ', title)
                         id = doc['_source']['core_id']
+                        print(id)
                         d={}
                         with_wildcard = False
                         count = 0
