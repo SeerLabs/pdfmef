@@ -96,7 +96,6 @@ def findMatchingDocumentsLSH(papers, miss_cat_count):
 
         except Exception as es:
             print("exception in findMatchingDocumentsLSH with error msg: ", es)
-    return mismatch_count
 
 if __name__ == "__main__":
     es = Elasticsearch([{'host': '130.203.139.160', 'port': 9200}])
@@ -117,6 +116,5 @@ if __name__ == "__main__":
         #print(res)
         print("%d documents found" % res['hits']['total']['value'])
         data = [doc for doc in res['hits']['hits']]
-        mismatch_count += findMatchingDocumentsLSH(data, miss_cat_count)
-        miss_cat_count[data["source"]["cat"]] += 1
+        findMatchingDocumentsLSH(data, miss_cat_count)
     print('miss classified documents --->', miss_cat_count)
