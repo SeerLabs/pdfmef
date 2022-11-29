@@ -27,6 +27,7 @@ def get_batch_for_lsh_matching(self, title):
                       }
                     }
                }
+        print(body)
     except Exception:
         pass
     print(body)
