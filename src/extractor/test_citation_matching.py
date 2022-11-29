@@ -24,7 +24,7 @@ def findMatchingDocumentsLSH(papers):
                 title = re.sub(r"[^a-zA-Z0-9 ]", "", title)
                 print(title)
                 documents = wrapper.get_batch_for_lsh_matching(title)
-                lsh = MinHashLSH(threshold=0.60, num_perm=64)
+                lsh = MinHashLSH(threshold=0.5, num_perm=128)
                 print(len(documents))
                 for doc in documents:
                     try:
@@ -38,7 +38,7 @@ def findMatchingDocumentsLSH(papers):
                         with_wildcard = False
                         count = 0
                         s = CSXExtractorImpl().create_shingles(title, 5)
-                        min_hash = MinHash(num_perm=64)
+                        min_hash = MinHash(num_perm=128)
                         for shingle in s:
                             min_hash.update(shingle.encode('utf8'))
                         if (not id in lsh):
@@ -52,7 +52,7 @@ def findMatchingDocumentsLSH(papers):
                 print(Title)
                 #Title = re.sub(r'\s+', ' ', Title)
                 s = CSXExtractorImpl().create_shingles(Title, 5)
-                min_hash = MinHash(num_perm=64)
+                min_hash = MinHash(num_perm=128)
                 for shingle in s:
                     min_hash.update(shingle.encode('utf8'))
                 result = lsh.query(min_hash)
