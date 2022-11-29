@@ -19,14 +19,13 @@ def findMatchingDocumentsLSH(papers):
     for paper in papers:
         try:
             if (True):
-                documents = wrapper.get_batch_for_lsh_matching(paper['_source']['processed_abstract'])
+                documents = wrapper.get_batch_for_lsh_matching(paper['_source']['original_title'])
                 lsh = MinHashLSH(threshold=0.90, num_perm=128)
                 for doc in documents:
                     try:
-                        title = doc['_source']['processed_abstract']
-                        #title = re.sub(r'\s+', ' ', title)
+                        title = doc['_source']['original_title'].lower()
+                        title = re.sub(r'\s+', ' ', title)
                         id = doc['_source']['core_id']
-                        print(id)
                         d={}
                         with_wildcard = False
                         count = 0
@@ -39,8 +38,8 @@ def findMatchingDocumentsLSH(papers):
                     except Exception:
                         pass
 
-                Title = paper['_source']['processed_abstract']
-                #Title = re.sub(r'\s+', ' ', Title)
+                Title = paper['_source']['original_title'].lower()
+                Title = re.sub(r'\s+', ' ', Title)
                 s = CSXExtractorImpl().create_shingles(Title, 5)
                 min_hash = MinHash(num_perm=128)
                 for shingle in s:
@@ -86,15 +85,14 @@ def findMatchingDocumentsLSH(papers):
 if __name__ == "__main__":
     es = Elasticsearch([{'host': '130.203.139.160', 'port': 9200}])
     mismatch_count = 0
-    for i in range(4, 5):
+    for i in range(0, 1):
         res = es.search(index="dedupe_test", body = {
-          "from": 0,
-          "size": 1,
-          "query": {
-            "match": {
-              "core_id.keyword": "25331293"
-            }
-          }})
+        "from": i*10000,
+        'size' : 10,
+        'query': {
+            'match_all' : {}
+        }
+        })
         #print(res)
         print("%d documents found" % res['hits']['total']['value'])
         data = [doc for doc in res['hits']['hits']]
