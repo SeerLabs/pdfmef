@@ -103,13 +103,17 @@ if __name__ == "__main__":
         dupe_ids = []
         docs = []
         for doc in res['hits']['hits']:
-            dupe_id = doc['_source']['labelled_duplicates']
-            for id in dupe_id:
-                if id not in dupe_ids:
-                    dupe_ids.append(id)
-                    docs.append(doc)
+            id = doc['_source']['core_id']
+            if (id in dupe_ids):
+                pass
+            else:
+                docs.append(doc)
+                dupe_id = doc['_source']['labelled_duplicates']
+                dupe_ids.extend(dupe_id)
+
         print(len(docs))
         print("%d documents found" % res['hits']['total']['value'])
         data = [doc for doc in docs]
         #findMatchingDocumentsLSH(data, miss_cat_count)
+
     print('miss classified documents --->', miss_cat_count)
