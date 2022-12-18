@@ -114,6 +114,6 @@ if __name__ == "__main__":
         print(len(docs))
         print("%d documents found" % res['hits']['total']['value'])
         data = [doc for doc in docs]
-        #findMatchingDocumentsLSH(data, miss_cat_count)
+        findMatchingDocumentsLSH(data, miss_cat_count)
 
     print('miss classified documents --->', miss_cat_count)
