@@ -66,6 +66,11 @@ def findMatchingDocumentsLSH(papers, miss_cat_count):
                         expected_match_id = paper['_source']['labelled_duplicates']
                         if expected_match_id[0] not in result:
                             miss = True
+                        else:
+                             print(expected_result)
+                             print(paper['_source']['labelled_duplicates'])
+                             print(">>>>>>>>>>>>>>>>>>>>>>>>>>")
+                             print(result)
                     elif len(result) == 1 and expected_result == "non_dup":
                         pass
                     else:
