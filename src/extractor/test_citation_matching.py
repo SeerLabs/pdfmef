@@ -113,7 +113,7 @@ if __name__ == "__main__":
                 print(dupe_id)
                 print(">>>>>>>>>>")
                 print(dupe_ids)
-        print(dupe_ids)
+        #print(dupe_ids)
         print("%d documents found" % res['hits']['total']['value'])
         data = [doc for doc in docs]
         #findMatchingDocumentsLSH(data, miss_cat_count)
