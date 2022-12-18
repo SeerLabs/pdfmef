@@ -296,6 +296,52 @@ class ElasticSearchWrapper(Wrapper):
         }
         response = self.get_connection_prod().update(index=settings.CLUSTERS_INDEX, id=doc_id, body=source_to_update)
 
+    def get_all_doc_batch(self):
+        """Purpose: retrieves batch of documents to process from server"""
+
+        body = ""
+        try:
+            body = {
+                        "size": 100000,
+                        "query":{
+                           "match_all": {
+                           }
+                        }
+                   }
+        except Exception:
+            pass
+        #print(body)
+        results = self.get_connection_prod().search(index=settings.CLUSTERS_INDEX, body=body)
+        self.s2_batch = results['hits']['hits']
+        return self.s2_batch
+
+    def get_batch_for_lsh_matching_only(self, title):
+        """Purpose: retrieves batch of documents to process from server"""
+
+        body = ""
+        try:
+            body = {
+                        "query":{
+                          "bool":{
+                             "should":
+                                {
+                                   "match":{
+                                      "processed_title":{
+                                         "query": title,
+                                         "minimum_should_match":"90%"
+                                      }
+                                   }
+                                }
+                          }
+                        }
+                   }
+        except Exception:
+            pass
+        #print(body)
+        results = self.get_connection_prod().search(index=settings.CLUSTERS_INDEX, body=body)
+        self.s2_batch = results['hits']['hits']
+        return self.s2_batch
+
     def get_batch_for_lsh_matching(self, title):
         """Purpose: retrieves batch of documents to process from server"""
 
