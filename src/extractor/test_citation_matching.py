@@ -112,6 +112,11 @@ if __name__ == "__main__":
             if dupe_id not in dupe_ids:
                 dupe_ids.extend(dupe_id)
                 docs.append(doc)
+            else:
+                print("found dupe id already exists\n")
+                print(dupe_id)
+                print(">>>>>>>>>>")
+                print(dupe_ids)
         print("%d documents found" % res['hits']['total']['value'])
         data = [doc for doc in docs]
         findMatchingDocumentsLSH(data, miss_cat_count)
