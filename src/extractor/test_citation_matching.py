@@ -97,8 +97,8 @@ if __name__ == "__main__":
 
     for i in l:
         res = es.search(index="dedupe_test", body = {
-        "from": i*10,
-        'size' : 10,
+        "from": i*1000,
+        'size' : 1000,
         'query': {
              "match_all": {
              }
