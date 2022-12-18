@@ -111,7 +111,7 @@ if __name__ == "__main__":
                 else:
                     print("found dupe id already exists for id---->\n")
                     print(id)
-        #print(dupe_ids)
+        print(len(docs))
         print("%d documents found" % res['hits']['total']['value'])
         data = [doc for doc in docs]
         #findMatchingDocumentsLSH(data, miss_cat_count)
