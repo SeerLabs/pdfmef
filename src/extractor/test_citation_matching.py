@@ -108,9 +108,6 @@ if __name__ == "__main__":
                 if id not in dupe_ids:
                     dupe_ids.append(id)
                     docs.append(doc)
-                else:
-                    print("found dupe id already exists for id---->\n")
-                    print(id)
         print(len(docs))
         print("%d documents found" % res['hits']['total']['value'])
         data = [doc for doc in docs]
