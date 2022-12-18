@@ -104,7 +104,7 @@ if __name__ == "__main__":
         docs = []
         for doc in res['hits']['hits']:
             dupe_id = doc['_source']['labelled_duplicates']
-            print(dupe_id)
+            #print(dupe_id)
             if dupe_id not in dupe_ids:
                 dupe_ids.extend(dupe_id)
                 docs.append(doc)
