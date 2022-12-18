@@ -104,15 +104,15 @@ if __name__ == "__main__":
         docs = []
         for doc in res['hits']['hits']:
             dupe_id = doc['_source']['labelled_duplicates']
-            #print(dupe_id)
-            if dupe_id not in dupe_ids:
-                dupe_ids.extend(dupe_id)
-                docs.append(doc)
-            else:
-                print("found dupe id already exists\n")
-                print(dupe_id)
-                print(">>>>>>>>>>")
-                print(dupe_ids)
+           for id in dupe_id:
+                if id not in dupe_ids:
+                    dupe_ids.append(id)
+                    docs.append(doc)
+                else:
+                    print("found dupe id already exists\n")
+                    print(id)
+                    print(">>>>>>>>>>")
+                    print(dupe_ids)
         #print(dupe_ids)
         print("%d documents found" % res['hits']['total']['value'])
         data = [doc for doc in docs]
