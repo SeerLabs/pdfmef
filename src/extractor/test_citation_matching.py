@@ -45,16 +45,12 @@ def findMatchingDocumentsLSH(papers, miss_cat_count, match_index = 0):
                             core_id_list = []
                             for doc in documents:
                                 core_id_list.append(doc['_source']['core_id'])
-                            print(expected_match_id[0])
-                            print("0---=--------->")
-                            print(core_id_list)
-                            if expected_match_id[0] in core_id_list:
+                            if expected_match_id[0] not in core_id_list:
                                 miss = True
                         elif len(documents) == 1 and expected_result == "non_dup":
                             pass
                         else:
-                            print(paper)
-                            print(expected_result)
+                            miss = True
 
                 else:
                     lsh = MinHashLSH(threshold=0.6, num_perm=128)
