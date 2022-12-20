@@ -27,7 +27,7 @@ def findMatchingDocumentsLSH(papers, miss_cat_count, match_index = 0):
                 elif (match_index == 1):
                     documents = wrapper.get_all_doc_batch()
                 else:
-                    documents = wrapper.get_batch_for_lsh_matching_only()
+                    documents = wrapper.get_batch_for_lsh_matching_only(title)
 
                 if match_index == 2:
                     expected_result = paper['_source']['cat']
