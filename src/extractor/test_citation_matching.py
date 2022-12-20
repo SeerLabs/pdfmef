@@ -27,7 +27,7 @@ def findMatchingDocumentsLSH(papers, miss_cat_count, match_index = 0):
                 elif (match_index == 1):
                     documents = wrapper.get_all_doc_batch()
                 else:
-                    documents = get_batch_for_lsh_matching_only()
+                    documents = wrapper.get_batch_for_lsh_matching_only()
 
                 if match_index == 2:
                     if (len(documents) <=1 and expected_result != "non_dup"):
@@ -142,6 +142,6 @@ if __name__ == "__main__":
         print(len(docs))
         print("%d documents found" % res['hits']['total']['value'])
         data = [doc for doc in docs]
-        findMatchingDocumentsLSH(data, miss_cat_count, 2)
+        findMatchingDocumentsLSH(data, miss_cat_count, 0)
 
     print('miss classified documents --->', miss_cat_count)
