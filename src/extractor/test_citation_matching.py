@@ -30,9 +30,7 @@ def findMatchingDocumentsLSH(papers, miss_cat_count, match_index = 0):
                     documents = wrapper.get_batch_for_lsh_matching_only()
 
                 if match_index == 2:
-                    print("here---?")
                     expected_result = paper['_source']['cat']
-                    print("done----------")
                     if (len(documents) <=1 and expected_result != "non_dup"):
                         print(expected_result)
                         print(paper['_source']['labelled_duplicates'])
@@ -44,7 +42,13 @@ def findMatchingDocumentsLSH(papers, miss_cat_count, match_index = 0):
                     elif (documents!=None):
                         if len(documents) > 1 and expected_result != "non_dup":
                             expected_match_id = paper['_source']['labelled_duplicates']
-                            if expected_match_id[0] == documents['_source']['core_id']:
+                            core_id_list = []
+                            for doc in documents:
+                                core_id_list.append(doc['_source']['core_id'])
+                            print(expected_match_id[0])
+                            print("0---=--------->")
+                            print(core_id_list)
+                            if expected_match_id[0] in core_id_list:
                                 miss = True
                         elif len(documents) == 1 and expected_result == "non_dup":
                             pass
