@@ -24,7 +24,7 @@ def findMatchingDocumentsLSH(papers, miss_cat_count, match_index = 0):
                 #title = re.sub(r"[^a-zA-Z0-9 ]", " ", title)
                 if (match_index == 0):
                     documents = wrapper.get_batch_for_lsh_matching(title)
-                elif (match_index == 1)
+                elif (match_index == 1):
                     documents = wrapper.get_all_doc_batch()
                 else:
                     documents = get_batch_for_lsh_matching_only()
