@@ -35,7 +35,7 @@ def findMatchingDocumentsLSH(papers, miss_cat_count, match_index = 0):
                         print(expected_result)
                         print(paper['_source']['labelled_duplicates'])
                         print(">>>>>>>>>>>>>>>>>>>>>>>>>>")
-                        print(result)
+                        print(documents)
                         print("\n")
                         miss = True
                         #mismatch_count += 1
