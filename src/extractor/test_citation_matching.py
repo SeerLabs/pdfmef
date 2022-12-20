@@ -51,7 +51,6 @@ def findMatchingDocumentsLSH(papers, miss_cat_count, match_index = 0):
 
                 else:
                     lsh = MinHashLSH(threshold=0.6, num_perm=128)
-                    print(len(documents))
                     for doc in documents:
                         try:
                             title = doc['_source']['processed_title']
