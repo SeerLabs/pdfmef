@@ -79,11 +79,6 @@ def findMatchingDocumentsLSH(papers, miss_cat_count, match_index = 0):
                     #print(paper)
                     #print('<---------------------------------------------------------->')
                     if (len(result) <=1 and expected_result != "non_dup"):
-                        print(expected_result)
-                        print(paper['_source']['labelled_duplicates'])
-                        print(">>>>>>>>>>>>>>>>>>>>>>>>>>")
-                        print(result)
-                        print("\n")
                         miss = True
                         #mismatch_count += 1
                     elif (result!=None):
@@ -94,13 +89,6 @@ def findMatchingDocumentsLSH(papers, miss_cat_count, match_index = 0):
                         elif len(result) == 1 and expected_result == "non_dup":
                             pass
                         else:
-                            print(paper)
-                            print(expected_result)
-
-                            print(paper['_source']['labelled_duplicates'])
-                            print(">>>>>>>>>>>>>>>>>>>>>>>>>>")
-                            print(result)
-                            print("\n")
                             miss = True
                 #print(miss_cat_count["non_dup"])
                 cat = paper['_source']['cat']
@@ -139,6 +127,6 @@ if __name__ == "__main__":
         print(len(docs))
         print("%d documents found" % res['hits']['total']['value'])
         data = [doc for doc in docs]
-        findMatchingDocumentsLSH(data, miss_cat_count, 2)
+        findMatchingDocumentsLSH(data, miss_cat_count, 0)
 
     print('miss classified documents --->', miss_cat_count)
