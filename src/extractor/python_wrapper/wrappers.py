@@ -315,7 +315,7 @@ class ElasticSearchWrapper(Wrapper):
         self.s2_batch = results['hits']['hits']
         return self.s2_batch
 
-    def get_batch_for_lsh_matching_only(self, title):
+    def get_batch_for_lsh_matching_only(self):
         """Purpose: retrieves batch of documents to process from server"""
 
         body = ""
