@@ -7,7 +7,7 @@ from extractor.python_wrapper import utils, wrappers
 from ingestion.csx_extractor import CSXExtractorImpl
 import re
 
-def findMatchingDocumentsLSH(papers, miss_cat_count, match_index = 0):
+def findMatchingDocumentsLSH(papers, miss_cat_count, match_index):
     config = configparser.ConfigParser()
     try:
         config.read("/pdfmef-code/src/extractor/python_wrapper/properties.config")
@@ -22,12 +22,15 @@ def findMatchingDocumentsLSH(papers, miss_cat_count, match_index = 0):
             if (True):
                 title = paper['_source']['processed_title']
                 #title = re.sub(r"[^a-zA-Z0-9 ]", " ", title)
+                # elastic query + lsh
                 if (match_index == 0):
                     documents = wrapper.get_batch_for_lsh_matching(title)
+                # lsh only
                 elif (match_index == 1):
                     documents = wrapper.get_all_doc_batch()
+                # elastic query only
                 else:
-                    documents = wrapper.get_batch_for_lsh_matching_only(title)
+                    documents = wrapper.get_batch_for_elastic_query_match_only(title)
 
                 if match_index == 2:
                     expected_result = paper['_source']['cat']
@@ -103,30 +106,32 @@ if __name__ == "__main__":
     l = [0, 4, 9]
     miss_cat_count = {"exact_dup": 0, "near_exact_dup": 0, "non_dup": 0}
 
-    for i in l:
-        res = es.search(index="dedupe_test", body = {
-        "from": i*10000,
-        'size' : 10000,
-        'query': {
-             "match_all": {
-             }
-        }
-        })
-        #print(res)
-        dupe_ids = []
-        docs = []
-        for doc in res['hits']['hits']:
-            id = doc['_source']['core_id']
-            if (id in dupe_ids):
-                pass
-            else:
-                docs.append(doc)
-                dupe_id = doc['_source']['labelled_duplicates']
-                dupe_ids.extend(dupe_id)
+    for index in [0,1,2]:
+        for i in l:
+            res = es.search(index="dedupe_test", body = {
+            "from": i*20000,
+            'size' : 20000,
+            'query': {
+                 "match_all": {
+                 }
+            }
+            })
+            #print(res)
+            dupe_ids = []
+            docs = []
+            for doc in res['hits']['hits']:
+                if (len(docs) == 10):
+                    break
+                id = doc['_source']['core_id']
+                if (id in dupe_ids):
+                    pass
+                else:
+                    docs.append(doc)
+                    dupe_id = doc['_source']['labelled_duplicates']
+                    dupe_ids.extend(dupe_id)
 
-        print(len(docs))
-        print("%d documents found" % res['hits']['total']['value'])
-        data = [doc for doc in docs]
-        findMatchingDocumentsLSH(data, miss_cat_count, 1)
+            print(len(docs))
+            data = [doc for doc in docs]
+            findMatchingDocumentsLSH(data, miss_cat_count, index)
 
-    print('miss classified documents --->', miss_cat_count)
+        print('miss classified documents for match type-> ', index, '\n', miss_cat_count)
