@@ -56,7 +56,6 @@ def findMatchingDocumentsLSH(papers, miss_cat_count, match_index):
                     from pathlib import Path
                     my_file = Path("data")
                     if my_file.is_file() and match_index == 1:
-                        print("file exists reusing lsh------------------------>")
                         rfile = open("data", "rb")
                         lsh = pickle.load(rfile)
                     else:
@@ -124,8 +123,8 @@ if __name__ == "__main__":
         miss_cat_count = {"exact_dup": 0, "near_exact_dup": 0, "non_dup": 0}
         for i in l:
             res = es.search(index="dedupe_test", body = {
-            "from": i*10,
-            'size' : 20,
+            "from": i*10000,
+            'size' : 20000,
             'query': {
                  "match_all": {
                  }
