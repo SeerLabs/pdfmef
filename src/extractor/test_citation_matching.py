@@ -124,8 +124,8 @@ if __name__ == "__main__":
         miss_cat_count = {"exact_dup": 0, "near_exact_dup": 0, "non_dup": 0}
         for i in l:
             res = es.search(index="dedupe_test", body = {
-            "from": i*10000,
-            'size' : 20000,
+            "from": i*10,
+            'size' : 20,
             'query': {
                  "match_all": {
                  }
