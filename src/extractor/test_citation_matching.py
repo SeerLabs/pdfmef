@@ -104,9 +104,10 @@ if __name__ == "__main__":
     es = Elasticsearch([{'host': '130.203.139.160', 'port': 9200}])
     mismatch_count = 0
     l = [0, 4, 8]
-    miss_cat_count = {"exact_dup": 0, "near_exact_dup": 0, "non_dup": 0}
+
 
     for index in [0,1,2]:
+        miss_cat_count = {"exact_dup": 0, "near_exact_dup": 0, "non_dup": 0}
         for i in l:
             res = es.search(index="dedupe_test", body = {
             "from": i*10000,
