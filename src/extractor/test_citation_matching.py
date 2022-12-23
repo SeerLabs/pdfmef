@@ -96,7 +96,6 @@ def findMatchingDocumentsLSH(papers, miss_cat_count, match_index):
                     expected_result = paper['_source']['cat']
                     #print(paper)
                     #print('<---------------------------------------------------------->')
-                    print(result)
                     if (len(result) <=1 and expected_result != "non_dup"):
                         miss = True
                         #mismatch_count += 1
@@ -122,7 +121,7 @@ if __name__ == "__main__":
     l = [0, 4, 8]
 
     for index in [0,1,2]:
-       start_time = time.time()
+        start_time = time.time()
         miss_cat_count = {"exact_dup": 0, "near_exact_dup": 0, "non_dup": 0}
         for i in l:
             res = es.search(index="dedupe_test", body = {
