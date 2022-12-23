@@ -57,6 +57,7 @@ def findMatchingDocumentsLSH(papers, miss_cat_count, match_index):
                     my_file = Path("data")
                     if my_file.is_file() and match_index == 1:
                         rfile = open("data", "rb")
+                        print("here loading from data file")
                         lsh = pickle.load(rfile)
                     else:
                         lsh = MinHashLSH(threshold=0.6, num_perm=128)
@@ -94,6 +95,7 @@ def findMatchingDocumentsLSH(papers, miss_cat_count, match_index):
                     expected_result = paper['_source']['cat']
                     #print(paper)
                     #print('<---------------------------------------------------------->')
+                    print(result)
                     if (len(result) <=1 and expected_result != "non_dup"):
                         miss = True
                         #mismatch_count += 1
@@ -146,6 +148,6 @@ if __name__ == "__main__":
 
             print(len(docs))
             data = [doc for doc in docs]
-            findMatchingDocumentsLSH(data, miss_cat_count, index)
+            findMatchingDocumentsLSH(data, miss_cat_count, 1)
 
         print('miss classified documents for match type-> ', index, '\n', miss_cat_count)
