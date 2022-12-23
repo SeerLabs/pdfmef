@@ -302,7 +302,7 @@ class ElasticSearchWrapper(Wrapper):
         body = ""
         try:
             body = {
-                        "size": 10000,
+                        "size": 100000,
                         "query":{
                            "match_all": {
                            }
