@@ -58,7 +58,6 @@ def findMatchingDocumentsLSH(papers, miss_cat_count, match_index):
                     my_file = Path("data")
                     if my_file.is_file() and match_index == 1:
                         rfile = open("data", "rb")
-                        print("here loading from data file")
                         lsh = pickle.load(rfile)
                     else:
                         lsh = MinHashLSH(threshold=0.6, num_perm=128)
