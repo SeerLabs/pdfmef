@@ -62,11 +62,11 @@ def findMatchingDocumentsLSH(papers, miss_cat_count, match_index):
                     else:
                         lsh = MinHashLSH(threshold=0.6, num_perm=128)
 
-                        print("here in training")
+                        #print("here in training")
                         for doc in documents:
                             try:
                                 title = doc['_source']['processed_title']
-                                print(title)
+                                #print(title)
                                 #title = re.sub(r"[^a-zA-Z0-9 ]", " ", title)
                                 #title = re.sub(r'\s+', ' ', title)
                                 id = doc['_source']['core_id']
@@ -126,7 +126,7 @@ if __name__ == "__main__":
         for i in l:
             res = es.search(index="dedupe_test", body = {
             "from": i*10000,
-            'size' : 20000,
+            'size' : 20,
             'query': {
                  "match_all": {
                  }
