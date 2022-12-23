@@ -6,6 +6,7 @@ from elasticsearch import Elasticsearch
 from extractor.python_wrapper import utils, wrappers
 from ingestion.csx_extractor import CSXExtractorImpl
 import re
+import time
 import pickle
 
 def findMatchingDocumentsLSH(papers, miss_cat_count, match_index):
@@ -120,13 +121,13 @@ if __name__ == "__main__":
     mismatch_count = 0
     l = [0, 4, 8]
 
-
     for index in [0,1,2]:
+       start_time = time.time()
         miss_cat_count = {"exact_dup": 0, "near_exact_dup": 0, "non_dup": 0}
         for i in l:
             res = es.search(index="dedupe_test", body = {
             "from": i*10000,
-            'size' : 20,
+            'size' : 20000,
             'query': {
                  "match_all": {
                  }
@@ -150,4 +151,5 @@ if __name__ == "__main__":
             data = [doc for doc in docs]
             findMatchingDocumentsLSH(data, miss_cat_count, 1)
 
+        print("total time taken seconds ---> ", (time.time() - start_time))
         print('miss classified documents for match type-> ', index, '\n', miss_cat_count)
