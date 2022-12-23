@@ -321,6 +321,7 @@ class ElasticSearchWrapper(Wrapper):
         body = ""
         try:
             body = {
+                        "size": 100,
                         "query":{
                           "bool":{
                              "should":
@@ -348,6 +349,7 @@ class ElasticSearchWrapper(Wrapper):
         body = ""
         try:
             body = {
+                        "size": 100,
                         "query":{
                           "bool":{
                              "should":
