@@ -93,6 +93,7 @@ def findMatchingDocumentsLSH(papers, miss_cat_count, match_index):
                         min_hash.update(shingle.encode('utf8'))
                     result = lsh.query(min_hash)
                     expected_result = paper['_source']['cat']
+                    print(result)
                     #print(paper)
                     #print('<---------------------------------------------------------->')
                     if (len(result) <=1 and expected_result != "non_dup"):
@@ -125,7 +126,7 @@ if __name__ == "__main__":
         for i in l:
             res = es.search(index="dedupe_test", body = {
             "from": i*10000,
-            'size' : 20,
+            'size' : 3,
             'query': {
                  "match_all": {
                  }
