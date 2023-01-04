@@ -136,8 +136,6 @@ if __name__ == "__main__":
             dupe_ids = []
             docs = []
             for doc in res['hits']['hits']:
-                if (len(docs) == 10000):
-                    break
                 id = doc['_source']['core_id']
                 if (id in dupe_ids):
                     pass
