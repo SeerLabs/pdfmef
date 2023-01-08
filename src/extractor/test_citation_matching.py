@@ -60,7 +60,7 @@ def findMatchingDocumentsLSH(papers, miss_cat_count, match_index):
                         rfile = open("data", "rb")
                         lsh = pickle.load(rfile)
                     else:
-                        lsh = MinHashLSH(threshold=0.6, num_perm=128)
+                        lsh = MinHashLSH(threshold=0.5, num_perm=128)
 
                         #print("here in training")
                         for doc in documents:
@@ -118,15 +118,15 @@ def findMatchingDocumentsLSH(papers, miss_cat_count, match_index):
 if __name__ == "__main__":
     es = Elasticsearch([{'host': '130.203.139.160', 'port': 9200}])
     mismatch_count = 0
-    l = [0]
+    l = [4]
 
-    for index in [0, 2]:
+    for index in [0]:
         start_time = time.time()
         miss_cat_count = {"exact_dup": 0, "near_exact_dup": 0, "non_dup": 0}
         for i in l:
             res = es.search(index="dedupe_test", body = {
-            "from": i,
-            'size' : 100000,
+            "from": i*10000,
+            'size' : 20000,
             'query': {
                  "match_all": {
                  }
