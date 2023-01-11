@@ -155,5 +155,5 @@ if __name__ == "__main__":
             print(miss_cat_count)
             #findMatchingDocumentsLSH(data, miss_cat_count, index)
 
-        print("total time taken seconds ---> ", (time.time() - start_time))
-        print('miss classified documents for match type-> ', index, '\n', miss_cat_count)
+        #print("total time taken seconds ---> ", (time.time() - start_time))
+        #print('miss classified documents for match type-> ', index, '\n', miss_cat_count)
