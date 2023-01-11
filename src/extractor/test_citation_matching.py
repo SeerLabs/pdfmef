@@ -118,42 +118,40 @@ def findMatchingDocumentsLSH(papers, miss_cat_count, match_index):
 if __name__ == "__main__":
     es = Elasticsearch([{'host': '130.203.139.160', 'port': 9200}])
     mismatch_count = 0
-    l = [0, 4, 8]
-
     for index in [0]:
         start_time = time.time()
         miss_cat_count = {"exact_dup": 0, "near_exact_dup": 0, "non_dup": 0}
-        for i in l:
-            res = es.search(index="dedupe_test", body = {
-            "from": i*10000,
-            'size' : 20000,
-            'query': {
-                 "match_all": {
-                 }
-            }
-            })
-            #print(res)
-            dupe_ids = []
-            docs = []
-            for doc in res['hits']['hits']:
-                id = doc['_source']['core_id']
-                if (len(docs) == 10000):
-                    break
-                if (id in dupe_ids):
-                    pass
-                else:
-                    docs.append(doc)
-                    dupe_id = doc['_source']['labelled_duplicates']
-                    dupe_ids.extend(dupe_id)
+        cat_count = {"exact_dup": 0, "near_exact_dup": 0, "non_dup": 0}
+        res = es.search(index="dedupe_test", body = {
+        "from": 0,
+        'size' : 100000
+        'query': {
+             "match_all": {
+             }
+        }
+        })
+        #print(res)
+        dupe_ids = []
+        all_docs = []
+        docs = []
+        for doc in res['hits']['hits']:
+            id = doc['_source']['core_id']
+            if (id in dupe_ids):
+                pass
+            else:
+                all_docs.append(doc)
+                dupe_id = doc['_source']['labelled_duplicates']
+                dupe_ids.extend(dupe_id)
 
 
+        for doc in all_docs:
+            if (cat_count[doc['_source']['cat']] < 10000):
+                docs.append(doc)
+                cat_count[doc['_source']['cat']]+=1
 
-            print(len(docs))
-            for doc in docs:
-                miss_cat_count[doc['_source']['cat']]+=1
+        print(cat_count)
+        print(len(docs))
+        findMatchingDocumentsLSH(docs, miss_cat_count, index)
 
-            print(miss_cat_count)
-            #findMatchingDocumentsLSH(data, miss_cat_count, index)
-
-        #print("total time taken seconds ---> ", (time.time() - start_time))
-        #print('miss classified documents for match type-> ', index, '\n', miss_cat_count)
+    print("total time taken seconds ---> ", (time.time() - start_time))
+    print('miss classified documents for match type-> ', index, '\n', miss_cat_count)
