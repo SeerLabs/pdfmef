@@ -146,9 +146,14 @@ if __name__ == "__main__":
                     dupe_id = doc['_source']['labelled_duplicates']
                     dupe_ids.extend(dupe_id)
 
+
+
             print(len(docs))
-            data = [doc for doc in docs]
-            findMatchingDocumentsLSH(data, miss_cat_count, index)
+            for doc in docs:
+                miss_cat_count[doc['_source']['cat']]+=1
+
+            print(miss_cat_count)
+            #findMatchingDocumentsLSH(data, miss_cat_count, index)
 
         print("total time taken seconds ---> ", (time.time() - start_time))
         print('miss classified documents for match type-> ', index, '\n', miss_cat_count)
