@@ -124,7 +124,7 @@ if __name__ == "__main__":
         cat_count = {"exact_dup": 0, "near_exact_dup": 0, "non_dup": 0}
         res = es.search(index="dedupe_test", body = {
         "from": 0,
-        'size' : 100000
+        'size' : 100000,
         'query': {
              "match_all": {
              }
