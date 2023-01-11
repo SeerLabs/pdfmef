@@ -60,7 +60,7 @@ def findMatchingDocumentsLSH(papers, miss_cat_count, match_index):
                         rfile = open("data", "rb")
                         lsh = pickle.load(rfile)
                     else:
-                        lsh = MinHashLSH(threshold=0.5, num_perm=128)
+                        lsh = MinHashLSH(threshold=0.5, num_perm=256)
 
                         #print("here in training")
                         for doc in documents:
@@ -88,7 +88,7 @@ def findMatchingDocumentsLSH(papers, miss_cat_count, match_index):
 
                     Title = paper['_source']['processed_title']
                     s = CSXExtractorImpl().create_shingles(Title, 5)
-                    min_hash = MinHash(num_perm=128)
+                    min_hash = MinHash(num_perm=256)
                     for shingle in s:
                         min_hash.update(shingle.encode('utf8'))
                     result = lsh.query(min_hash)
