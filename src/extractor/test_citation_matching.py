@@ -118,15 +118,15 @@ def findMatchingDocumentsLSH(papers, miss_cat_count, match_index):
 if __name__ == "__main__":
     es = Elasticsearch([{'host': '130.203.139.160', 'port': 9200}])
     mismatch_count = 0
-    l = [0]
+    l = [0, 4, 8]
 
     for index in [0]:
         start_time = time.time()
         miss_cat_count = {"exact_dup": 0, "near_exact_dup": 0, "non_dup": 0}
         for i in l:
             res = es.search(index="dedupe_test", body = {
-            "from": i,
-            'size' : 100000,
+            "from": i*10000,
+            'size' : 20000,
             'query': {
                  "match_all": {
                  }
@@ -137,6 +137,8 @@ if __name__ == "__main__":
             docs = []
             for doc in res['hits']['hits']:
                 id = doc['_source']['core_id']
+                if (len(docs) == 10000):
+                    break
                 if (id in dupe_ids):
                     pass
                 else:
