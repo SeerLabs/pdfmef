@@ -1,6 +1,6 @@
-CLUSTERS_INDEX = "test_new_pdfmef_index"
+CLUSTERS_INDEX = "citeseerx_all_papers"
 ACL_CLUSTER_ORIGINAL_INDEX = "acl_metadata_bib2"
-KEYMAP_INDEX = "csx_citeseer_pdfmef_test_index_keymap"
+KEYMAP_INDEX = "citeseerx_all_papers_keymap"
 PUB_INFO_TYPE = "pub_info"
 CRAWL_META_INDEX = "csx_crawl_meta_next"
 S2_META_INDEX = "s2org_corpus"
