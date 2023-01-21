@@ -247,7 +247,9 @@ def _real_run(runnables, runnable_props, data, output_dir, **kwargs):
       instance = runnable()
       instance.run_name = run_name
       instance.logger = logging.getLogger('runnables.{0}'.format(runnable.__name__))
+      print(instance)
       result = instance.run(data, dep_results)
+      print("done instance")
       results[runnable] = result
    output_dir = os.path.abspath(os.path.expanduser(output_dir))
    if not os.path.exists(output_dir):
