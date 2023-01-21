@@ -153,7 +153,7 @@ class ExtractionRunner(object):
          if 'file_prefixes' in kwargs: kws['file_prefix'] = kwargs['file_prefixes'][i]
          if 'file_prefix' in kwargs: kws['file_prefix'] = kwargs['file_prefix']
          if 'write_dep_errors' in kwargs: kws['write_dep_errors'] = kwargs['write_dep_errors']
-
+         print("inside run_batch")
          pool.apply_async(_real_run, args=args, kwds=kws)
 
       pool.close()
@@ -242,6 +242,7 @@ def _real_run(runnables, runnable_props, data, output_dir, **kwargs):
 
    result_logger.info('{0} started'.format(run_name))
    results = {}
+   print("inside real run")
    for runnable in runnables:
       dep_results = _select_dependency_results(runnable.dependencies, results)
       instance = runnable()
