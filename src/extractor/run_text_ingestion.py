@@ -181,13 +181,13 @@ if __name__ == '__main__':
         ids = wrapper.get_document_ids()
         source_urls = wrapper.get_source_urls()
         if len(ids) == 0:
-            logger.info("---no files to extractor hence exiting---")
+            print("---no files to extractor hence exiting---")
             break
 
         outputPaths = []
         files = []
         prefixes = []
-        logger.info("batch processing-- starting pdfmef extraction and ingestion for size: "+str(len(ids)))
+        print("batch processing-- starting pdfmef extraction and ingestion for size: "+str(len(ids)))
         for id in ids:
             chunks = [id[i:i + 2] for i in range(0, len(id), 2)]
             output_path = os.path.join(baseResultsPath, chunks[0], chunks[1], chunks[2], chunks[3], chunks[4], chunks[5], chunks[6], id)
@@ -198,6 +198,7 @@ if __name__ == '__main__':
             files.append(baseDocumentPath + path)
 
         files_to_process = files
+        print(files_to_process)
         runner.run_from_file_batch(files_to_process, outputPaths, num_processes=numProcesses, file_prefixes=prefixes)
         on_batch_finished(logPath, wrapper)
         numDocs += config.getint('ConnectionProperties', 'batchSize')
