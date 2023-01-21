@@ -57,6 +57,7 @@ class KeyMatcherClusterer(CSXClusterer):
         self.create_new_paper(paper)
 
     def cluster_papers(self, papers: List[Cluster]):
+        print("inside cluster_papers")
         for paper in papers:
             self.cluster_paper(paper)
 
