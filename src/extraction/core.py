@@ -196,13 +196,17 @@ class ExtractionRunner(object):
       err_check = []
 
       for i, (path, dir) in enumerate(zip(file_paths, output_dirs)):
-         args = (self.runnables, self.runnable_props, open(path, 'rb').read(), dir)
-         kws = {'run_name': path}
-         if 'file_prefixes' in kwargs: kws['file_prefix'] = kwargs['file_prefixes'][i]
-         if 'file_prefix' in kwargs: kws['file_prefix'] = kwargs['file_prefix']
-         if 'write_dep_errors' in kwargs: kws['write_dep_errors'] = kwargs['write_dep_errors']
+         try:
+            args = (self.runnables, self.runnable_props, open(path, 'rb').read(), dir)
+            kws = {'run_name': path}
+            if 'file_prefixes' in kwargs: kws['file_prefix'] = kwargs['file_prefixes'][i]
+            if 'file_prefix' in kwargs: kws['file_prefix'] = kwargs['file_prefix']
+            if 'write_dep_errors' in kwargs: kws['write_dep_errors'] = kwargs['write_dep_errors']
 
-         err_check.append(pool.apply_async(_real_run, args=args, kwds=kws))
+            err_check.append(pool.apply_async(_real_run, args=args, kwds=kws))
+         except Exception:
+            print('file not found---->', path)
+            pass
       pool.close()
       pool.join()
       # if any process raised an uncaught exception, we will see it now
