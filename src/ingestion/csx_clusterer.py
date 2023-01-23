@@ -67,10 +67,9 @@ class KeyMatcherClusterer(CSXClusterer):
         except Exception as ex:
             print(ex)
         elasticConnectionProps = dict(config.items('ElasticConnectionProperties'))
-        print(elasticConnectionProps)
         wrapper = wrappers.ElasticSearchWrapper(elasticConnectionProps)
         documents = wrapper.get_batch_for_lsh_matching(current_paper_title)
-        similar_doc_id = find_similar_document(documents)
+        similar_doc_id = self.find_similar_document(documents)
         if len(matching_doc) > 0:
             self.merge_with_existing_cluster(matched_cluster_id=similar_doc_id, current_paper=paper)
         else:
