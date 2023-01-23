@@ -72,7 +72,7 @@ class KeyMatcherClusterer(CSXClusterer):
         documents = wrapper.get_batch_for_lsh_matching(current_paper_title)
         similar_doc_id = self.find_similar_document(documents, current_paper_title)
         if similar_doc_id:
-            similar_paper_id = similar_doc_id
+            similar_paper_id = similar_doc_id[0]
             print("inside similar_paper_id ---> ", similar_paper_id)
             self.merge_with_existing_cluster(matched_cluster_id=similar_doc_id[0], current_paper=paper)
         else:
