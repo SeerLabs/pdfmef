@@ -58,8 +58,9 @@ class KeyMatcherClusterer(CSXClusterer):
 
     def cluster_paper_with_bm25_lsh(self, paper: Cluster) -> None:
         current_paper_title = paper.title
+        print("inside cluster_paper_with_bm25_lsh with title---->", current_paper_title)
         documents = wrapper.get_batch_for_lsh_matching(current_paper_title)
-        matching_doc = get_matching_document(documents)
+        matching_doc = find_similar_document(documents)
         if len(found_keys) > 0:
             for each_key in found_keys:
                 paper_id = each_key.paper_id
@@ -71,9 +72,11 @@ class KeyMatcherClusterer(CSXClusterer):
                     continue
         self.create_new_paper(paper)
 
-    def find_duplicate_document(self, documents):
+    def find_similar_document(self, documents, current_paper_title):
+       print("inside find_similar_document")
        for doc in documents:
             try:
+                print(doc)
                 title = doc['_source']['title']
                 id = doc['_source']['paper_id']
                 d={}
@@ -88,7 +91,7 @@ class KeyMatcherClusterer(CSXClusterer):
             except Exception:
                 pass
 
-       Title = paper['_source']['processed_title']
+       Title = current_paper_title
        s = CSXExtractorImpl().create_shingles(Title, 5)
        min_hash = MinHash(num_perm=128)
        for shingle in s:

@@ -334,6 +334,34 @@ class ElasticSearchWrapper(Wrapper):
             else:
                 self.batch.append(result)
 
+    def get_batch_for_lsh_matching(self, title):
+        """Purpose: retrieves batch of documents to process from server"""
+
+        body = ""
+        try:
+            body = {
+                        "size": 100,
+                        "query":{
+                          "bool":{
+                             "should":
+                                {
+                                   "match":{
+                                      "processed_title":{
+                                         "query": title,
+                                         "minimum_should_match":"75%"
+                                      }
+                                   }
+                                }
+                          }
+                        }
+                   }
+        except Exception:
+            pass
+        #print(body)
+        results = self.get_connection_prod().search(index=settings.CLUSTERS_INDEX, body=body)
+        self.s2_batch = results['hits']['hits']
+        return self.s2_batch
+
     def get_document_ids(self):
         """Purpose: parses the ids of all documents in a batch
             Returns: list of string ids"""
