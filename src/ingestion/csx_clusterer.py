@@ -118,6 +118,8 @@ class KeyMatcherClusterer(CSXClusterer):
 
        Title = current_paper_title
        s = self.create_shingles(Title, 5)
+       print("shingleee")
+       print(s)
        min_hash = MinHash(num_perm=128)
        for shingle in s:
         min_hash.update(shingle.encode('utf8'))
