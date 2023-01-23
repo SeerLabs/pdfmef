@@ -59,7 +59,7 @@ class KeyMatcherClusterer(CSXClusterer):
         self.create_new_paper(paper)
 
     def cluster_paper_with_bm25_lsh(self, paper: Cluster) -> None:
-        current_paper_title = paper.title
+        current_paper_title = "Estimation of urinary stone composition by automated processing of CT"
         print("inside cluster_paper_with_bm25_lsh with title---->", current_paper_title)
         config = configparser.ConfigParser()
         try:
@@ -70,17 +70,11 @@ class KeyMatcherClusterer(CSXClusterer):
         print(elasticConnectionProps)
         wrapper = wrappers.ElasticSearchWrapper(elasticConnectionProps)
         documents = wrapper.get_batch_for_lsh_matching(current_paper_title)
-        matching_doc = find_similar_document(documents)
-        if len(found_keys) > 0:
-            for each_key in found_keys:
-                paper_id = each_key.paper_id
-                found_paper = Cluster.get(id=paper_id, _source=['title'], using=self.elastic_service.get_connection())
-                if similarity(found_paper.title, paper.title) > 0.60:
-                    self.find_duplicate_document(matched_cluster_id=paper_id, current_paper=paper)
-                    return
-                else:
-                    continue
-        self.create_new_paper(paper)
+        similar_doc_id = find_similar_document(documents)
+        if len(matching_doc) > 0:
+            self.merge_with_existing_cluster(matched_cluster_id=similar_doc_id, current_paper=paper)
+        else:
+            self.create_new_paper(paper)
 
     def find_similar_document(self, documents, current_paper_title):
        print("inside find_similar_document")
@@ -135,6 +129,7 @@ class KeyMatcherClusterer(CSXClusterer):
             exit()
 
     def merge_with_existing_cluster(self, matched_cluster_id: str, current_paper: Cluster):
+        print("found similar document with id:->", matched_cluster_id)
         matched_cluster = Cluster.get(id=matched_cluster_id, using=self.elastic_service.get_connection())
 
         if current_paper.has_pdf and matched_cluster.is_citation:
@@ -144,6 +139,7 @@ class KeyMatcherClusterer(CSXClusterer):
             matched_cluster.add_cited_by(current_paper.cited_by[0])
             matched_cluster.is_citation = True
         if current_paper.has_pdf:
+            matched_cluster.source_url = "testing citation matching"
             matched_cluster.has_pdf = True
             matched_cluster.source_url = current_paper.source_url
             matched_cluster.add_paper_id(current_paper.paper_id[0])
