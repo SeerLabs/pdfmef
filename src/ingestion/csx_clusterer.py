@@ -174,6 +174,7 @@ class KeyMatcherClusterer(CSXClusterer):
             matched_cluster.add_paper_id(current_paper.paper_id[0])
 
         try:
+            print(matched_cluster)
             matched_cluster.save(using=self.elastic_service.get_connection())
         except TransportError as e:
             time.sleep(30)
