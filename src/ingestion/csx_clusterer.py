@@ -5,6 +5,7 @@ from elasticsearch import TransportError
 from elasticsearch.helpers import bulk
 from elasticsearch_dsl import Nested
 from extractor.python_wrapper import utils, wrappers
+from datasketch import MinHash
 
 import configparser
 import settings
@@ -103,8 +104,6 @@ class KeyMatcherClusterer(CSXClusterer):
                 title = doc['_source']['title']
                 id = doc['_source']['paper_id']
                 d={}
-                print("hereeee")
-                print(title)
                 with_wildcard = False
                 count = 0
                 s = self.create_shingles(title, 5)
@@ -118,8 +117,6 @@ class KeyMatcherClusterer(CSXClusterer):
 
        Title = current_paper_title
        s = self.create_shingles(Title, 5)
-       print("shingleee")
-       print(s)
        min_hash = MinHash(num_perm=128)
        for shingle in s:
         min_hash.update(shingle.encode('utf8'))
