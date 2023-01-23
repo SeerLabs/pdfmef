@@ -5,6 +5,7 @@ from elasticsearch import TransportError
 from elasticsearch.helpers import bulk
 from elasticsearch_dsl import Nested
 from extractor.python_wrapper import utils, wrappers
+from ingestion.csx_extractor import CSXExtractorImpl
 
 import configparser
 import settings
@@ -101,7 +102,7 @@ class KeyMatcherClusterer(CSXClusterer):
        for shingle in s:
         min_hash.update(shingle.encode('utf8'))
        result = lsh.query(min_hash)
-
+       print(result)
        if (len(result) >= 1):
         return result[0]
         #print(result)
