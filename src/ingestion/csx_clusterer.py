@@ -104,8 +104,8 @@ class KeyMatcherClusterer(CSXClusterer):
        for doc in documents:
             try:
                 title = doc['_source']['title']
-                print(title)
                 id = doc['_source']['paper_id']
+                print(id)
                 d={}
                 with_wildcard = False
                 count = 0
@@ -119,6 +119,7 @@ class KeyMatcherClusterer(CSXClusterer):
                 pass
 
        Title = current_paper_title
+       print(Title)
        s = self.create_shingles(Title, 5)
        min_hash = MinHash(num_perm=128)
        for shingle in s:
