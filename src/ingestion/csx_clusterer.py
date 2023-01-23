@@ -79,10 +79,11 @@ class KeyMatcherClusterer(CSXClusterer):
        print("inside find_similar_document")
        for doc in documents:
             try:
-                print(doc)
                 title = doc['_source']['title']
                 id = doc['_source']['paper_id']
                 d={}
+                print("hereeee")
+                print(title)
                 with_wildcard = False
                 count = 0
                 s = CSXExtractorImpl().create_shingles(title, 5)
