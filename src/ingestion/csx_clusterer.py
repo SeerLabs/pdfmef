@@ -56,6 +56,49 @@ class KeyMatcherClusterer(CSXClusterer):
                     continue
         self.create_new_paper(paper)
 
+    def cluster_paper_with_bm25_lsh(self, paper: Cluster) -> None:
+        current_paper_title = paper.title
+        documents = wrapper.get_batch_for_lsh_matching(current_paper_title)
+        matching_doc = get_matching_document(documents)
+        if len(found_keys) > 0:
+            for each_key in found_keys:
+                paper_id = each_key.paper_id
+                found_paper = Cluster.get(id=paper_id, _source=['title'], using=self.elastic_service.get_connection())
+                if similarity(found_paper.title, paper.title) > 0.60:
+                    self.find_duplicate_document(matched_cluster_id=paper_id, current_paper=paper)
+                    return
+                else:
+                    continue
+        self.create_new_paper(paper)
+
+    def find_duplicate_document(self, documents):
+       for doc in documents:
+            try:
+                title = doc['_source']['title']
+                id = doc['_source']['paper_id']
+                d={}
+                with_wildcard = False
+                count = 0
+                s = CSXExtractorImpl().create_shingles(title, 5)
+                min_hash = MinHash(num_perm=128)
+                for shingle in s:
+                    min_hash.update(shingle.encode('utf8'))
+                if (not id in lsh):
+                    lsh.insert(f"{id}", min_hash)
+            except Exception:
+                pass
+
+       Title = paper['_source']['processed_title']
+       s = CSXExtractorImpl().create_shingles(Title, 5)
+       min_hash = MinHash(num_perm=128)
+       for shingle in s:
+        min_hash.update(shingle.encode('utf8'))
+       result = lsh.query(min_hash)
+
+       if (len(result) >= 1):
+        return result[0]
+        #print(result)
+
     def cluster_papers(self, papers: List[Cluster]):
         print("inside cluster_papers")
         for paper in papers:
