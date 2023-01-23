@@ -60,7 +60,7 @@ class KeyMatcherClusterer(CSXClusterer):
         self.create_new_paper(paper)
 
     def cluster_paper_with_bm25_lsh(self, paper: Cluster) -> None:
-        current_paper_title = "Estimation of urinary stone composition by automated processing of CT"
+        current_paper_title = "Estimation of urinary stone composition by automated processing of CT images"
         print("inside cluster_paper_with_bm25_lsh with title---->", current_paper_title)
         config = configparser.ConfigParser()
         try:
@@ -110,7 +110,6 @@ class KeyMatcherClusterer(CSXClusterer):
                 with_wildcard = False
                 count = 0
                 s = self.create_shingles(title, 5)
-                print(s)
                 min_hash = MinHash(num_perm=128)
                 for shingle in s:
                     min_hash.update(shingle.encode('utf8'))
