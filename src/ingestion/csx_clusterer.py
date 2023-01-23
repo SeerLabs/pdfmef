@@ -99,7 +99,7 @@ class KeyMatcherClusterer(CSXClusterer):
 
     def find_similar_document(self, documents, current_paper_title):
        print("inside find_similar_document")
-       print(len(docs))
+       print(len(documents))
        for doc in documents:
             try:
                 title = doc['_source']['title']
