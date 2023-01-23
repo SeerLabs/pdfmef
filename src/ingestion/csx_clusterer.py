@@ -100,6 +100,7 @@ class KeyMatcherClusterer(CSXClusterer):
     def find_similar_document(self, documents, current_paper_title):
        print("inside find_similar_document")
        print(len(documents))
+       lsh = MinHashLSH(threshold=0.5, num_perm=128)
        for doc in documents:
             try:
                 title = doc['_source']['title']
