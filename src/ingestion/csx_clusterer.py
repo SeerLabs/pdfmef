@@ -5,7 +5,6 @@ from elasticsearch import TransportError
 from elasticsearch.helpers import bulk
 from elasticsearch_dsl import Nested
 from extractor.python_wrapper import utils, wrappers
-from ingestion.csx_extractor import CSXExtractorImpl
 
 import configparser
 import settings
@@ -76,6 +75,27 @@ class KeyMatcherClusterer(CSXClusterer):
         else:
             self.create_new_paper(paper)
 
+    def create_shingles(self, doc, k):
+        """
+        Creates shingles and stores them in sets
+
+        Paramaters
+        ----------
+
+        Returns
+        -------
+        """
+        shingled_set = set() # create an empty set
+
+        doc_length = len(doc)
+
+        # iterate through the string and slice it up by k-chars at a time
+        for idx in range(doc_length - k + 1):
+            doc_slice = doc[idx:idx + k]
+            shingled_set.add(doc_slice)
+
+        return shingled_set
+
     def find_similar_document(self, documents, current_paper_title):
        print("inside find_similar_document")
        for doc in documents:
@@ -87,7 +107,7 @@ class KeyMatcherClusterer(CSXClusterer):
                 print(title)
                 with_wildcard = False
                 count = 0
-                s = CSXExtractorImpl().create_shingles(title, 5)
+                s = self.create_shingles(title, 5)
                 min_hash = MinHash(num_perm=128)
                 for shingle in s:
                     min_hash.update(shingle.encode('utf8'))
@@ -97,7 +117,7 @@ class KeyMatcherClusterer(CSXClusterer):
                 pass
 
        Title = current_paper_title
-       s = CSXExtractorImpl().create_shingles(Title, 5)
+       s = self.create_shingles(Title, 5)
        min_hash = MinHash(num_perm=128)
        for shingle in s:
         min_hash.update(shingle.encode('utf8'))
