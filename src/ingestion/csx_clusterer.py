@@ -74,7 +74,7 @@ class KeyMatcherClusterer(CSXClusterer):
         if similar_doc_id:
             similar_paper_id = similar_doc_id[0]
             print("inside similar_paper_id ---> ", similar_paper_id)
-            self.merge_with_existing_cluster(matched_cluster_id=similar_doc_id[0], current_paper=paper)
+            self.merge_with_existing_cluster(matched_cluster_id=similar_paper_id, current_paper=paper)
         else:
             self.create_new_paper(paper)
 
@@ -159,8 +159,9 @@ class KeyMatcherClusterer(CSXClusterer):
             exit()
 
     def merge_with_existing_cluster(self, matched_cluster_id: str, current_paper: Cluster):
+        print("hereeee hello --->", matched_cluster_id)
         matched_cluster = Cluster.get(id=matched_cluster_id, using=self.elastic_service.get_connection())
-        print("hereeee hello")
+         print("hereeee hello2 --->", matched_cluster_id)
         print(matched_cluster.has_pdf)
         print(current_paper.has_pdf)
         if current_paper.has_pdf and matched_cluster.is_citation:
