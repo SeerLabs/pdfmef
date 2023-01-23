@@ -71,8 +71,8 @@ class KeyMatcherClusterer(CSXClusterer):
         wrapper = wrappers.ElasticSearchWrapper(elasticConnectionProps)
         documents = wrapper.get_batch_for_lsh_matching(current_paper_title)
         similar_doc_id = self.find_similar_document(documents, current_paper_title)
-        if len(similar_doc_id) > 0:
-            similar_paper_id = similar_doc_id[0][0]
+        if similar_doc_id:
+            similar_paper_id = similar_doc_id
             print("inside similar_paper_id ---> ", similar_paper_id)
             self.merge_with_existing_cluster(matched_cluster_id=similar_doc_id[0], current_paper=paper)
         else:
@@ -103,8 +103,7 @@ class KeyMatcherClusterer(CSXClusterer):
        print("inside find_similar_document")
        print(len(documents))
        if (len(documents) < 10):
-        print(documents[0]['_source']['paper_id'])
-        return [documents[0]['_source']['paper_id']]
+        return documents[0]['_source']['paper_id']
        lsh = MinHashLSH(threshold=0.5, num_perm=128)
        for doc in documents:
             try:
@@ -132,9 +131,9 @@ class KeyMatcherClusterer(CSXClusterer):
        result = lsh.query(min_hash)
        print(result)
        if (len(result) >= 1):
-        return [result[0]]
+        return result[0]
        else:
-        return []
+        return None
         #print(result)
 
     def cluster_papers(self, papers: List[Cluster]):
@@ -161,7 +160,6 @@ class KeyMatcherClusterer(CSXClusterer):
 
     def merge_with_existing_cluster(self, matched_cluster_id: str, current_paper: Cluster):
         print("hereee found similar document with id:->", matched_cluster_id)
-        print(self.elastic_service.get_connection())
         matched_cluster = Cluster.get(id=matched_cluster_id, using=self.elastic_service.get_connection())
         print(matched_cluster.has_pdf)
         print(current_paper.has_pdf)
