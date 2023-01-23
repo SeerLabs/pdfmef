@@ -4,6 +4,7 @@ import nltk
 from elasticsearch import TransportError
 from elasticsearch.helpers import bulk
 from elasticsearch_dsl import Nested
+from extractor.python_wrapper import utils, wrappers
 
 import configparser
 import settings
