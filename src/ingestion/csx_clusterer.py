@@ -104,6 +104,7 @@ class KeyMatcherClusterer(CSXClusterer):
        for doc in documents:
             try:
                 title = doc['_source']['title']
+                print(title)
                 id = doc['_source']['paper_id']
                 d={}
                 with_wildcard = False
@@ -120,12 +121,10 @@ class KeyMatcherClusterer(CSXClusterer):
 
        Title = current_paper_title
        s = self.create_shingles(Title, 5)
-       print("heree")
        min_hash = MinHash(num_perm=128)
        for shingle in s:
         min_hash.update(shingle.encode('utf8'))
        result = lsh.query(min_hash)
-       print("jereeeee")
        print(result)
        if (len(result) >= 1):
         return result[0]
