@@ -99,6 +99,7 @@ class KeyMatcherClusterer(CSXClusterer):
 
     def find_similar_document(self, documents, current_paper_title):
        print("inside find_similar_document")
+       print(len(docs))
        for doc in documents:
             try:
                 title = doc['_source']['title']
@@ -107,6 +108,7 @@ class KeyMatcherClusterer(CSXClusterer):
                 with_wildcard = False
                 count = 0
                 s = self.create_shingles(title, 5)
+                print(s)
                 min_hash = MinHash(num_perm=128)
                 for shingle in s:
                     min_hash.update(shingle.encode('utf8'))
@@ -117,6 +119,7 @@ class KeyMatcherClusterer(CSXClusterer):
 
        Title = current_paper_title
        s = self.create_shingles(Title, 5)
+       print("heree")
        min_hash = MinHash(num_perm=128)
        for shingle in s:
         min_hash.update(shingle.encode('utf8'))
