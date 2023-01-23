@@ -161,6 +161,8 @@ class KeyMatcherClusterer(CSXClusterer):
         print("found similar document with id:->", matched_cluster_id)
         matched_cluster = Cluster.get(id=matched_cluster_id, using=self.elastic_service.get_connection())
         print(matched_cluster)
+        print(matched_cluster.has_pdf)
+        print(current_paper.has_pdf)
         if current_paper.has_pdf and matched_cluster.is_citation:
             matched_cluster.text = current_paper.text
             matched_cluster.pub_info = current_paper.pub_info
