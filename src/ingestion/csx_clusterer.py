@@ -5,6 +5,7 @@ from elasticsearch import TransportError
 from elasticsearch.helpers import bulk
 from elasticsearch_dsl import Nested
 
+import configparser
 import settings
 from services.elastic_service import ElasticService
 import logging
