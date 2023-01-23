@@ -96,7 +96,6 @@ def on_batch_finished(resultsFileDirectory, wrapper):
             tei_file_paths.append(output_path)
             pdf_file_paths.append(each_success[1].file_path)
             source_urls.append(each_success[1].source_url)
-        print('calling ingest batch parallel files')
         CSXIngesterImpl().ingest_batch_parallel_files(tei_file_paths, pdf_file_paths, source_urls)
     if len(failures) > 0:
         failure_keys = []

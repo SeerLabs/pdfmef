@@ -198,7 +198,6 @@ class ElasticSearchWrapper(Wrapper):
 
 def move_to_repository(filepath: str, docPath: str):
     try:
-        print("inside move_to_repository")
         tei_filename = str(filepath[str(filepath).rfind('/') + 1:])
         paper_id = tei_filename[:tei_filename.rfind('.')]
         chunks = [paper_id[i:i + 2] for i in range(0, len(paper_id), 2)]
@@ -295,7 +294,6 @@ def mergeMatchingDocs(wrapper, paper, matching_s2org_doc_id):
 
 def ingest_paper_parallel_func(combo):
     papers = CSXExtractorImpl().extract_textual_data(combo[0], combo[2])
-    print("here in ingest_paper_parallel_func!")
     #findMatchingDocumentsS2orcLSH(papers)
     move_to_repository(combo[0], combo[1])
     KeyMatcherClusterer().cluster_papers(papers)
