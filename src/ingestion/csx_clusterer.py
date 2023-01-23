@@ -121,6 +121,7 @@ class KeyMatcherClusterer(CSXClusterer):
        for shingle in s:
         min_hash.update(shingle.encode('utf8'))
        result = lsh.query(min_hash)
+       print("jereeeee")
        print(result)
        if (len(result) >= 1):
         return result[0]
