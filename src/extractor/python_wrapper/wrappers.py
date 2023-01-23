@@ -346,7 +346,7 @@ class ElasticSearchWrapper(Wrapper):
                              "should":
                                 {
                                    "match":{
-                                      "processed_title":{
+                                      "title":{
                                          "query": title,
                                          "minimum_should_match":"75%"
                                       }
@@ -357,7 +357,8 @@ class ElasticSearchWrapper(Wrapper):
                    }
         except Exception:
             pass
-        #print(body)
+        print(body)
+        print("here inside get_batch_for_lsh_matching")
         results = self.get_connection_prod().search(index=settings.CLUSTERS_INDEX, body=body)
         self.s2_batch = results['hits']['hits']
         return self.s2_batch
