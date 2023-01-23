@@ -71,8 +71,6 @@ class KeyMatcherClusterer(CSXClusterer):
         wrapper = wrappers.ElasticSearchWrapper(elasticConnectionProps)
         documents = wrapper.get_batch_for_lsh_matching(current_paper_title)
         similar_doc_id = self.find_similar_document(documents, current_paper_title)
-        print("hereee")
-        print(paper)
         if len(similar_doc_id) > 0:
             self.merge_with_existing_cluster(matched_cluster_id=similar_doc_id[0], current_paper=paper)
         else:
