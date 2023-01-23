@@ -5,7 +5,7 @@ from elasticsearch import TransportError
 from elasticsearch.helpers import bulk
 from elasticsearch_dsl import Nested
 from extractor.python_wrapper import utils, wrappers
-from datasketch import MinHash
+from datasketch import MinHash, MinHashLSH
 
 import configparser
 import settings
