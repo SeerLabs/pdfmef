@@ -159,8 +159,8 @@ class KeyMatcherClusterer(CSXClusterer):
             exit()
 
     def merge_with_existing_cluster(self, matched_cluster_id: str, current_paper: Cluster):
-        print("hereee found similar document with id:->", matched_cluster_id)
         matched_cluster = Cluster.get(id=matched_cluster_id, using=self.elastic_service.get_connection())
+        print("hereeee hello")
         print(matched_cluster.has_pdf)
         print(current_paper.has_pdf)
         if current_paper.has_pdf and matched_cluster.is_citation:
