@@ -59,6 +59,13 @@ class KeyMatcherClusterer(CSXClusterer):
     def cluster_paper_with_bm25_lsh(self, paper: Cluster) -> None:
         current_paper_title = paper.title
         print("inside cluster_paper_with_bm25_lsh with title---->", current_paper_title)
+        config = configparser.ConfigParser()
+        try:
+            config.read("/pdfmef-code/src/extractor/python_wrapper/properties.config")
+        except Exception as ex:
+            print(ex)
+        elasticConnectionProps = dict(config.items('ElasticConnectionProperties'))
+        wrapper = wrappers.ElasticSearchWrapper(elasticConnectionProps)
         documents = wrapper.get_batch_for_lsh_matching(current_paper_title)
         matching_doc = find_similar_document(documents)
         if len(found_keys) > 0:
