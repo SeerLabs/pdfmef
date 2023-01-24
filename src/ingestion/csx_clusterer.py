@@ -61,8 +61,6 @@ class KeyMatcherClusterer(CSXClusterer):
 
     def cluster_paper_with_bm25_lsh(self, paper: Cluster) -> None:
         current_paper_title = paper.title
-        if (paper.is_citation):
-            current_paper_title = "EVALUATION FACTORS FOR GED STUDENT SERVICES CONTRACT Response of Coral Algae to UV and Temperature Evaluation Factors in Order of Importance Years/Hours/Months/GPA"
         config = configparser.ConfigParser()
         try:
             config.read("/pdfmef-code/src/extractor/python_wrapper/properties.config")
@@ -170,7 +168,6 @@ class KeyMatcherClusterer(CSXClusterer):
             matched_cluster.text = current_paper.text
             matched_cluster.pub_info = current_paper.pub_info
         if current_paper.is_citation:
-            print("helloooooo")
             print("updating citation for the paper id --->", matched_cluster.paper_id)
             print("citation --->", current_paper.cited_by[0])
             matched_cluster.add_cited_by(current_paper.cited_by[0])
