@@ -60,8 +60,7 @@ class KeyMatcherClusterer(CSXClusterer):
         self.create_new_paper(paper)
 
     def cluster_paper_with_bm25_lsh(self, paper: Cluster) -> None:
-        current_paper_title = "Estimation of urinary stone composition by automated processing of CT images"
-        print("inside cluster_paper_with_bm25_lsh with title---->", current_paper_title)
+        current_paper_title = paper.title
         config = configparser.ConfigParser()
         try:
             config.read("/pdfmef-code/src/extractor/python_wrapper/properties.config")
@@ -73,8 +72,7 @@ class KeyMatcherClusterer(CSXClusterer):
         similar_doc_id = self.find_similar_document(documents, current_paper_title)
         if similar_doc_id:
             similar_paper_id = similar_doc_id[0]
-            print("inside similar_paper_id ---> ", similar_paper_id)
-            self.merge_with_existing_cluster(wrapper, matched_cluster_id=similar_paper_id, current_paper=paper)
+            self.merge_with_existing_cluster(matched_cluster_id=similar_paper_id, current_paper=paper)
         else:
             self.create_new_paper(paper)
 
@@ -100,8 +98,6 @@ class KeyMatcherClusterer(CSXClusterer):
         return shingled_set
 
     def find_similar_document(self, documents, current_paper_title):
-       print("inside find_similar_document")
-       print(len(documents))
        if (len(documents) < 10):
         return documents[0]['_source']['paper_id']
        lsh = MinHashLSH(threshold=0.5, num_perm=128)
@@ -123,15 +119,13 @@ class KeyMatcherClusterer(CSXClusterer):
                 pass
 
        Title = current_paper_title
-       print(Title)
        s = self.create_shingles(Title, 5)
        min_hash = MinHash(num_perm=128)
        for shingle in s:
         min_hash.update(shingle.encode('utf8'))
        result = lsh.query(min_hash)
-       print(result)
        if (len(result) >= 1):
-        return result[0]
+        return result
        else:
         return None
         #print(result)
@@ -158,11 +152,8 @@ class KeyMatcherClusterer(CSXClusterer):
             print(e.info)
             exit()
 
-    def merge_with_existing_cluster(self, wrapper, matched_cluster_id: str, current_paper: Cluster):
-        print("hereeee hello --->", matched_cluster_id)
+    def merge_with_existing_cluster(self, matched_cluster_id: str, current_paper: Cluster):
         try:
-           #matched_cluster = wrapper.get_doc_with_id(matched_cluster_id)
-           #print(response[0]['_source']['has_pdf'])
            resp = Cluster.search(using=self.elastic_service.get_connection()).filter("term", paper_id=matched_cluster_id)
            matched_cluster = resp.execute()[0]
            #matched_cluster = Cluster.get(using=self.elastic_service.get_connection(), id = matched_cluster_id)
@@ -177,13 +168,11 @@ class KeyMatcherClusterer(CSXClusterer):
             matched_cluster.add_cited_by(current_paper.cited_by[0])
             matched_cluster.is_citation = True
         if current_paper.has_pdf:
-            matched_cluster.source_url = "testing citation matching"
             matched_cluster.has_pdf = True
-            #matched_cluster.source_url = current_paper.source_url
+            matched_cluster.source_url = current_paper.source_url
             matched_cluster.add_paper_id(current_paper.paper_id[0])
 
         try:
-            print(matched_cluster.source_url)
             matched_cluster.save(using=self.elastic_service.get_connection())
         except TransportError as e:
             time.sleep(30)
