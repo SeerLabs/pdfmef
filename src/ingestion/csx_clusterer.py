@@ -112,10 +112,12 @@ class KeyMatcherClusterer(CSXClusterer):
                 with_wildcard = False
                 count = 0
                 s = self.create_shingles(title, 5)
+                print(s)
                 min_hash = MinHash(num_perm=128)
                 for shingle in s:
                     min_hash.update(shingle.encode('utf8'))
                 if (not id in lsh):
+                    print("id inserting in lsh----> f"{id}")
                     lsh.insert(f"{id}", min_hash)
             except Exception:
                 pass
