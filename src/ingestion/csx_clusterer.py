@@ -164,15 +164,13 @@ class KeyMatcherClusterer(CSXClusterer):
            #matched_cluster = wrapper.get_doc_with_id(matched_cluster_id)
            #print(response[0]['_source']['has_pdf'])
            resp = Cluster.search(using=self.elastic_service.get_connection()).filter("term", paper_id=matched_cluster_id)
-           response = resp.execute()
-           print(response[0].paper_id)
+           matched_cluster = resp.execute()[0]
            #matched_cluster = Cluster.get(using=self.elastic_service.get_connection(), id = matched_cluster_id)
         except Exception as ex:
             print('error here in  Cluster get --->', ex)
-        print("hereeee hello2 --->", matched_cluster_id)
         print(matched_cluster.has_pdf)
         print(current_paper.has_pdf)
-        if current_paper.has_pdf and matched_cluster[0]['_source']['is_citation']:
+        if current_paper.has_pdf and matched_cluster.is_citation:
             matched_cluster.text = current_paper.text
             matched_cluster.pub_info = current_paper.pub_info
         if current_paper.is_citation:
