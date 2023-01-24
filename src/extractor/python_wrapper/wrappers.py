@@ -363,6 +363,23 @@ class ElasticSearchWrapper(Wrapper):
         self.s2_batch = results['hits']['hits']
         return self.s2_batch
 
+    def get_doc_with_id(self, doc_id):
+        body = ""
+        try:
+            body = {
+                "query": {
+                    "multi_match": {
+                        "query": doc_id,
+                        "fields": "paper_id"
+                    }
+                }
+            }
+        except Exception:
+            pass
+        results = self.get_connection_prod().search(index=settings.CLUSTERS_INDEX, body=body)
+        self.s2_batch = results['hits']['hits']
+        return self.s2_batch
+
     def update_document_with_fields(self, doc_id, cited_by):
         source_to_update = {
             "doc" : {

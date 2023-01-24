@@ -161,9 +161,7 @@ class KeyMatcherClusterer(CSXClusterer):
     def merge_with_existing_cluster(self, matched_cluster_id: str, current_paper: Cluster):
         print("hereeee hello --->", matched_cluster_id)
         try:
-            s = Cluster.search(using=self.elastic_service)
-            s = s.filter("term", paper_id=matched_cluster_id)
-            response = s.execute()
+            response = wrapper.get_doc_with_id(matched_cluster_id)
             print(response)
             #matched_cluster = Cluster.get(id=matched_cluster_id, using=self.elastic_service.get_connection())
         except Exception as ex:
