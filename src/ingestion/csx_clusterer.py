@@ -162,7 +162,7 @@ class KeyMatcherClusterer(CSXClusterer):
         print("hereeee hello --->", matched_cluster_id)
         try:
             response = wrapper.get_doc_with_id(matched_cluster_id)
-            print(response)
+            print(response['_source']['has_pdf'])
             #matched_cluster = Cluster.get(id=matched_cluster_id, using=self.elastic_service.get_connection())
         except Exception as ex:
             print('error here in  Cluster get --->', ex)
