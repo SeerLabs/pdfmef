@@ -117,8 +117,6 @@ class KeyMatcherClusterer(CSXClusterer):
                 for shingle in s:
                     min_hash.update(shingle.encode('utf8'))
                 if (not id in lsh):
-                    print("id inserting in lsh----> ", id)
-                    #print(id)
                     lsh.insert(f"{id}", min_hash)
             except Exception as ex:
                 print("hereeee lsh exception", ex)
@@ -133,7 +131,6 @@ class KeyMatcherClusterer(CSXClusterer):
         min_hash.update(shingle.encode('utf8'))
        result = lsh.query(min_hash)
        if (len(result) >= 1):
-        print("found matching documents using lsh ---->",result)
         return result
        else:
         return None
