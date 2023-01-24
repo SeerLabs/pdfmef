@@ -159,6 +159,8 @@ class KeyMatcherClusterer(CSXClusterer):
            print("----------------------")
            resp = Cluster.search(using=self.elastic_service.get_connection()).filter("term", _id=matched_cluster_id[0])
            matched_cluster = resp.execute()[0]
+           print("hereeeee")
+           print(matched_cluster.paper_id)
            #matched_cluster = Cluster.get(using=self.elastic_service.get_connection(), id = matched_cluster_id)
         except Exception as ex:
             print('error here in  Cluster get --->', ex)
@@ -166,6 +168,7 @@ class KeyMatcherClusterer(CSXClusterer):
             matched_cluster.text = current_paper.text
             matched_cluster.pub_info = current_paper.pub_info
         if current_paper.is_citation:
+            print("helloooooo")
             print("updating citation for the paper id --->", matched_cluster.paper_id)
             print("citation --->", current_paper.cited_by[0])
             matched_cluster.add_cited_by(current_paper.cited_by[0])
