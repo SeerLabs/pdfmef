@@ -163,7 +163,12 @@ class KeyMatcherClusterer(CSXClusterer):
         try:
             #matched_cluster = wrapper.get_doc_with_id(matched_cluster_id)
             #print(response[0]['_source']['has_pdf'])
-            matched_cluster = Cluster.get(using=self.elastic_service.get_connection(), paper_id = matched_cluster_id, id = None)
+            from elasticsearch_dsl import Search
+            client = Elasticsearch()
+            s = Search().using(elastic_service).query("match", paper_id=matched_cluster_id)
+            response = s.execute()
+            print(response)
+           # matched_cluster = Cluster.get(using=self.elastic_service.get_connection(), id = matched_cluster_id)
         except Exception as ex:
             print('error here in  Cluster get --->', ex)
         print("hereeee hello2 --->", matched_cluster_id)
