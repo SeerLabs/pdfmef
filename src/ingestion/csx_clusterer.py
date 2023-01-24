@@ -102,7 +102,7 @@ class KeyMatcherClusterer(CSXClusterer):
        #if (len(documents) < 10):
        # print("found matching documents without lsh ---->",documents[0]['_source']['paper_id'])
        # return documents[0]['_source']['paper_id']
-       lsh = MinHashLSH(threshold=0.5, num_perm=128)
+       lsh = MinHashLSH(threshold=0.6, num_perm=128)
        for doc in documents:
             try:
                 title = doc['_source']['title']
