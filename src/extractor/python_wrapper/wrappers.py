@@ -357,8 +357,6 @@ class ElasticSearchWrapper(Wrapper):
                    }
         except Exception:
             pass
-        print(body)
-        print("here inside get_batch_for_lsh_matching")
         results = self.get_connection_prod().search(index=settings.CLUSTERS_INDEX, body=body)
         self.s2_batch = results['hits']['hits']
         return self.s2_batch
