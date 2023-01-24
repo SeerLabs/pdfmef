@@ -105,7 +105,8 @@ class KeyMatcherClusterer(CSXClusterer):
        for doc in documents:
             try:
                 title = doc['_source']['title']
-                id = doc['_source']['_id'][0]
+                id = doc['_source']['_id']
+                print("trying finding similar doc --->", id)
                 d={}
                 with_wildcard = False
                 count = 0
