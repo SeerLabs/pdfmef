@@ -161,15 +161,15 @@ class KeyMatcherClusterer(CSXClusterer):
     def merge_with_existing_cluster(self, wrapper, matched_cluster_id: str, current_paper: Cluster):
         print("hereeee hello --->", matched_cluster_id)
         try:
-            response = wrapper.get_doc_with_id(matched_cluster_id)
-            print(response[0]['_source']['has_pdf'])
-            #matched_cluster = Cluster.get(id=matched_cluster_id, using=self.elastic_service.get_connection())
+            #matched_cluster = wrapper.get_doc_with_id(matched_cluster_id)
+            #print(response[0]['_source']['has_pdf'])
+            matched_cluster = Cluster.get(id=matched_cluster_id,  using=self.elastic_service.get_connection())
         except Exception as ex:
             print('error here in  Cluster get --->', ex)
         print("hereeee hello2 --->", matched_cluster_id)
         print(matched_cluster.has_pdf)
         print(current_paper.has_pdf)
-        if current_paper.has_pdf and matched_cluster.is_citation:
+        if current_paper.has_pdf and matched_cluster[0]['_source']['is_citation']:
             matched_cluster.text = current_paper.text
             matched_cluster.pub_info = current_paper.pub_info
         if current_paper.is_citation:
