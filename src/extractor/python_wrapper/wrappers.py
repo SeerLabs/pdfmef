@@ -363,6 +363,14 @@ class ElasticSearchWrapper(Wrapper):
         self.s2_batch = results['hits']['hits']
         return self.s2_batch
 
+    def update_document_with_fields(self, doc_id, cited_by):
+        source_to_update = {
+            "doc" : {
+                "cited_by" : cited_by
+            }
+        }
+        response = self.get_connection_prod().update(index=settings.CLUSTERS_INDEX, id=doc_id, body=source_to_update)
+
     def get_document_ids(self):
         """Purpose: parses the ids of all documents in a batch
             Returns: list of string ids"""
