@@ -60,7 +60,7 @@ class KeyMatcherClusterer(CSXClusterer):
         self.create_new_paper(paper)
 
     def cluster_paper_with_bm25_lsh(self, paper: Cluster) -> None:
-        current_paper_title = "ON CERTAIN PROPERTIES OF SOME GENERALIZED SPECIAL FUNCTIONS"
+        current_paper_title = paper.title
         config = configparser.ConfigParser()
         try:
             config.read("/pdfmef-code/src/extractor/python_wrapper/properties.config")
@@ -112,7 +112,6 @@ class KeyMatcherClusterer(CSXClusterer):
                 with_wildcard = False
                 count = 0
                 s = self.create_shingles(title, 5)
-                print(s)
                 min_hash = MinHash(num_perm=128)
                 for shingle in s:
                     min_hash.update(shingle.encode('utf8'))
@@ -123,8 +122,6 @@ class KeyMatcherClusterer(CSXClusterer):
                 pass
 
        Title = current_paper_title
-       print("hellllo")
-       print(Title)
        s = self.create_shingles(Title, 5)
        min_hash = MinHash(num_perm=128)
        for shingle in s:
