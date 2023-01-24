@@ -320,7 +320,7 @@ class ElasticSearchWrapper(Wrapper):
             "size": self.batchSize,
             "query": {
                 "match": {
-                "is_citation": "true"
+                "is_citation": True
                 }
               }
         }
