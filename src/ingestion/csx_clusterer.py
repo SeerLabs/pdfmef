@@ -71,8 +71,8 @@ class KeyMatcherClusterer(CSXClusterer):
         documents = wrapper.get_batch_for_lsh_matching(current_paper_title)
         similar_doc_id = self.find_similar_document(documents, current_paper_title)
         if similar_doc_id:
-            similar_paper_id = similar_doc_id[0]
-            self.merge_with_existing_cluster(matched_cluster_id=similar_paper_id, current_paper=paper)
+            #similar_paper_id = similar_doc_id[0]
+            self.merge_with_existing_cluster(matched_cluster_id=similar_doc_id, current_paper=paper)
         else:
             self.create_new_paper(paper)
 
@@ -105,7 +105,7 @@ class KeyMatcherClusterer(CSXClusterer):
        for doc in documents:
             try:
                 title = doc['_source']['title']
-                id = doc['_source']['paper_id'][0]
+                id = doc['_source']['_id'][0]
                 d={}
                 with_wildcard = False
                 count = 0
@@ -157,7 +157,7 @@ class KeyMatcherClusterer(CSXClusterer):
            print('found similar document with id-->',matched_cluster_id)
            print('current paper id-->', current_paper.title)
            print("----------------------")
-           resp = Cluster.search(using=self.elastic_service.get_connection()).filter("term", paper_id=matched_cluster_id)
+           resp = Cluster.search(using=self.elastic_service.get_connection()).filter("term", _id=matched_cluster_id)
            matched_cluster = resp.execute()[0]
            #matched_cluster = Cluster.get(using=self.elastic_service.get_connection(), id = matched_cluster_id)
         except Exception as ex:
