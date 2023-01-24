@@ -104,8 +104,6 @@ class KeyMatcherClusterer(CSXClusterer):
        lsh = MinHashLSH(threshold=0.5, num_perm=128)
        for doc in documents:
             try:
-                print("here")
-                print(doc['_source']['title'])
                 title = doc['_source']['title']
                 id = doc['_source']['paper_id'][0]
                 d={}
