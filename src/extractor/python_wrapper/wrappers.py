@@ -319,10 +319,11 @@ class ElasticSearchWrapper(Wrapper):
             "from": 0,
             "size": self.batchSize,
             "query": {
-                "match": {
-                "is_citation": True
+                "multi_match": {
+                    "query": "fresh",
+                    "fields": "text_status"
                 }
-              }
+            }
         }
 
         results = self.get_connection().search(index=settings.CRAWL_META_INDEX, body=body)
