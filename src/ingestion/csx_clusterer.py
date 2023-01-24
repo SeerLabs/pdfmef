@@ -99,7 +99,7 @@ class KeyMatcherClusterer(CSXClusterer):
 
     def find_similar_document(self, documents, current_paper_title):
        if (len(documents) < 10):
-        print("found matching documents without lsh ---->"documents[0]['_source']['paper_id'])
+        print("found matching documents without lsh ---->",documents[0]['_source']['paper_id'])
         return documents[0]['_source']['paper_id']
        lsh = MinHashLSH(threshold=0.5, num_perm=128)
        for doc in documents:
@@ -125,7 +125,7 @@ class KeyMatcherClusterer(CSXClusterer):
         min_hash.update(shingle.encode('utf8'))
        result = lsh.query(min_hash)
        if (len(result) >= 1):
-        print("found matching documents using lsh ---->"result)
+        print("found matching documents using lsh ---->",result)
         return result
        else:
         return None
