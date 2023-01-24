@@ -166,6 +166,8 @@ class KeyMatcherClusterer(CSXClusterer):
            resp = Cluster.search(using=self.elastic_service.get_connection()).filter("term", paper_id=matched_cluster_id)
            response = resp.execute()
            print(response)
+           for hit in response:
+            print(hit.paper_id)
            #matched_cluster = Cluster.get(using=self.elastic_service.get_connection(), id = matched_cluster_id)
         except Exception as ex:
             print('error here in  Cluster get --->', ex)
