@@ -99,13 +99,13 @@ class KeyMatcherClusterer(CSXClusterer):
 
     def find_similar_document(self, documents, current_paper_title):
        if (len(documents) < 10):
+        print("found matching documents without lsh ---->"documents[0]['_source']['paper_id'])
         return documents[0]['_source']['paper_id']
        lsh = MinHashLSH(threshold=0.5, num_perm=128)
        for doc in documents:
             try:
                 title = doc['_source']['title']
                 id = doc['_source']['paper_id']
-                print(id)
                 d={}
                 with_wildcard = False
                 count = 0
@@ -125,6 +125,7 @@ class KeyMatcherClusterer(CSXClusterer):
         min_hash.update(shingle.encode('utf8'))
        result = lsh.query(min_hash)
        if (len(result) >= 1):
+        print("found matching documents using lsh ---->"result)
         return result
        else:
         return None
@@ -132,7 +133,6 @@ class KeyMatcherClusterer(CSXClusterer):
 
     def cluster_papers(self, papers: List[Cluster]):
         for paper in papers:
-            print("inside cluster_papers calling cluster_paper_with_bm25_lsh")
             self.cluster_paper_with_bm25_lsh(paper)
 
     def create_new_paper(self, paper: Cluster):
@@ -154,13 +154,14 @@ class KeyMatcherClusterer(CSXClusterer):
 
     def merge_with_existing_cluster(self, matched_cluster_id: str, current_paper: Cluster):
         try:
+           print('found similar document with id-->',matched_cluster_id)
+           print('current paper id-->', current_paper.paper_id)
+           print("----------------------")
            resp = Cluster.search(using=self.elastic_service.get_connection()).filter("term", paper_id=matched_cluster_id)
            matched_cluster = resp.execute()[0]
            #matched_cluster = Cluster.get(using=self.elastic_service.get_connection(), id = matched_cluster_id)
         except Exception as ex:
             print('error here in  Cluster get --->', ex)
-        print(matched_cluster.has_pdf)
-        print(current_paper.has_pdf)
         if current_paper.has_pdf and matched_cluster.is_citation:
             matched_cluster.text = current_paper.text
             matched_cluster.pub_info = current_paper.pub_info
