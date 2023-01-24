@@ -132,21 +132,13 @@ class KeyMatcherClusterer(CSXClusterer):
         #print(result)
 
     def cluster_papers(self, papers: List[Cluster]):
+        print(len(papers))
         for paper in papers:
             self.cluster_paper_with_bm25_lsh(paper)
 
     def create_new_paper(self, paper: Cluster):
         try:
             paper.save(using=self.elastic_service.get_connection())
-            keymaps = []
-            for key in paper.keys:
-                km = KeyMap()
-                km.meta.id = key
-                km.paper_id = paper.meta.id
-                final_key_map = km.to_dict(include_meta=True)
-                final_key_map["_op_type"] = 'create'
-                keymaps.append(final_key_map)
-            bulk(client=self.elastic_service.get_connection(), actions=iter(keymaps), stats_only=True)
         except TransportError as e:
             logger.error("failed creating new paper for paper id: "+paper.paper_id+" with error: "+e.info)
             print(e.info)
