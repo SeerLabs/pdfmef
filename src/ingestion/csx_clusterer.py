@@ -107,7 +107,7 @@ class KeyMatcherClusterer(CSXClusterer):
                 print("here")
                 print(doc['_source']['title'])
                 title = doc['_source']['title']
-                id = doc['_source']['paper_id']
+                id = doc['_source']['paper_id'][0]
                 d={}
                 with_wildcard = False
                 count = 0
@@ -117,7 +117,7 @@ class KeyMatcherClusterer(CSXClusterer):
                 for shingle in s:
                     min_hash.update(shingle.encode('utf8'))
                 if (not id in lsh):
-                    #print("id inserting in lsh----> ", id)
+                    print("id inserting in lsh----> ", id)
                     #print(id)
                     lsh.insert(f"{id}", min_hash)
             except Exception as ex:
