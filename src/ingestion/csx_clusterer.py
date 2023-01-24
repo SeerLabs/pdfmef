@@ -60,7 +60,7 @@ class KeyMatcherClusterer(CSXClusterer):
         self.create_new_paper(paper)
 
     def cluster_paper_with_bm25_lsh(self, paper: Cluster) -> None:
-        current_paper_title = "The method as set forth in claim 33 or 34, further comprising the step of adhering a bar-shaped quarter wavelength plate to the"
+        current_paper_title = paper.title
         config = configparser.ConfigParser()
         try:
             config.read("/pdfmef-code/src/extractor/python_wrapper/properties.config")
