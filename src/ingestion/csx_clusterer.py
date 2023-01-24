@@ -60,7 +60,7 @@ class KeyMatcherClusterer(CSXClusterer):
         self.create_new_paper(paper)
 
     def cluster_paper_with_bm25_lsh(self, paper: Cluster) -> None:
-        current_paper_title = paper.title
+        current_paper_title = "The method as set forth in claim 33 or 34, further comprising the step of adhering a bar-shaped quarter wavelength plate to the"
         config = configparser.ConfigParser()
         try:
             config.read("/pdfmef-code/src/extractor/python_wrapper/properties.config")
@@ -69,7 +69,6 @@ class KeyMatcherClusterer(CSXClusterer):
         elasticConnectionProps = dict(config.items('ElasticConnectionProperties'))
         wrapper = wrappers.ElasticSearchWrapper(elasticConnectionProps)
         documents = wrapper.get_batch_for_lsh_matching(current_paper_title)
-        print("trying finding similar doc title--->", current_paper_title)
         similar_doc_id = self.find_similar_document(documents, current_paper_title)
         if similar_doc_id:
             #similar_paper_id = similar_doc_id[0]
