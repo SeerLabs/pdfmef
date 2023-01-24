@@ -166,6 +166,8 @@ class KeyMatcherClusterer(CSXClusterer):
             matched_cluster.text = current_paper.text
             matched_cluster.pub_info = current_paper.pub_info
         if current_paper.is_citation:
+            print("updating citation for the paper id --->", matched_cluster.paper_id)
+            print("citation --->", current_paper.cited_by[0])
             matched_cluster.add_cited_by(current_paper.cited_by[0])
             matched_cluster.is_citation = True
         if current_paper.has_pdf:
