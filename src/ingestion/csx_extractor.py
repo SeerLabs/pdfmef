@@ -46,11 +46,11 @@ class CSXExtractorImpl(CSXExtractor):
             paper.authors = self.extract_authors_from_tei_root(tei_root)
             paper.has_pdf = True
             paper.is_citation = False
-            #citations = self.extract_citations_from_tei_root(tei_root=tei_root, paper_id=paper_id)
+            citations = self.extract_citations_from_tei_root(tei_root=tei_root, paper_id=paper_id)
             paper.text = self.extract_text_from_tei_root(tei_root)
             paper.keys = KeyGenerator().get_keys(paper.title, paper.authors)
             papers.append(paper)
-            #papers.extend(citations)
+            papers.extend(citations)
         except Exception as e:
             logger.error("exception occured while extracting textual data for filepath: "+filepath+" with error message: "+e)
         return papers
