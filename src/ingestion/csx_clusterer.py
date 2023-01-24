@@ -60,7 +60,7 @@ class KeyMatcherClusterer(CSXClusterer):
         self.create_new_paper(paper)
 
     def cluster_paper_with_bm25_lsh(self, paper: Cluster) -> None:
-        current_paper_title = "The Magnetic field of the Electric current and the Magnetic induction"
+        current_paper_title = paper.title
         config = configparser.ConfigParser()
         try:
             config.read("/pdfmef-code/src/extractor/python_wrapper/properties.config")
