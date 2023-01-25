@@ -102,7 +102,7 @@ class KeyMatcherClusterer(CSXClusterer):
 
     def find_similar_document(self, documents, current_paper_title):
 
-       if (len(documents) == 0):
+       if (documents == None or len(documents) == 0):
         return None
        # print("found matching documents without lsh ---->",documents[0]['_source']['paper_id'])
        # return documents[0]['_source']['paper_id']
