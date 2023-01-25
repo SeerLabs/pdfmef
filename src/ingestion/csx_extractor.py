@@ -163,7 +163,6 @@ class CSXExtractorImpl(CSXExtractor):
                 else:
                     citation.title = ''
 
-                print("here1")
                 # Citation Pub Info
                 if citation_node.find('./monogr') is not None:
                     citation.pub_info = cls.extract_pub_info_from_bibil_node(citation_node)
@@ -172,7 +171,6 @@ class CSXExtractorImpl(CSXExtractor):
                 # if citation_node.find('./note') is not None:
                 #     citation.raw = citation_node.find('./note').text
 
-                print("here2")
                 # Citation Authors
                 if citation_node.findall('./analytic/author') is not None and len(
                         citation_node.findall('./analytic/author')):
@@ -181,9 +179,6 @@ class CSXExtractorImpl(CSXExtractor):
                     authors_node = citation_node.findall('./monogr/author')
                 else:
                     authors_node = []
-
-
-                print("here3")
 
                 try:
                     for author_node in authors_node:
@@ -197,12 +192,11 @@ class CSXExtractorImpl(CSXExtractor):
                             author = Author(forename=author.forename, surname=author.surname, fullname=fullname)
                             citation.authors.append(author)
                 except Exception:
-                    print("authors citation exception-------------")
-                print("here4")
+                    pass
+
                 citation.extend_keys(KeyGenerator().get_keys(citation.title, citation.authors))
                 citation.is_citation = True
                 citation.has_pdf = False
-                print("here5")
                 citations.append(citation)
         except Exception as ex:
             print ("exception in citation extraction with msg ---> ", ex)
