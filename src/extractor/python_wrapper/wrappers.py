@@ -387,11 +387,11 @@ class ElasticSearchWrapper(Wrapper):
 
         for element in self.batch:
             try:
-                print(element)
                 ids.append(element['_source']['paper_id'][0])
             except Exception:
                 print('dddsdsddsd')
                 pass
+        print(ids)
         return ids
 
     def get_source_urls(self):
