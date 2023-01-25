@@ -57,7 +57,6 @@ if __name__ == '__main__':
     dateBatchNum = 0
     dateFolder = str(date).replace('-', '') + str(dateBatchNum).zfill(2) + '/'
     numDocs = len(glob(baseResultsPath + dateFolder + '*'))
-    runner = get_extraction_runner(modules)
     batchNum = 0
     start_time = time.time()
     # make sure there is space in dateFolder
@@ -74,7 +73,6 @@ if __name__ == '__main__':
         logger.info("---start of batch processing -------------")
         start_time = time.time()
         logPath = baseLogPath + dateFolder + 'batch' + str(batchNum)
-        runner.enable_logging(logPath, baseLogPath + 'runnables')
 
         wrapper.get_document_batch()
         documentPaths = wrapper.get_document_paths()
