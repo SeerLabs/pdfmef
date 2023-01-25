@@ -61,9 +61,7 @@ class KeyMatcherClusterer(CSXClusterer):
 
     def cluster_paper_with_bm25_lsh(self, paper: Cluster) -> None:
         try:
-            print("illlliiii")
-            current_paper_title = "An Essay on the Principle of Population"
-
+            current_paper_title = paper.title
             config = configparser.ConfigParser()
             try:
                 config.read("/pdfmef-code/src/extractor/python_wrapper/properties.config")
@@ -76,12 +74,11 @@ class KeyMatcherClusterer(CSXClusterer):
                 documents = documents[1:]
                 similar_doc_id = self.find_similar_document(documents, current_paper_title)
                 if similar_doc_id and len(similar_doc_id) > 0:
-                    #similar_paper_id = similar_doc_id[0]
                     self.merge_with_existing_cluster(matched_cluster_id=similar_doc_id, current_paper=paper)
                 else:
-                    pass
-                    #self.create_new_paper(paper)
-            #self.create_new_paper(paper)
+                    self.create_new_paper(paper)
+            else:
+                self.create_new_paper(paper)
         except Exception as ex:
             print("exception in cluster_paper_with_bm25_lsh with msg-->", ex)
 
@@ -184,8 +181,7 @@ class KeyMatcherClusterer(CSXClusterer):
             matched_cluster.add_paper_id(current_paper.paper_id[0])
 
         try:
-            #matched_cluster.save(using=self.elastic_service.get_connection())
-            pass
+            matched_cluster.save(using=self.elastic_service.get_connection())
         except TransportError as e:
             time.sleep(30)
             self.merge_with_existing_cluster(matched_cluster_id, current_paper)
