@@ -67,14 +67,19 @@ class KeyMatcherClusterer(CSXClusterer):
                 config.read("/pdfmef-code/src/extractor/python_wrapper/properties.config")
             except Exception as ex:
                 print(ex)
+            print("here1")
             elasticConnectionProps = dict(config.items('ElasticConnectionProperties'))
             wrapper = wrappers.ElasticSearchWrapper(elasticConnectionProps)
             documents = wrapper.get_batch_for_lsh_matching(current_paper_title)
+            print("here2")
             if (len(documents) > 1):
                 documents = documents[1:]
                 similar_doc_id = self.find_similar_document(documents, current_paper_title)
+                print("here3")
                 if similar_doc_id and len(similar_doc_id) > 0:
+                    print("here4")
                     self.merge_with_existing_cluster(matched_cluster_id=similar_doc_id, current_paper=paper)
+                    print("here5")
                 else:
                     self.create_new_paper(paper)
             else:
@@ -180,7 +185,6 @@ class KeyMatcherClusterer(CSXClusterer):
             matched_cluster.source_url = current_paper.source_url
             matched_cluster.add_paper_id(current_paper.paper_id[0])
 
-        print("coming here1")
         try:
             matched_cluster.save(using=self.elastic_service.get_connection())
         except Exception as e:
