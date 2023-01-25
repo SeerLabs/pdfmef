@@ -150,49 +150,52 @@ class CSXExtractorImpl(CSXExtractor):
         citations_node = tei_root.findall('./text//listBibl//biblStruct')
         if citations_node is None:
             return citations
-        for citation_node in citations_node:
-            citation = Cluster()
+        try:
+            for citation_node in citations_node:
+                citation = Cluster()
 
-            citation.add_cited_by(paper_id)
-            # Citation Title
-            if citation_node.find('./analytic/title') is not None:
-                citation.title = citation_node.find('./analytic/title').text
-            elif citation_node.find('./monogr/title') is not None:
-                citation.title = citation_node.find('./monogr/title').text
-            else:
-                citation.title = ''
+                citation.add_cited_by(paper_id)
+                # Citation Title
+                if citation_node.find('./analytic/title') is not None:
+                    citation.title = citation_node.find('./analytic/title').text
+                elif citation_node.find('./monogr/title') is not None:
+                    citation.title = citation_node.find('./monogr/title').text
+                else:
+                    citation.title = ''
 
-            # Citation Pub Info
-            if citation_node.find('./monogr') is not None:
-                citation.pub_info = cls.extract_pub_info_from_bibil_node(citation_node)
+                # Citation Pub Info
+                if citation_node.find('./monogr') is not None:
+                    citation.pub_info = cls.extract_pub_info_from_bibil_node(citation_node)
 
-            # raw citation info
-            # if citation_node.find('./note') is not None:
-            #     citation.raw = citation_node.find('./note').text
+                # raw citation info
+                # if citation_node.find('./note') is not None:
+                #     citation.raw = citation_node.find('./note').text
 
-            # Citation Authors
-            if citation_node.findall('./analytic/author') is not None and len(
-                    citation_node.findall('./analytic/author')):
-                authors_node = citation_node.findall('./analytic/author')
-            elif citation_node.findall('./monogr/author') is not None:
-                authors_node = citation_node.findall('./monogr/author')
-            else:
-                authors_node = []
+                # Citation Authors
+                if citation_node.findall('./analytic/author') is not None and len(
+                        citation_node.findall('./analytic/author')):
+                    authors_node = citation_node.findall('./analytic/author')
+                elif citation_node.findall('./monogr/author') is not None:
+                    authors_node = citation_node.findall('./monogr/author')
+                else:
+                    authors_node = []
 
-            for author_node in authors_node:
-                author = Author()
-                if author_node.find("./ns1:persName/ns1:surname", namespaces) is not None:
-                    author.surname = author_node.find("./ns1:persName/ns1:surname", namespaces).text
-                if author_node.find("./ns1:persName/ns1:forename", namespaces) is not None:
-                    author.forename = author_node.find("./ns1:persName/ns1:forename", namespaces).text
-                fullname = author.surname + ", " + author.forename
-                if not author.fullname or not author.surname:
-                    author = Author(forename=author.forename, surname=author.surname, fullname=fullname)
-                    citation.authors.append(author)
-            citation.extend_keys(KeyGenerator().get_keys(citation.title, citation.authors))
-            citation.is_citation = True
-            citation.has_pdf = False
-            citations.append(citation)
+                for author_node in authors_node:
+                    author = Author()
+                    if author_node.find("./ns1:persName/ns1:surname", namespaces) is not None:
+                        author.surname = author_node.find("./ns1:persName/ns1:surname", namespaces).text
+                    if author_node.find("./ns1:persName/ns1:forename", namespaces) is not None:
+                        author.forename = author_node.find("./ns1:persName/ns1:forename", namespaces).text
+                    fullname = author.surname + ", " + author.forename
+                    if not author.fullname or not author.surname:
+                        author = Author(forename=author.forename, surname=author.surname, fullname=fullname)
+                        citation.authors.append(author)
+                citation.extend_keys(KeyGenerator().get_keys(citation.title, citation.authors))
+                citation.is_citation = True
+                citation.has_pdf = False
+                citations.append(citation)
+        except Exception as ex:
+            print ("exception in citation extraction with msg ---> ", ex)
         return citations
 
     @classmethod
