@@ -338,6 +338,7 @@ class ElasticSearchWrapper(Wrapper):
         """Purpose: retrieves batch of documents to process from server"""
 
         body = ""
+        matching_docs = []
         try:
             body = {
                         "size": 100,
@@ -356,10 +357,10 @@ class ElasticSearchWrapper(Wrapper):
                         }
                    }
             results = self.get_connection_prod().search(index=settings.CLUSTERS_INDEX, body=body)
-            self.s2_batch = results['hits']['hits']
+            matching_docs = results['hits']['hits']
         except Exception as ex:
             pass
-        return self.s2_batch
+        return matching_docs
 
     def get_doc_with_id(self, doc_id):
         body = ""
