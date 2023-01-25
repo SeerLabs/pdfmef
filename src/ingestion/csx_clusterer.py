@@ -62,6 +62,7 @@ class KeyMatcherClusterer(CSXClusterer):
     def cluster_paper_with_bm25_lsh(self, paper: Cluster) -> None:
         try:
             current_paper_title = "An Essay on the Principle of Population"
+
             config = configparser.ConfigParser()
             try:
                 config.read("/pdfmef-code/src/extractor/python_wrapper/properties.config")
@@ -70,6 +71,8 @@ class KeyMatcherClusterer(CSXClusterer):
             elasticConnectionProps = dict(config.items('ElasticConnectionProperties'))
             wrapper = wrappers.ElasticSearchWrapper(elasticConnectionProps)
             documents = wrapper.get_batch_for_lsh_matching(current_paper_title)
+            print("hereee")
+            print(len(documents))
             similar_doc_id = self.find_similar_document(documents, current_paper_title)
             if similar_doc_id and len(similar_doc_id) > 0:
                 #similar_paper_id = similar_doc_id[0]
