@@ -47,9 +47,9 @@ class CSXExtractorImpl(CSXExtractor):
             paper.authors = self.extract_authors_from_tei_root(tei_root)
             paper.has_pdf = True
             paper.is_citation = False
-            print("bbbbbbbbbb")
-            citations = self.extract_citations_from_tei_root(tei_root=tei_root, paper_id=paper_id)
             #print("bbbbbbbbbb")
+            citations = self.extract_citations_from_tei_root(tei_root=tei_root, paper_id=paper_id)
+            print("bbbbbbbbbb")
             paper.text = self.extract_text_from_tei_root(tei_root)
             paper.keys = KeyGenerator().get_keys(paper.title, paper.authors)
             papers.append(paper)
