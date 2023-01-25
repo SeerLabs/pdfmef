@@ -52,7 +52,7 @@ class CSXExtractorImpl(CSXExtractor):
             papers.append(paper)
             papers.extend(citations)
         except Exception as e:
-            logger.error("exception occured while extracting textual data for filepath: "+filepath+" with error message: "+e)
+            print("exception occured while extracting textual data for filepath: "+filepath+" with error message: "+e)
         return papers
 
     @classmethod
