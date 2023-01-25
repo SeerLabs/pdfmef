@@ -35,7 +35,7 @@ class CSXExtractorImpl(CSXExtractor):
         try:
             tei_root = parse(filepath)
             citations = self.extract_citations_from_tei_root(tei_root=tei_root, paper_id=paper_id)
-            papers.extend(citations)
+            return citations
 
         except Exception as e:
             print("exception occured while extracting textual data for filepath: "+filepath+" with error message: "+e)
