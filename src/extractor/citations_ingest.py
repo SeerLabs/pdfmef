@@ -91,7 +91,7 @@ if __name__ == '__main__':
             output_path = os.path.join(baseResultsPath, chunks[0], chunks[1], chunks[2], chunks[3], chunks[4], chunks[5], chunks[6], id , id+'.tei')
             outputPaths.append(output_path)
             prefixes.append(id)
-            print(outputPaths)
+            #print(outputPaths)
             papers = CSXExtractorImpl().extract_citations(output_path, id)
             KeyMatcherClusterer().cluster_papers(papers)
 

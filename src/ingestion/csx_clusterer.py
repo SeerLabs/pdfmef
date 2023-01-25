@@ -150,7 +150,7 @@ class KeyMatcherClusterer(CSXClusterer):
 
     def merge_with_existing_cluster(self, matched_cluster_id: str, current_paper: Cluster):
         try:
-           print('found similar document with id-->',matched_cluster_id)
+           #print('found similar document with id-->',matched_cluster_id)
            resp = Cluster.search(using=self.elastic_service.get_connection()).filter("term", _id=matched_cluster_id[0])
            matched_cluster = resp.execute()[0]
            #print("hereeeee")
