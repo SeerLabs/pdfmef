@@ -355,10 +355,11 @@ class ElasticSearchWrapper(Wrapper):
                           }
                         }
                    }
-        except Exception:
+            results = self.get_connection_prod().search(index=settings.CLUSTERS_INDEX, body=body)
+            self.s2_batch = results['hits']['hits']
+        except Exception as ex:
+            print("here exception--->", ex)
             pass
-        results = self.get_connection_prod().search(index=settings.CLUSTERS_INDEX, body=body)
-        self.s2_batch = results['hits']['hits']
         return self.s2_batch
 
     def get_doc_with_id(self, doc_id):
