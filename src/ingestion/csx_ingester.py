@@ -25,7 +25,6 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-
 class Wrapper:
 
     #get_document_batch()
@@ -315,10 +314,12 @@ class CSXIngesterImpl(CSXIngester):
     def ingest_batch_parallel_files(self, fileList, documentPaths, source_urls):
 
         start_time = time.time()
+        c = 0
         with cf.ThreadPoolExecutor(max_workers=1000) as executor:
             for idx in range(len(fileList)):
+                c+=1
                 executor.submit(ingest_paper_parallel_func, (fileList[idx], documentPaths[idx], source_urls[idx]))
-        logger.info("------ batch parallel file ingestion complete:  "+str(time.time() - start_time))
+        logger.info("------ batch parallel file ingestion complete:  "+str(time.time() - start_time)+" with file count --->", c)
 
 
     def ingest_paper(self, filePath):
