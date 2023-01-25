@@ -88,7 +88,7 @@ if __name__ == '__main__':
         print("batch processing-- starting pdfmef extraction and ingestion for size: "+str(len(ids)))
         for id in ids:
             chunks = [id[i:i + 2] for i in range(0, len(id), 2)]
-            output_path = os.path.join(baseResultsPath, chunks[0], chunks[1], chunks[2], chunks[3], chunks[4], chunks[5], chunks[6], id , '.tei')
+            output_path = os.path.join(baseResultsPath, chunks[0], chunks[1], chunks[2], chunks[3], chunks[4], chunks[5], chunks[6], id , id+'.tei')
             outputPaths.append(output_path)
             prefixes.append(id)
             print(outputPaths)
