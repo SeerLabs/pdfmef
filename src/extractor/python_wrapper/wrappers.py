@@ -316,6 +316,8 @@ class ElasticSearchWrapper(Wrapper):
     def get_document_batch(self):
         """Purpose: retrieves batch of documents to process from server"""
         body = {
+            "from": 0,
+            "size": self.batchSize,
             "query": {
                 "term": {
                     "has_pdf" : True
