@@ -69,6 +69,8 @@ class KeyMatcherClusterer(CSXClusterer):
                 print(ex)
             elasticConnectionProps = dict(config.items('ElasticConnectionProperties'))
             wrapper = wrappers.ElasticSearchWrapper(elasticConnectionProps)
+            print("helllloo")
+            print(current_paper_title)
             documents = wrapper.get_batch_for_lsh_matching(current_paper_title)
             similar_doc_id = self.find_similar_document(documents, current_paper_title)
             if similar_doc_id and len(similar_doc_id) > 0:
