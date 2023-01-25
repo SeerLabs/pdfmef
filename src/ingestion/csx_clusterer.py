@@ -101,7 +101,9 @@ class KeyMatcherClusterer(CSXClusterer):
         return shingled_set
 
     def find_similar_document(self, documents, current_paper_title):
-       #if (len(documents) < 10):
+
+       if (len(documents) == 0):
+        return None
        # print("found matching documents without lsh ---->",documents[0]['_source']['paper_id'])
        # return documents[0]['_source']['paper_id']
        lsh = MinHashLSH(threshold=0.6, num_perm=128)
