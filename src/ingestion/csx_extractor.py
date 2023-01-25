@@ -31,7 +31,7 @@ class CSXExtractorImpl(CSXExtractor):
     def batch_extract_figures(self, dirPath):
         pass
 
-    def extract_citations(self, filepath):
+    def extract_citations(filepath, paper_id):
         try:
             tei_root = parse(filepath)
             citations = self.extract_citations_from_tei_root(tei_root=tei_root, paper_id=paper_id)
