@@ -318,7 +318,7 @@ class ElasticSearchWrapper(Wrapper):
         body = {
         }
 
-        results = self.get_connection().search(index=settings.CLUSTERS_INDEX, body=body)
+        results = self.get_connection_prod().search(index=settings.CLUSTERS_INDEX, body=body)
         self.batch = []
         for result in results['hits']['hits']:
             self.batch.append(result)
