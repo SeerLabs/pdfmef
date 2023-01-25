@@ -61,7 +61,6 @@ class KeyMatcherClusterer(CSXClusterer):
 
     def cluster_paper_with_bm25_lsh(self, paper: Cluster) -> None:
         try:
-            print("hhhhhhhhhh")
             current_paper_title = paper.title
             config = configparser.ConfigParser()
             try:

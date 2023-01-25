@@ -33,6 +33,7 @@ class CSXExtractorImpl(CSXExtractor):
 
     def extract_textual_data(self, filepath, source_url):
         try:
+            print("aaaaaaaa")
             tei_root = parse(filepath)
             papers = []
             paper = Cluster()
