@@ -185,16 +185,19 @@ class CSXExtractorImpl(CSXExtractor):
 
                 print("here3")
 
-                for author_node in authors_node:
-                    author = Author()
-                    if author_node.find("./ns1:persName/ns1:surname", namespaces) is not None:
-                        author.surname = author_node.find("./ns1:persName/ns1:surname", namespaces).text
-                    if author_node.find("./ns1:persName/ns1:forename", namespaces) is not None:
-                        author.forename = author_node.find("./ns1:persName/ns1:forename", namespaces).text
-                    fullname = author.surname + ", " + author.forename
-                    if not author.fullname or not author.surname:
-                        author = Author(forename=author.forename, surname=author.surname, fullname=fullname)
-                        citation.authors.append(author)
+                try:
+                    for author_node in authors_node:
+                        author = Author()
+                        if author_node.find("./ns1:persName/ns1:surname", namespaces) is not None:
+                            author.surname = author_node.find("./ns1:persName/ns1:surname", namespaces).text
+                        if author_node.find("./ns1:persName/ns1:forename", namespaces) is not None:
+                            author.forename = author_node.find("./ns1:persName/ns1:forename", namespaces).text
+                        fullname = author.surname + ", " + author.forename
+                        if not author.fullname or not author.surname:
+                            author = Author(forename=author.forename, surname=author.surname, fullname=fullname)
+                            citation.authors.append(author)
+                except Exception:
+                    print("authors citation exception-------------")
                 print("here4")
                 citation.extend_keys(KeyGenerator().get_keys(citation.title, citation.authors))
                 citation.is_citation = True
