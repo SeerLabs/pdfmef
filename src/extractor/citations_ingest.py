@@ -87,13 +87,17 @@ if __name__ == '__main__':
         prefixes = []
         print("batch processing-- starting pdfmef extraction and ingestion for size: "+str(len(ids)))
         for id in ids:
-            chunks = [id[i:i + 2] for i in range(0, len(id), 2)]
-            output_path = os.path.join(baseResultsPath, chunks[0], chunks[1], chunks[2], chunks[3], chunks[4], chunks[5], chunks[6], id , id+'.tei')
-            outputPaths.append(output_path)
-            prefixes.append(id)
-            #print(outputPaths)
-            papers = CSXExtractorImpl().extract_citations(output_path, id)
-            KeyMatcherClusterer().cluster_papers(papers)
+            try:
+                chunks = [id[i:i + 2] for i in range(0, len(id), 2)]
+                output_path = os.path.join(baseResultsPath, chunks[0], chunks[1], chunks[2], chunks[3], chunks[4], chunks[5], chunks[6], id , id+'.tei')
+                outputPaths.append(output_path)
+                prefixes.append(id)
+                #print(outputPaths)
+                papers = CSXExtractorImpl().extract_citations(output_path, id)
+                KeyMatcherClusterer().cluster_papers(papers)
+            except Exception:
+                print('error while ingesting file---->', output_path)
+                pass
 
         numDocs += config.getint('ConnectionProperties', 'batchSize')
 
