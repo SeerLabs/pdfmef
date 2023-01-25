@@ -393,7 +393,6 @@ class ElasticSearchWrapper(Wrapper):
             except Exception:
                 print('dddsdsddsd')
                 pass
-        print(ids)
         return ids
 
     def get_source_urls(self):
