@@ -319,7 +319,7 @@ class CSXIngesterImpl(CSXIngester):
             for idx in range(len(fileList)):
                 c+=1
                 executor.submit(ingest_paper_parallel_func, (fileList[idx], documentPaths[idx], source_urls[idx]))
-        logger.info("------ batch parallel file ingestion complete:  "+str(time.time() - start_time)+" with file count --->", str(c))
+        logger.info("------ batch parallel file ingestion complete:  "+str(time.time() - start_time)+" with file count --->"+str(c))
 
 
     def ingest_paper(self, filePath):
