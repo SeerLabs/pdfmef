@@ -153,11 +153,11 @@ class KeyMatcherClusterer(CSXClusterer):
            print('found similar document with id-->',matched_cluster_id)
            print('current paper id-->', current_paper.title)
            #print("----------------------")
-           resp = Cluster.search(using=self.elastic_service.get_connection()).filter("term", _id=matched_cluster_id[0])
-           matched_cluster = resp.execute()[0]
+           #resp = Cluster.search(using=self.elastic_service.get_connection()).filter("term", _id=matched_cluster_id[0])
+           #matched_cluster = resp.execute()[0]
            #print("hereeeee")
            #print(matched_cluster.paper_id)
-           #matched_cluster = Cluster.get(using=self.elastic_service.get_connection(), id = matched_cluster_id)
+           matched_cluster = Cluster.get(using=self.elastic_service.get_connection(), id = matched_cluster_id[0])
         except Exception as ex:
             print('error here in  Cluster get --->', ex)
         if current_paper.has_pdf and matched_cluster.is_citation:
