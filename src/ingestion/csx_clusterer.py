@@ -72,15 +72,16 @@ class KeyMatcherClusterer(CSXClusterer):
             elasticConnectionProps = dict(config.items('ElasticConnectionProperties'))
             wrapper = wrappers.ElasticSearchWrapper(elasticConnectionProps)
             documents = wrapper.get_batch_for_lsh_matching(current_paper_title)
-            print("hereee")
-            print(len(documents))
-            similar_doc_id = self.find_similar_document(documents, current_paper_title)
-            if similar_doc_id and len(similar_doc_id) > 0:
-                #similar_paper_id = similar_doc_id[0]
-                self.merge_with_existing_cluster(matched_cluster_id=similar_doc_id, current_paper=paper)
-            else:
-                pass
-                #self.create_new_paper(paper)
+            if (len(documents) > 1):
+                documents = documents[1:]
+                similar_doc_id = self.find_similar_document(documents, current_paper_title)
+                if similar_doc_id and len(similar_doc_id) > 0:
+                    #similar_paper_id = similar_doc_id[0]
+                    self.merge_with_existing_cluster(matched_cluster_id=similar_doc_id, current_paper=paper)
+                else:
+                    pass
+                    #self.create_new_paper(paper)
+            #self.create_new_paper(paper)
         except Exception as ex:
             print("exception in cluster_paper_with_bm25_lsh with msg-->", ex)
 
@@ -158,7 +159,7 @@ class KeyMatcherClusterer(CSXClusterer):
            print('found similar document with id-->',matched_cluster_id)
            try:
             print('current document title--->', current_paper.title)
-            print('current document title--->', current_paper.paper_id)
+            print('current document id--->', current_paper.paper_id)
            except Exception:
             pass
            resp = Cluster.search(using=self.elastic_service.get_connection()).filter("term", _id=matched_cluster_id[0])
