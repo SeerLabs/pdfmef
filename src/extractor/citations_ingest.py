@@ -77,7 +77,7 @@ if __name__ == '__main__':
         wrapper.get_document_batch()
         documentPaths = wrapper.get_document_paths()
         ids = wrapper.get_document_ids()
-        source_urls = wrapper.get_source_urls()
+        #source_urls = wrapper.get_source_urls()
         if len(ids) == 0:
             print("---no files to extractor hence exiting---")
             break
