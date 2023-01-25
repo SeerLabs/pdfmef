@@ -92,7 +92,7 @@ if __name__ == '__main__':
             outputPaths.append(output_path)
             prefixes.append(id)
             print(outputPaths)
-            papers = CSXExtractorImpl().extract_citations(output_path)
+            papers = CSXExtractorImpl().extract_citations(output_path, id)
             KeyMatcherClusterer().cluster_papers(papers)
 
         numDocs += config.getint('ConnectionProperties', 'batchSize')
