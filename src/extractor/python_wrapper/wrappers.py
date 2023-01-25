@@ -316,6 +316,11 @@ class ElasticSearchWrapper(Wrapper):
     def get_document_batch(self):
         """Purpose: retrieves batch of documents to process from server"""
         body = {
+            "query": {
+                "term": {
+                    "has_pdf" : True
+                }
+            }
         }
 
         results = self.get_connection_prod().search(index=settings.CLUSTERS_INDEX, body=body)
