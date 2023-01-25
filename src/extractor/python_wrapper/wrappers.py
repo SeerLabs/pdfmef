@@ -355,6 +355,7 @@ class ElasticSearchWrapper(Wrapper):
                           }
                         }
                    }
+            print(body)
             results = self.get_connection_prod().search(index=settings.CLUSTERS_INDEX, body=body)
             self.s2_batch = results['hits']['hits']
         except Exception as ex:
