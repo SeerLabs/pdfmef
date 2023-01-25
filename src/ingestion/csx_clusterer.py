@@ -180,12 +180,11 @@ class KeyMatcherClusterer(CSXClusterer):
             matched_cluster.source_url = current_paper.source_url
             matched_cluster.add_paper_id(current_paper.paper_id[0])
 
+        print("coming here1")
         try:
             matched_cluster.save(using=self.elastic_service.get_connection())
-        except TransportError as e:
-            time.sleep(30)
-            self.merge_with_existing_cluster(matched_cluster_id, current_paper)
-            logger.error("Exception occurred while merging with an existing cluster for paper id: "+ str(paper.paper_id)+" with error message: "+ e)
+        except Exception as e:
+            print("Exception occurred while merging with an existing cluster with error message: "+ e)
 
     def recluster_paper(self, paper: Cluster):
         pass
