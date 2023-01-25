@@ -60,21 +60,24 @@ class KeyMatcherClusterer(CSXClusterer):
         self.create_new_paper(paper)
 
     def cluster_paper_with_bm25_lsh(self, paper: Cluster) -> None:
-        current_paper_title = paper.title
-        config = configparser.ConfigParser()
         try:
-            config.read("/pdfmef-code/src/extractor/python_wrapper/properties.config")
+            current_paper_title = paper.title
+            config = configparser.ConfigParser()
+            try:
+                config.read("/pdfmef-code/src/extractor/python_wrapper/properties.config")
+            except Exception as ex:
+                print(ex)
+            elasticConnectionProps = dict(config.items('ElasticConnectionProperties'))
+            wrapper = wrappers.ElasticSearchWrapper(elasticConnectionProps)
+            documents = wrapper.get_batch_for_lsh_matching(current_paper_title)
+            similar_doc_id = self.find_similar_document(documents, current_paper_title)
+            if similar_doc_id and len(similar_doc_id) > 0:
+                #similar_paper_id = similar_doc_id[0]
+                self.merge_with_existing_cluster(matched_cluster_id=similar_doc_id, current_paper=paper)
+            else:
+                self.create_new_paper(paper)
         except Exception as ex:
-            print(ex)
-        elasticConnectionProps = dict(config.items('ElasticConnectionProperties'))
-        wrapper = wrappers.ElasticSearchWrapper(elasticConnectionProps)
-        documents = wrapper.get_batch_for_lsh_matching(current_paper_title)
-        similar_doc_id = self.find_similar_document(documents, current_paper_title)
-        if similar_doc_id and len(similar_doc_id) > 0:
-            #similar_paper_id = similar_doc_id[0]
-            self.merge_with_existing_cluster(matched_cluster_id=similar_doc_id, current_paper=paper)
-        else:
-            self.create_new_paper(paper)
+            print("exception in cluster_paper_with_bm25_lsh with msg-->", ex)
 
     def create_shingles(self, doc, k):
         """
