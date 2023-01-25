@@ -132,7 +132,6 @@ class KeyMatcherClusterer(CSXClusterer):
         #print(result)
 
     def cluster_papers(self, papers: List[Cluster]):
-        print(len(papers))
         for paper in papers:
             self.cluster_paper_with_bm25_lsh(paper)
 
