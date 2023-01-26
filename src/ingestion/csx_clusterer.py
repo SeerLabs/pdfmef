@@ -67,25 +67,21 @@ class KeyMatcherClusterer(CSXClusterer):
                 config.read("/pdfmef-code/src/extractor/python_wrapper/properties.config")
             except Exception as ex:
                 print(ex)
-            print("here1")
             elasticConnectionProps = dict(config.items('ElasticConnectionProperties'))
             wrapper = wrappers.ElasticSearchWrapper(elasticConnectionProps)
             documents = wrapper.get_batch_for_lsh_matching(current_paper_title)
-            print("here2")
             if (len(documents) > 1):
                 documents = documents[1:]
                 similar_doc_id = self.find_similar_document(documents, current_paper_title)
-                print("here3")
                 if similar_doc_id and len(similar_doc_id) > 0:
-                    print("here4")
                     self.merge_with_existing_cluster(matched_cluster_id=similar_doc_id, current_paper=paper)
-                    print("here5")
                 else:
                     self.create_new_paper(paper)
             else:
                 self.create_new_paper(paper)
         except Exception as ex:
-            print("exception in cluster_paper_with_bm25_lsh with msg-->", ex)
+            pass
+            #print("exception in cluster_paper_with_bm25_lsh with msg-->", ex)
 
     def create_shingles(self, doc, k):
         """
