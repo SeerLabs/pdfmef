@@ -67,42 +67,46 @@ def on_batch_finished(resultsFileDirectory, wrapper):
     #               logFilePath - path to log file that will copy the log from the extraction
     #               wrapper - the active wrapper to use for communication with ES,
     #               states - dict mapping states to values"""
-    resultsFilePath = glob(resultsFileDirectory + ".*")[0]
-    resultsDict = read_results(resultsFilePath)
-    successes = []
-    failures = []
-    for fileID, result in resultsDict.items():
-        if result.success_boolean:
-            successes.append((fileID, result))
-        else:
-            failures.append((fileID, result))
 
-    if len(successes) > 0:
-        successes_keys = []
-        for each_success in successes:
-            successes_keys.append(each_success[0])
+    try:
+        resultsFilePath = glob(resultsFileDirectory + ".*")[0]
+        resultsDict = read_results(resultsFilePath)
+        successes = []
+        failures = []
+        for fileID, result in resultsDict.items():
+            if result.success_boolean:
+                successes.append((fileID, result))
+            else:
+                failures.append((fileID, result))
 
-        print("on batch complete total documents successfully extracted ", str(len(successes_keys)))
-        logger.info("----on batch complete documents successfully extracted: "+str(len(successes_keys)))
-        wrapper.update_state(successes_keys, "done")
-        tei_file_paths = []
-        pdf_file_paths = []
-        source_urls = []
-        for each_success in successes:
-            chunks = [each_success[0][i:i + 2] for i in range(0, len(each_success[0]), 2)]
-            filename = each_success[0]+".tei"
-            output_path = os.path.join(baseResultsPath, chunks[0], chunks[1], chunks[2],
-                                       chunks[3], chunks[4], chunks[5], chunks[6], each_success[0], filename)
-            tei_file_paths.append(output_path)
-            pdf_file_paths.append(each_success[1].file_path)
-            source_urls.append(each_success[1].source_url)
-        CSXIngesterImpl().ingest_batch_parallel_files(tei_file_paths, pdf_file_paths, source_urls)
-    if len(failures) > 0:
-        failure_keys = []
-        for each_failure in failures:
-            failure_keys.append(each_failure[0])
-        logger.info("----on batch complete total documents failed to be extracted: "+str(len(failure_keys)))
-        wrapper.update_state(failure_keys, "fail")
+        if len(successes) > 0:
+            successes_keys = []
+            for each_success in successes:
+                successes_keys.append(each_success[0])
+
+            print("on batch complete total documents successfully extracted ", str(len(successes_keys)))
+            logger.info("----on batch complete documents successfully extracted: "+str(len(successes_keys)))
+            wrapper.update_state(successes_keys, "done")
+            tei_file_paths = []
+            pdf_file_paths = []
+            source_urls = []
+            for each_success in successes:
+                chunks = [each_success[0][i:i + 2] for i in range(0, len(each_success[0]), 2)]
+                filename = each_success[0]+".tei"
+                output_path = os.path.join(baseResultsPath, chunks[0], chunks[1], chunks[2],
+                                           chunks[3], chunks[4], chunks[5], chunks[6], each_success[0], filename)
+                tei_file_paths.append(output_path)
+                pdf_file_paths.append(each_success[1].file_path)
+                source_urls.append(each_success[1].source_url)
+            CSXIngesterImpl().ingest_batch_parallel_files(tei_file_paths, pdf_file_paths, source_urls)
+        if len(failures) > 0:
+            failure_keys = []
+            for each_failure in failures:
+                failure_keys.append(each_failure[0])
+            logger.info("----on batch complete total documents failed to be extracted: "+str(len(failure_keys)))
+            wrapper.update_state(failure_keys, "fail")
+    except Exception:
+        pass
 
 
 def get_extraction_runner(modules):
