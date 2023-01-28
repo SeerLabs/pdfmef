@@ -102,7 +102,12 @@ if __name__ == '__main__':
                 except Exception:
                     print("hereee")
                     pass
-                paper.authors = doc['_source']['authors']
+                try:
+                    paper.authors = doc['_source']['authors']
+                except Exception:
+                    print("hereee")
+                    pass
+
                 paper.has_pdf = doc['_source']['has_pdf']
                 paper.is_citation = doc['_source']['is_citation']
                 #citations = self.extract_citations_from_tei_root(tei_root=tei_root, paper_id=paper_id)
