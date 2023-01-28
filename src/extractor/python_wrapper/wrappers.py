@@ -331,6 +331,7 @@ class ElasticSearchWrapper(Wrapper):
                 pass
             else:
                 self.batch.append(result)
+        return self.batch
 
     def get_batch_for_lsh_matching(self, title):
         """Purpose: retrieves batch of documents to process from server"""
