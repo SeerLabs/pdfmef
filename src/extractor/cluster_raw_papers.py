@@ -112,7 +112,7 @@ if __name__ == '__main__':
                 papers.append(paper)
             #papers.extend(citations)
             except Exception as e:
-                pass
+                print(e)
 
         KeyMatcherClusterer().cluster_papers(papers)
         numDocs += config.getint('ConnectionProperties', 'batchSize')
