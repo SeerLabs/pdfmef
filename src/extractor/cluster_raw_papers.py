@@ -8,6 +8,7 @@ import time
 import extractor.csxextract.extractors.grobid as grobid
 import extractor.csxextract.filters as filters
 from extractor.csxextract.extractors import pdfbox
+from models.elastic_models import Author, Cluster, KeyMap
 from extractor.python_wrapper import utils, wrappers
 from ingestion.csx_ingester import CSXIngesterImpl
 from ingestion.csx_extractor import CSXExtractorImpl
@@ -92,7 +93,6 @@ if __name__ == '__main__':
                 #print(doc)
                 paper = Cluster()
                 paper.source_url = doc['_source']['source_url']
-                tei_filename = str(filepath[str(filepath).rfind('/')+1:])
                 paper_id = doc['_source']['paper_id'][0]
                 paper.add_paper_id(paper_id)
                 paper.title = doc['_source']['title']
