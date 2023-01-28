@@ -104,7 +104,7 @@ if __name__ == '__main__':
                 #citations = self.extract_citations_from_tei_root(tei_root=tei_root, paper_id=paper_id)
                 paper.text =  doc['_source']['text']
                 #paper.keys = KeyGenerator().get_keys(paper.title, paper.authors)
-                print(paper)
+                #print(paper)
                 papers.append(paper)
             #papers.extend(citations)
             except Exception as e:
