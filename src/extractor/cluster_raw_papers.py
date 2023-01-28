@@ -103,7 +103,7 @@ if __name__ == '__main__':
                 paper.is_citation = doc['_source']['is_citation']
                 #citations = self.extract_citations_from_tei_root(tei_root=tei_root, paper_id=paper_id)
                 paper.text =  doc['_source']['text']
-                paper.keys = KeyGenerator().get_keys(paper.title, paper.authors)
+                #paper.keys = KeyGenerator().get_keys(paper.title, paper.authors)
                 print(paper)
                 papers.append(paper)
             #papers.extend(citations)
