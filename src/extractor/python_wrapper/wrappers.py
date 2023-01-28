@@ -319,14 +319,10 @@ class ElasticSearchWrapper(Wrapper):
             "from": 0,
             "size": self.batchSize,
             "query": {
-                "multi_match": {
-                    "query": "fresh",
-                    "fields": "text_status"
-                }
             }
         }
 
-        results = self.get_connection().search(index=settings.CRAWL_META_INDEX, body=body)
+        results = self.get_connection().search(index=settings.RAW_PAPERS_INDEX, body=body)
         self.batch = []
         for result in results['hits']['hits']:
             if (result["_id"] == '_update'):
