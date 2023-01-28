@@ -106,7 +106,7 @@ if __name__ == '__main__':
                 paper.keys = KeyGenerator().get_keys(paper.title, paper.authors)
                 papers.append(paper)
             #papers.extend(citations)
-             except Exception as e:
+            except Exception as e:
                 print("exception occured while extracting textual data for filepath: "+filepath+" with error message: "+e)
         return papers
 
