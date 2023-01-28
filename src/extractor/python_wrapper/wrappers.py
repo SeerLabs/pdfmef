@@ -317,9 +317,7 @@ class ElasticSearchWrapper(Wrapper):
         """Purpose: retrieves batch of documents to process from server"""
         body = {
             "from": 0,
-            "size": self.batchSize,
-            "query": {
-            }
+            "size": self.batchSize
         }
 
         results = self.get_connection().search(index=settings.RAW_PAPERS_INDEX, body=body)
