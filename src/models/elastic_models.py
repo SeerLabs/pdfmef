@@ -108,7 +108,7 @@ class Cluster(Document):
             self.title_suggest = {
                 'input': [self.title],
             }
-        return super().save(**kwargs)
+        return super().save(**kwargs, index=settings.)
 
 class Cluster_original(Document):
     id = Keyword()
