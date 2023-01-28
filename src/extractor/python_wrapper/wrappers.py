@@ -317,7 +317,7 @@ class ElasticSearchWrapper(Wrapper):
         """Purpose: retrieves batch of documents to process from server"""
         body = {
             "from": 0,
-            "size": self.batchSize
+            "size": self.batchSize,
             "query" : {
                 "match_all" : {
                 }
