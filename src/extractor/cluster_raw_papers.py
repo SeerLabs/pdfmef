@@ -100,12 +100,10 @@ if __name__ == '__main__':
                 try:
                     paper.pub_info = doc['_source']['pub_info']
                 except Exception:
-                    print("hereee")
                     pass
                 try:
                     paper.authors = doc['_source']['authors']
                 except Exception:
-                    print("hereee")
                     pass
 
                 paper.has_pdf = doc['_source']['has_pdf']
