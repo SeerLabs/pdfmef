@@ -318,6 +318,10 @@ class ElasticSearchWrapper(Wrapper):
         body = {
             "from": 0,
             "size": self.batchSize
+            "query" : {
+                "match_all" : {
+                }
+            }
         }
 
         results = self.get_connection().search(index=settings.RAW_PAPERS_INDEX, body=body)
