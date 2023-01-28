@@ -108,7 +108,6 @@ if __name__ == '__main__':
             #papers.extend(citations)
             except Exception as e:
                 print("exception occured while extracting textual data for filepath: "+filepath+" with error message: "+e)
-        return papers
 
         numDocs += config.getint('ConnectionProperties', 'batchSize')
 
