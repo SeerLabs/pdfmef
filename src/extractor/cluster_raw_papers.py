@@ -86,29 +86,31 @@ if __name__ == '__main__':
         files = []
         prefixes = []
         print("batch processing-- starting pdfmef extraction and ingestion for size: "+str(len(ids)))
+        papers = []
         for doc in docs:
             try:
-                print(doc)
-                papers = []
+                #print(doc)
                 paper = Cluster()
-                paper.source_url = source_url
+                paper.source_url = doc['_source']['source_url']
                 tei_filename = str(filepath[str(filepath).rfind('/')+1:])
-                paper_id = tei_filename[:tei_filename.rfind('.')]
+                paper_id = doc['_source']['paper_id'][0]
                 paper.add_paper_id(paper_id)
-                paper.title = self.extract_title_from_tei_root(tei_root)
-                paper.abstract = self.extract_abstract(tei_root)
-                paper.pub_info = self.extract_paper_pub_info_from_tei_root(tei_root)
-                paper.authors = self.extract_authors_from_tei_root(tei_root)
-                paper.has_pdf = True
-                paper.is_citation = False
+                paper.title = doc['_source']['title']
+                paper.abstract = doc['_source']['abstract']
+                paper.pub_info = doc['_source']['pub_info']
+                paper.authors = doc['_source']['pub_info']
+                paper.has_pdf = doc['_source']['has_pdf']
+                paper.is_citation = doc['_source']['is_citation']
                 #citations = self.extract_citations_from_tei_root(tei_root=tei_root, paper_id=paper_id)
-                paper.text = self.extract_text_from_tei_root(tei_root)
+                paper.text =  doc['_source']['text']
                 paper.keys = KeyGenerator().get_keys(paper.title, paper.authors)
+                print(paper)
                 papers.append(paper)
             #papers.extend(citations)
             except Exception as e:
                 print("exception occured while extracting textual data for filepath: "+filepath+" with error message: "+e)
 
+        KeyMatcherClusterer().cluster_papers(papers)
         numDocs += config.getint('ConnectionProperties', 'batchSize')
 
         if numDocs >= maxDocs:
