@@ -112,7 +112,8 @@ if __name__ == '__main__':
                 papers.append(paper)
             #papers.extend(citations)
             except Exception as e:
-                print("exception occured while extracting textual data for filepath: "+filepath+" with error message: "+e)
+                print(e)
+                pass
 
         KeyMatcherClusterer().cluster_papers(papers)
         numDocs += config.getint('ConnectionProperties', 'batchSize')
