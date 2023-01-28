@@ -73,16 +73,15 @@ class KeyMatcherClusterer(CSXClusterer):
             has_new = False
 
             documents_to_be_similar = []
-            try:
-                for doc in documents:
-                    #print(doc['_source']['paper_id'][0])
-                    #print(paper.paper_id[0])
-                    if doc['_source']['paper_id'][0] != paper.paper_id[0]:
+            for doc in documents:
+                try:
                         print(doc['_source']['paper_id'][0])
                         print(paper.paper_id[0])
                         documents_to_be_similar.append(doc)
-            except Exception:
-                pass
+                except Exception:
+                    documents_to_be_similar.append(doc)
+                    pass
+
             if (len(documents_to_be_similar) > 0):
                 documents = documents_to_be_similar
                 similar_doc_id = self.find_similar_document(documents, current_paper_title)
