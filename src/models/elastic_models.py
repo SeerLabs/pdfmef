@@ -103,12 +103,19 @@ class Cluster(Document):
             return
         self.keys.extend(keys)
 
-    def save(self, **kwargs):
+    def save_raw_papers(self, **kwargs):
         if self.title is not None:
             self.title_suggest = {
                 'input': [self.title],
             }
         return super().save(**kwargs, index=settings.RAW_PAPERS_INDEX)
+
+    def save(self, **kwargs):
+        if self.title is not None:
+            self.title_suggest = {
+                'input': [self.title],
+            }
+        return super().save(**kwargs, index=settings.CLUSTERS_INDEX)
 
 class Cluster_original(Document):
     id = Keyword()
