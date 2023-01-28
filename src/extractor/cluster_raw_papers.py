@@ -97,7 +97,7 @@ if __name__ == '__main__':
                 paper.add_paper_id(paper_id)
                 paper.title = doc['_source']['title']
                 paper.abstract = doc['_source']['abstract']
-                paper.pub_info = doc['_source']['pub_info']
+                #paper.pub_info = doc['_source']['pub_info']
                 paper.authors = doc['_source']['pub_info']
                 paper.has_pdf = doc['_source']['has_pdf']
                 paper.is_citation = doc['_source']['is_citation']
