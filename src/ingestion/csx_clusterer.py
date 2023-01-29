@@ -74,12 +74,9 @@ class KeyMatcherClusterer(CSXClusterer):
             for doc in documents:
                 try:
                     if paper.paper_id[0] not in doc['_source']['paper_id']:
-                        print(doc['_source']['paper_id'][0])
-                        print(paper.paper_id[0])
                         documents_to_be_similar.append(doc)
                 except Exception:
                     documents_to_be_similar.append(doc)
-                    pass
 
             if (len(documents_to_be_similar) > 0):
                 documents = documents_to_be_similar
@@ -87,11 +84,10 @@ class KeyMatcherClusterer(CSXClusterer):
                 if similar_doc_id and len(similar_doc_id) > 0:
                     self.merge_with_existing_cluster(matched_cluster_id=similar_doc_id, current_paper=paper)
                 else:
-                    self.create_cluster_paper(paper)
+                    self.create_new_paper(paper)
             else:
-                self.create_cluster_paper(paper)
+                self.create_new_paper(paper)
 
-            self.create_new_paper(paper)
 
         except Exception as ex:
             pass
@@ -158,17 +154,9 @@ class KeyMatcherClusterer(CSXClusterer):
         for paper in papers:
             self.cluster_paper_with_bm25_lsh(paper)
 
-    def create_cluster_paper(self, paper: Cluster):
-        try:
-            paper.save(using=self.elastic_service.get_connection())
-        except TransportError as e:
-            logger.error("failed creating new paper for paper id: "+paper.paper_id+" with error: "+e.info)
-            print(e.info)
-            exit()
-
     def create_new_paper(self, paper: Cluster):
         try:
-            paper.save_raw_papers(using=self.elastic_service.get_connection())
+            paper.save(using=self.elastic_service.get_connection())
         except TransportError as e:
             logger.error("failed creating new paper for paper id: "+paper.paper_id+" with error: "+e.info)
             print(e.info)
