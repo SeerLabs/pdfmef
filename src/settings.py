@@ -1,4 +1,4 @@
-CLUSTERS_INDEX = "citeseerx_papers"
+CLUSTERS_INDEX = "citeseerx_cluster_papers"
 RAW_PAPERS_INDEX = "citeseerx_raw_papers"
 ACL_CLUSTER_ORIGINAL_INDEX = "acl_metadata_bib2"
 KEYMAP_INDEX = "citeseerx_all_papers_keymap"
