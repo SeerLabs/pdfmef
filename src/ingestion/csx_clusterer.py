@@ -86,6 +86,8 @@ class KeyMatcherClusterer(CSXClusterer):
                 similar_doc_id = self.find_similar_document(documents, current_paper_title)
                 if similar_doc_id and len(similar_doc_id) > 0:
                     self.merge_with_existing_cluster(matched_cluster_id=similar_doc_id, current_paper=paper)
+                else:
+                    self.create_cluster_paper(paper)
 
             self.create_new_paper(paper)
 
@@ -153,6 +155,14 @@ class KeyMatcherClusterer(CSXClusterer):
     def cluster_papers(self, papers: List[Cluster]):
         for paper in papers:
             self.cluster_paper_with_bm25_lsh(paper)
+
+    def create_cluster_paper(self, paper: Cluster):
+        try:
+            paper.save(using=self.elastic_service.get_connection())
+        except TransportError as e:
+            logger.error("failed creating new paper for paper id: "+paper.paper_id+" with error: "+e.info)
+            print(e.info)
+            exit()
 
     def create_new_paper(self, paper: Cluster):
         try:
