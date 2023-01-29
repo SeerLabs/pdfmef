@@ -88,6 +88,8 @@ class KeyMatcherClusterer(CSXClusterer):
                     self.merge_with_existing_cluster(matched_cluster_id=similar_doc_id, current_paper=paper)
                 else:
                     self.create_cluster_paper(paper)
+            else:
+                self.create_cluster_paper(paper)
 
             self.create_new_paper(paper)
 
