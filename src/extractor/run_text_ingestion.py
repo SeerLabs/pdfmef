@@ -86,7 +86,7 @@ def on_batch_finished(resultsFileDirectory, wrapper):
 
             print("on batch complete total documents successfully extracted ", str(len(successes_keys)))
             logger.info("----on batch complete documents successfully extracted: "+str(len(successes_keys)))
-            wrapper.update_state(successes_keys, "done")
+            wrapper.update_state(successes_keys, "extracted")
             tei_file_paths = []
             pdf_file_paths = []
             source_urls = []
