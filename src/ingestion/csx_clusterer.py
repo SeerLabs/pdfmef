@@ -82,14 +82,14 @@ class KeyMatcherClusterer(CSXClusterer):
                 except Exception:
                     documents_to_be_similar.append(doc)
 
-            if (len(documents_to_be_similar) > 0):
+            if (len(documents_to_be_similar) > 0 and paper_not_exists):
                 documents = documents_to_be_similar
                 similar_doc_id = self.find_similar_document(documents, current_paper_title)
                 if similar_doc_id and len(similar_doc_id) > 0:
                     self.merge_with_existing_cluster(matched_cluster_id=similar_doc_id, current_paper=paper)
-                elif (paper_not_exists):
+                else:
                     self.create_new_paper(paper)
-            elif (paper_not_exists):
+            else:
                 self.create_new_paper(paper)
 
         except Exception as ex:
