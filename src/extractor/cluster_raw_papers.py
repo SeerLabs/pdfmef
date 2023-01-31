@@ -118,7 +118,6 @@ if __name__ == '__main__':
                 print(e)
 
         KeyMatcherClusterer().cluster_papers(papers)
-        wrapper.update_raw_paper_status(ids)
         numDocs += config.getint('ConnectionProperties', 'batchSize')
 
 
