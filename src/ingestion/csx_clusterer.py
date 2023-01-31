@@ -191,6 +191,8 @@ class KeyMatcherClusterer(CSXClusterer):
             matched_cluster.source_url = current_paper.source_url
             matched_cluster.add_paper_id(current_paper.paper_id[0])
 
+        print("hereeee")
+        print(matched_cluster.source_url)
         matched_cluster.source_url.append(current_paper.source_url)
         print(matched_cluster.source_url)
         try:
