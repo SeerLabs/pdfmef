@@ -390,7 +390,7 @@ class ElasticSearchWrapper(Wrapper):
 
 
     def update_raw_paper_status(self, doc_ids):
-        print('updating status for ids-->', docs)
+        print('updating status for ids-->', doc_ids)
         source_to_update = {
             "doc" : {
                 "text_status" : "done"
