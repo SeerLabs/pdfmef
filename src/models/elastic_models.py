@@ -108,6 +108,7 @@ class Cluster(Document):
             self.title_suggest = {
                 'input': [self.title],
             }
+        self.text_status = "fresh"
         return super().save(**kwargs)
 
 class Cluster_original(Document):
