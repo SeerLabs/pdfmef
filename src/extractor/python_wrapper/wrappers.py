@@ -391,12 +391,13 @@ class ElasticSearchWrapper(Wrapper):
 
     def update_raw_paper_status(self, doc_ids):
         print('updating status for ids-->', doc_ids)
-        source_to_update = {
-            "doc" : {
-                "text_status" : "done"
+        for doc_id in doc_ids:
+            source_to_update = {
+                "doc" : {
+                    "text_status" : "done"
+                }
             }
-        }
-        response = self.get_connection_prod().update(index=settings.RAW_PAPERS_INDEX, id=doc_ids, body=source_to_update)
+            response = self.get_connection_prod().update(index=settings.RAW_PAPERS_INDEX, id=doc_id, body=source_to_update)
 
     def get_document_ids(self):
         """Purpose: parses the ids of all documents in a batch
