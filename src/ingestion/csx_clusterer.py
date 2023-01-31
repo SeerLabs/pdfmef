@@ -193,7 +193,8 @@ class KeyMatcherClusterer(CSXClusterer):
 
         print("hereeee")
         print(matched_cluster.source_url)
-        matched_cluster.add_source_url(current_paper.source_url)
+        print(current_paper.source_url[0])
+        matched_cluster.add_source_url(current_paper.source_url[0])
         print(matched_cluster.source_url)
         try:
             matched_cluster.save(using=self.elastic_service.get_connection())
