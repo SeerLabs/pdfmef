@@ -97,6 +97,13 @@ class Cluster(Document):
             return
         self.paper_id.append(paper_id)
 
+
+    def add_source_url(self, source_url: str):
+        if not self.__contains__("source_url"):
+            self.__setitem__("source_url", [source_url])
+            return
+        self.paper_id.append(source_url)
+
     def extend_keys(self, keys: List[str]):
         if not self.__contains__("keys"):
             self.__setitem__("keys", keys)
