@@ -86,13 +86,10 @@ class KeyMatcherClusterer(CSXClusterer):
                 documents = documents_to_be_similar
                 similar_doc_id = self.find_similar_document(documents, current_paper_title)
                 if similar_doc_id and len(similar_doc_id) > 0:
-                    print('----------here merging paper for paper_id ------------------------------>', paper.paper_id)
                     self.merge_with_existing_cluster(matched_cluster_id=similar_doc_id, current_paper=paper)
                 else:
-                    print('----------here creating new paper in first else for paper_id ------------------------------>', paper.paper_id)
                     self.create_new_paper(paper)
             elif (len(documents_to_be_similar) == 0 and paper_not_exists):
-                print('----------here creating new paper in second else for paper_id ------------------------------>', paper.paper_id)
                 self.create_new_paper(paper)
 
 
