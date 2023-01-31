@@ -72,7 +72,7 @@ class KeyMatcherClusterer(CSXClusterer):
             wrapper = wrappers.ElasticSearchWrapper(elasticConnectionProps)
             documents = wrapper.get_batch_for_lsh_matching(current_paper_title)
             has_new = False
-            print("found documents to match--->"len(documents))
+            print("found documents to match--->",len(documents))
             for doc in documents:
                 try:
                     if paper.paper_id[0] not in doc['_source']['paper_id']:
