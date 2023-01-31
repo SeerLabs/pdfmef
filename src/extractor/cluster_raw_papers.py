@@ -92,7 +92,8 @@ if __name__ == '__main__':
             try:
                 #print(doc)
                 paper = Cluster()
-                paper.source_url = doc['_source']['source_url']
+                source_url = doc['_source']['source_url']
+                paper.add_source_url(source_url)
                 paper_id = doc['_source']['paper_id'][0]
                 paper.add_paper_id(paper_id)
                 paper.title = doc['_source']['title']
