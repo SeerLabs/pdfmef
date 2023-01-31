@@ -191,11 +191,13 @@ class KeyMatcherClusterer(CSXClusterer):
             matched_cluster.source_url = current_paper.source_url
             matched_cluster.add_paper_id(current_paper.paper_id[0])
 
-        print("hereeee")
-        print(matched_cluster.source_url)
-        print(current_paper.source_url[0])
-        matched_cluster.add_source_url(current_paper.source_url[0])
-        print(matched_cluster.source_url)
+        try:
+            if current_paper.source_url[0] not in matched_cluster.source_url:
+                matched_cluster.add_source_url(current_paper.source_url[0])
+                print(matched_cluster.source_url)
+        except Exception:
+            print("hereeeee hello")
+            pass
         try:
             matched_cluster.save(using=self.elastic_service.get_connection())
         except Exception as e:
