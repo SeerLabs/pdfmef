@@ -88,6 +88,7 @@ class KeyMatcherClusterer(CSXClusterer):
             else:
                 self.create_new_paper(paper)
 
+            paper.save_raw_papers(paper)
 
         except Exception as ex:
             pass
