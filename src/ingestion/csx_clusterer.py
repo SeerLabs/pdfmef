@@ -72,15 +72,12 @@ class KeyMatcherClusterer(CSXClusterer):
             documents = wrapper.get_batch_for_lsh_matching(current_paper_title)
             has_new = False
 
-            documents_to_be_similar = []
             for doc in documents:
                 try:
-                        print(doc['_source']['paper_id'][0])
-                        print(paper.paper_id[0])
+                    if paper.paper_id[0] not in doc['_source']['paper_id']:
                         documents_to_be_similar.append(doc)
                 except Exception:
                     documents_to_be_similar.append(doc)
-                    pass
 
             if (len(documents_to_be_similar) > 0):
                 documents = documents_to_be_similar
@@ -91,6 +88,7 @@ class KeyMatcherClusterer(CSXClusterer):
                     self.create_new_paper(paper)
             else:
                 self.create_new_paper(paper)
+
         except Exception as ex:
             pass
             #print("exception in cluster_paper_with_bm25_lsh with msg-->", ex)

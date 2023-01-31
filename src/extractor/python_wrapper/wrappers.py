@@ -388,6 +388,16 @@ class ElasticSearchWrapper(Wrapper):
         }
         response = self.get_connection_prod().update(index=settings.CLUSTERS_INDEX, id=doc_id, body=source_to_update)
 
+
+    def update_raw_paper_status(self, doc_ids):
+        print('updating status for ids-->', docs)
+        source_to_update = {
+            "doc" : {
+                "text_status" : "done"
+            }
+        }
+        response = self.get_connection_prod().update(index=settings.CLUSTERS_INDEX, _id=doc_ids, body=source_to_update)
+
     def get_document_ids(self):
         """Purpose: parses the ids of all documents in a batch
             Returns: list of string ids"""
