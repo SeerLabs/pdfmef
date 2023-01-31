@@ -318,8 +318,10 @@ class ElasticSearchWrapper(Wrapper):
         body = {
             "from": 0,
             "size": self.batchSize,
-            "query" : {
-                "match_all" : {
+            "query": {
+                "multi_match": {
+                    "query": "fresh",
+                    "fields": "text_status"
                 }
             }
         }
@@ -427,6 +429,7 @@ class ElasticSearchWrapper(Wrapper):
         """update_state(ids, state)
         Purpose: updates the extraction state of the given documents in the database
         Parameters: ids - list of documents ids, state - the int state to assignt to each document"""
+        print(ids)
         body = {
             "script": {
                 "source": "ctx._source.text_status=" + "'" + state + "'",
