@@ -390,7 +390,6 @@ class ElasticSearchWrapper(Wrapper):
 
 
     def update_raw_paper_status(self, doc_ids):
-        print('updating status for ids-->', doc_ids)
         for doc_id in doc_ids:
             source_to_update = {
                 "doc" : {
