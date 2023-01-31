@@ -98,8 +98,6 @@ def on_batch_finished(resultsFileDirectory, wrapper):
                 tei_file_paths.append(output_path)
                 pdf_file_paths.append(each_success[1].file_path)
                 source_urls.append(each_success[1].source_url)
-            print("on batch finished")
-            print(tei_file_paths)
             CSXIngesterImpl().ingest_batch_parallel_files(tei_file_paths, pdf_file_paths, source_urls)
         if len(failures) > 0:
             failure_keys = []
@@ -204,6 +202,7 @@ if __name__ == '__main__':
 
         files_to_process = files
         runner.run_from_file_batch(files_to_process, outputPaths, num_processes=numProcesses, file_prefixes=prefixes)
+        print("hereeeee")
         on_batch_finished(logPath, wrapper)
         numDocs += config.getint('ConnectionProperties', 'batchSize')
 
