@@ -149,10 +149,10 @@ class KeyMatcherClusterer(CSXClusterer):
         try:
             print("inside create paper for id--->", paper.paper_id)
             paper.save(using=self.elastic_service.get_connection())
-        except TransportError as e:
-            logger.error("failed creating new paper for paper id: "+paper.paper_id+" with error: "+e.info)
-            print(e.info)
-            exit()
+        except Exception as e:
+            print("failed creating new paper for paper id: "+paper.paper_id+" with error: "+e.info)
+           #print(""e)
+           #exit()
 
     def merge_with_existing_cluster(self, matched_cluster_id: str, current_paper: Cluster):
         try:
