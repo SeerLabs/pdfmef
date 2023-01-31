@@ -437,11 +437,11 @@ class ElasticSearchWrapper(Wrapper):
             },
             "query": {
                 "terms": {
-                    "_id": ids
+                    "paper_id": ids
                 }
             }
         }
-        print(body['script'])
+        print(body)
         try:
             status = self.get_connection().update_by_query(index=settings.CRAWL_META_INDEX, body=body,
                                                            request_timeout=1000, refresh=True)
