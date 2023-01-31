@@ -89,8 +89,9 @@ class KeyMatcherClusterer(CSXClusterer):
                     self.merge_with_existing_cluster(matched_cluster_id=similar_doc_id, current_paper=paper)
                 else:
                     self.create_new_paper(paper)
-            else:
+            elif (len(documents_to_be_similar) == 0):
                 self.create_new_paper(paper)
+
 
         except Exception as ex:
             pass
