@@ -320,7 +320,7 @@ class ElasticSearchWrapper(Wrapper):
             "size": self.batchSize,
             "query": {
                 "multi_match": {
-                    "query": "done",
+                    "query": "fresh",
                     "fields": "text_status"
                 }
             }
