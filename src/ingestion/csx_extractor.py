@@ -33,12 +33,14 @@ class CSXExtractorImpl(CSXExtractor):
 
     def extract_textual_data(self, filepath, source_url):
         try:
+
             tei_root = parse(filepath)
             papers = []
             paper = Cluster()
             paper.source_url = source_url
             tei_filename = str(filepath[str(filepath).rfind('/')+1:])
             paper_id = tei_filename[:tei_filename.rfind('.')]
+            print(paper_id)
             paper.add_paper_id(paper_id)
             paper.title = self.extract_title_from_tei_root(tei_root)
             paper.abstract = self.extract_abstract(tei_root)
