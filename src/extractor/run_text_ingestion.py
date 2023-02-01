@@ -202,7 +202,6 @@ if __name__ == '__main__':
 
         files_to_process = files
         runner.run_from_file_batch(files_to_process, outputPaths, num_processes=numProcesses, file_prefixes=prefixes)
-        print("hereeeee")
         on_batch_finished(logPath, wrapper)
         numDocs += config.getint('ConnectionProperties', 'batchSize')
 
