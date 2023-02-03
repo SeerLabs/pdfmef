@@ -192,7 +192,7 @@ class KeyMatcherClusterer(CSXClusterer):
             matched_cluster.is_citation = True
         if current_paper.has_pdf:
             matched_cluster.has_pdf = True
-            matched_cluster.source_url = current_paper.source_url
+            #matched_cluster.source_url = current_paper.source_url
             matched_cluster.add_paper_id(current_paper.paper_id[0])
 
         try:
