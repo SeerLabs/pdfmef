@@ -119,10 +119,10 @@ def findMatchingDocumentsLSH(papers, miss_cat_count, match_index):
                             FP += 1
                             miss = True
                 #print(miss_cat_count["non_dup"])
-                print("For type ---> \n", match_index)
-                print("False positive -->  \n",FP)
-                print("True positive --> \n",TP)
-                print("False Negative --> \n",FN)
+    print("For type ---> \n", match_index)
+    print("False positive -->  \n",FP)
+    print("True positive --> \n",TP)
+    print("False Negative --> \n",FN)
                 #cat = paper['_source']['cat']
                 #miss_cat_count[cat] += 1 if (miss == True) else 0
 
