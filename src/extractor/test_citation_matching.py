@@ -170,6 +170,6 @@ if __name__ == "__main__":
     #print(len(docs))
     for i in [0, 2]:
         start_time = time.time()
-        findMatchingDocumentsLSH(docs, miss_cat_count, index)
+        findMatchingDocumentsLSH(docs, miss_cat_count, i)
         print("total time taken seconds ---> ", (time.time() - start_time))
         #print('miss classified documents for match type-> ', index, '\n', miss_cat_count)
