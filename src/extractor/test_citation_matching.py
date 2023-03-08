@@ -18,6 +18,9 @@ def findMatchingDocumentsLSH(papers, miss_cat_count, match_index):
     elasticConnectionProps = dict(config.items('ElasticConnectionProperties'))
     wrapper = wrappers.ElasticSearchWrapper(elasticConnectionProps)
     import re
+    FP = 0
+    FN = 0
+    TP = 0
     for paper in papers:
         miss = False
         try:
@@ -99,19 +102,29 @@ def findMatchingDocumentsLSH(papers, miss_cat_count, match_index):
                     #print('<---------------------------------------------------------->')
                     if (len(result) <=1 and expected_result != "non_dup"):
                         miss = True
+                        FN += 1
                         #mismatch_count += 1
                     elif (result!=None):
                         if len(result) > 1 and expected_result != "non_dup":
                             expected_match_id = paper['_source']['labelled_duplicates']
                             if expected_match_id[0] not in result:
                                 miss = True
+                                FP += 1
+                            else:
+                                TP += 1
                         elif len(result) == 1 and expected_result == "non_dup":
+                            TP += 1
                             pass
                         else:
+                            FP += 1
                             miss = True
                 #print(miss_cat_count["non_dup"])
-                cat = paper['_source']['cat']
-                miss_cat_count[cat] += 1 if (miss == True) else 0
+                print("For type ---> \n", match_index)
+                print("False positive -->  \n",FP)
+                print("True positive --> \n",TP)
+                print("False Negative --> \n",FN)
+                #cat = paper['_source']['cat']
+                #miss_cat_count[cat] += 1 if (miss == True) else 0
 
         except Exception as es:
             print("exception in findMatchingDocumentsLSH with error msg: ", es)
@@ -145,13 +158,17 @@ if __name__ == "__main__":
                 dupe_ids.extend(dupe_id)
 
 
+        import random
+        random.shuffle(all_docs)
+        docs = all_docs[:100]
+        '''
         for doc in all_docs:
             if (cat_count[doc['_source']['cat']] < 10000):
                 docs.append(doc)
                 cat_count[doc['_source']['cat']]+=1
-
-        print(cat_count)
-        print(len(docs))
+        '''
+        #print(cat_count)
+        #print(len(docs))
         findMatchingDocumentsLSH(docs, miss_cat_count, index)
 
         print("total time taken seconds ---> ", (time.time() - start_time))
