@@ -146,7 +146,7 @@ if __name__ == "__main__":
 
 
         for doc in all_docs:
-            if (cat_count[doc['_source']['cat']] < 10):
+            if (cat_count[doc['_source']['cat']] < 10000):
                 docs.append(doc)
                 cat_count[doc['_source']['cat']]+=1
 
