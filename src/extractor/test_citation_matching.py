@@ -119,7 +119,7 @@ def findMatchingDocumentsLSH(papers, miss_cat_count, match_index):
 if __name__ == "__main__":
     es = Elasticsearch([{'host': '130.203.139.160', 'port': 9200}])
     mismatch_count = 0
-    for index in [1]:
+    for index in [0, 2]:
         start_time = time.time()
         miss_cat_count = {"exact_dup": 0, "near_exact_dup": 0, "non_dup": 0}
         cat_count = {"exact_dup": 0, "near_exact_dup": 0, "non_dup": 0}
