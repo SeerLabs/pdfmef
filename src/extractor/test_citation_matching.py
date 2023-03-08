@@ -160,14 +160,14 @@ if __name__ == "__main__":
     import random
     random.shuffle(all_docs)
     docs = all_docs[:100]
-        '''
-        for doc in all_docs:
-            if (cat_count[doc['_source']['cat']] < 10000):
-                docs.append(doc)
-                cat_count[doc['_source']['cat']]+=1
-        '''
-        #print(cat_count)
-        #print(len(docs))
+    '''
+    for doc in all_docs:
+        if (cat_count[doc['_source']['cat']] < 10000):
+            docs.append(doc)
+            cat_count[doc['_source']['cat']]+=1
+    '''
+    #print(cat_count)
+    #print(len(docs))
     for i in [0, 2]:
         start_time = time.time()
         findMatchingDocumentsLSH(docs, miss_cat_count, index)
