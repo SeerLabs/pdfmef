@@ -41,6 +41,7 @@ def findMatchingDocumentsLSH(papers, miss_cat_count, match_index):
                     expected_result = paper['_source']['cat']
                     if (len(documents) <=1 and expected_result != "non_dup"):
                         miss = True
+                        FN += 1
                         #mismatch_count += 1
                     elif (documents!=None):
                         if len(documents) > 1 and expected_result != "non_dup":
@@ -50,9 +51,14 @@ def findMatchingDocumentsLSH(papers, miss_cat_count, match_index):
                                 core_id_list.append(doc['_source']['core_id'])
                             if expected_match_id[0] not in core_id_list:
                                 miss = True
+                                FP += 1
+                            else:
+                                TP += 1
                         elif len(documents) == 1 and expected_result == "non_dup":
+                            TP += 1
                             pass
                         else:
+                            FP += 1
                             miss = True
 
                 else:
