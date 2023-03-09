@@ -166,7 +166,7 @@ if __name__ == "__main__":
     import random
     all_docs = all_docs[3000:]
     random.shuffle(all_docs)
-    docs = all_docs[:1000]
+    docs = all_docs[:10]
     '''
     for doc in all_docs:
         if (cat_count[doc['_source']['cat']] < 10000):
