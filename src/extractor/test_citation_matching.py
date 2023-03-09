@@ -164,6 +164,7 @@ if __name__ == "__main__":
 
 
     import random
+    all_docs = all_docs[3000:]
     random.shuffle(all_docs)
     docs = all_docs[:1000]
     '''
