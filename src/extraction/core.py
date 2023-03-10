@@ -250,7 +250,7 @@ def _real_run(runnables, runnable_props, data, output_dir, **kwargs):
       dep_results = _select_dependency_results(runnable.dependencies, results)
       instance = runnable()
       print("inside _real_run")
-      #print(runnable.__name__)
+      print(runnable.__name__)
       instance.run_name = run_name
       instance.logger = logging.getLogger('runnables.{0}'.format(runnable.__name__))
       result = instance.run(data, dep_results)
@@ -324,7 +324,7 @@ def _output_result(runnable, result, output_dir, run_name, file_prefix='', write
 
    print("inside _output_result")
 
-   print(runnable.__name_)
+   #print(runnable.__name_)
    if isinstance(result, RunnableError):
       logger.info('{0} {1} ERROR: {2}'.format(run_name, runnable.__name__, result.msg))
       logger_core.info('{0} {1} ERROR: {2}'.format(run_name, runnable.__name__, result.msg))
