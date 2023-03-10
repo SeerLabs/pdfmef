@@ -249,12 +249,9 @@ def _real_run(runnables, runnable_props, data, output_dir, **kwargs):
    for runnable in runnables:
       dep_results = _select_dependency_results(runnable.dependencies, results)
       instance = runnable()
-      print("inside _real_run")
-      print(runnable.__name__)
       instance.run_name = run_name
       instance.logger = logging.getLogger('runnables.{0}'.format(runnable.__name__))
       result = instance.run(data, dep_results)
-      print(result)
       results[runnable] = result
    output_dir = os.path.abspath(os.path.expanduser(output_dir))
    if not os.path.exists(output_dir):
@@ -321,8 +318,6 @@ def _output_result(runnable, result, output_dir, run_name, file_prefix='', write
    result_file_name = file_prefix
    result_file_name += runnable.result_file_name or (runnable.__name__ + '.xml')
    result_path = os.path.join(output_dir, result_file_name)
-
-   print("inside _output_result")
 
    #print(runnable.__name_)
    if isinstance(result, RunnableError):
