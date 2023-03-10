@@ -55,13 +55,13 @@ def _call_grobid_method(data, method):
       files = {'input': (path, open(path, 'rb'))}
       the_data = {'consolidateHeader': '1'}
       try:
-         resp = requests.post(url, files=files, data=the_data)
+         resp = requests.post(url, files=files, data=the_data, timeout=10)
          '''
          if (method == 'processFulltextDocument'):
             print('inside _call_grobid_method grobid time taken----------------------------------->\n')
             print(resp.elapsed.total_seconds())
          '''
-      except requests.exceptions.RequestException as ex:
+      except Exception as ex:
          print(ex)
          # logging.error("exception while calling Grobid", ex)
          logger.error('Request to Grobid server failed')
