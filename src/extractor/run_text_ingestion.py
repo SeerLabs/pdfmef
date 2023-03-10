@@ -184,6 +184,7 @@ if __name__ == '__main__':
         documentPaths = wrapper.get_document_paths()
         ids = wrapper.get_document_ids()
         source_urls = wrapper.get_source_urls()
+        print(ids)
         if len(ids) == 0:
             print("---no files to extractor hence exiting---")
             break
