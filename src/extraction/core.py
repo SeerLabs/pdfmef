@@ -323,6 +323,7 @@ def _output_result(runnable, result, output_dir, run_name, file_prefix='', write
    result_path = os.path.join(output_dir, result_file_name)
 
    print("inside _output_result \n")
+   print(result)
    print(result_file_name)
 
    #print(result)
