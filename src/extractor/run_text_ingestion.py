@@ -69,6 +69,7 @@ def on_batch_finished(resultsFileDirectory, wrapper):
     #               states - dict mapping states to values"""
 
     try:
+        print("here in on_batch_finished\n ")
         resultsFilePath = glob(resultsFileDirectory + ".*")[0]
         resultsDict = read_results(resultsFilePath)
         successes = []
