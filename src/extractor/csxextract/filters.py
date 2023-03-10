@@ -14,7 +14,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 class AcademicPaperFilter(Filter):
-    dependencies = frozenset([])
+    dependencies = frozenset([interfaces.PlainTextExtractor])
     result_file_name = '.academic_filter'
 
     def filter(self, data, dependency_results):
