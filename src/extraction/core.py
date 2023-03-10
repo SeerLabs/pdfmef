@@ -324,7 +324,7 @@ def _output_result(runnable, result, output_dir, run_name, file_prefix='', write
 
    print("inside _output_result \n")
 
-   print(result)
+   #print(result)
 
    if isinstance(result, RunnableError):
       logger.info('{0} {1} ERROR: {2}'.format(run_name, runnable.__name__, result.msg))
