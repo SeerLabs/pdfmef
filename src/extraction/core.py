@@ -249,9 +249,12 @@ def _real_run(runnables, runnable_props, data, output_dir, **kwargs):
    for runnable in runnables:
       dep_results = _select_dependency_results(runnable.dependencies, results)
       instance = runnable()
+      print("inside _real_run")
+      print(runnable.__name__)
       instance.run_name = run_name
       instance.logger = logging.getLogger('runnables.{0}'.format(runnable.__name__))
       result = instance.run(data, dep_results)
+      print(result)
       results[runnable] = result
    output_dir = os.path.abspath(os.path.expanduser(output_dir))
    if not os.path.exists(output_dir):
@@ -279,7 +282,6 @@ def _real_run_no_output(runnables, runnable_props, data, **kwargs):
    results = {}
    for runnable in runnables:
       dep_results = _select_dependency_results(runnable.dependencies, results)
-
       instance = runnable()
       instance.run_name = run_name
       instance.logger = logging.getLogger('runnables.{0}'.format(runnable.__name__))
