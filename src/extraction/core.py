@@ -320,6 +320,9 @@ def _output_result(runnable, result, output_dir, run_name, file_prefix='', write
    result_file_name += runnable.result_file_name or (runnable.__name__ + '.xml')
    result_path = os.path.join(output_dir, result_file_name)
 
+   print("inside _output_result")
+
+   print(runnable.__name_)
    if isinstance(result, RunnableError):
       logger.info('{0} {1} ERROR: {2}'.format(run_name, runnable.__name__, result.msg))
       logger_core.info('{0} {1} ERROR: {2}'.format(run_name, runnable.__name__, result.msg))
