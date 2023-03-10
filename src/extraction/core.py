@@ -253,6 +253,7 @@ def _real_run(runnables, runnable_props, data, output_dir, **kwargs):
       instance.run_name = run_name
       instance.logger = logging.getLogger('runnables.{0}'.format(runnable.__name__))
       result = instance.run(data, dep_results)
+      print(runnable.__name__)
       print("here inside _real_run for ->> ", instance.run_name)
       results[runnable] = result
    output_dir = os.path.abspath(os.path.expanduser(output_dir))
