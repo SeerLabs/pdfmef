@@ -55,7 +55,7 @@ def _call_grobid_method(data, method):
       files = {'input': (path, open(path, 'rb'))}
       the_data = {'consolidateHeader': '1'}
       try:
-         resp = requests.post(url, files=files, data=the_data, timeout=20)
+         resp = requests.post(url, files=files, data=the_data, timeout=30)
          '''
          if (method == 'processFulltextDocument'):
             print('inside _call_grobid_method grobid time taken----------------------------------->\n')
