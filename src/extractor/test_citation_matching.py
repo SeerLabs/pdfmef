@@ -174,7 +174,8 @@ if __name__ == "__main__":
     random.shuffle(all_docs)
     docs = all_docs[:20000]
     #print(cat_count)
-    #print(len(docs))
+    print(len(docs))
+
     for i in [0, 2]:
         start_time = time.time()
         findMatchingDocumentsLSH(docs, miss_cat_count, i)
