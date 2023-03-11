@@ -143,7 +143,7 @@ if __name__ == "__main__":
     cat_count = {"exact_dup": 0, "near_exact_dup": 0, "non_dup": 0}
     res = es.search(index="dedupe_test", body = {
     "from": 0,
-    'size' : 70000,
+    'size' : 100000,
     'query': {
          "match_all": {
          }
@@ -164,6 +164,7 @@ if __name__ == "__main__":
 
 
 
+    print(len(all_docs))
     for doc in all_docs:
         if (cat_count[doc['_source']['cat']] == 'near_exact_dup' or cat_count[doc['_source']['cat']] == 'non_dup'):
             docs.append(doc)
