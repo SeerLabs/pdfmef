@@ -315,7 +315,7 @@ class CSXIngesterImpl(CSXIngester):
 
         start_time = time.time()
         c = 0
-        with cf.ThreadPoolExecutor(max_workers=100) as executor:
+        with cf.ThreadPoolExecutor(max_workers=500) as executor:
             for idx in range(len(fileList)):
                 c+=1
                 executor.submit(ingest_paper_parallel_func, (fileList[idx], documentPaths[idx], source_urls[idx]))
