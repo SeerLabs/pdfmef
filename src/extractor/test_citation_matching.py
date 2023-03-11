@@ -175,7 +175,7 @@ if __name__ == "__main__":
             if len(docs) > 20000:
                 break
 
-    #import random
+    import random
     #all_docs = docs
     random.shuffle(docs)
     #docs = all_docs[:30000]
