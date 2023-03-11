@@ -163,15 +163,22 @@ if __name__ == "__main__":
             dupe_ids.extend(dupe_id)
 
 
+    docs = []
     for doc in all_docs:
-        if (doc['_source']['cat'] == 'near_exact_dup' or doc['_source']['cat'] == 'non_dup'):
+        if doc['_source']['cat'] == 'near_exact_dup':
             docs.append(doc)
-            cat_count[doc['_source']['cat']]+=1
+            if len(docs) > 10000:
+                break
+    for doc in docs:
+        if doc['_source']['cat'] == 'non_dup':
+            docs.append(doc)
+            if len(docs) > 20000:
+                break
 
-    import random
-    all_docs = docs
-    random.shuffle(all_docs)
-    docs = all_docs[:10000]
+    #import random
+    #all_docs = docs
+    random.shuffle(docs)
+    #docs = all_docs[:30000]
     #print(cat_count)
     print(len(docs))
 
