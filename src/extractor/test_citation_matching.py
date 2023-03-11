@@ -163,11 +163,8 @@ if __name__ == "__main__":
             dupe_ids.extend(dupe_id)
 
 
-
-    print(len(all_docs))
     for doc in all_docs:
         if (doc['_source']['cat'] == 'near_exact_dup' or doc['_source']['cat'] == 'non_dup'):
-            print("heree")
             docs.append(doc)
             cat_count[doc['_source']['cat']]+=1
 
