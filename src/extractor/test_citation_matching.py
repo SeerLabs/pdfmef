@@ -166,14 +166,16 @@ if __name__ == "__main__":
     docs = []
     for doc in all_docs:
         if doc['_source']['cat'] == 'near_exact_dup':
-            docs.append(doc)
+
             if len(docs) > 10000:
                 break
-    for doc in docs:
-        if doc['_source']['cat'] == 'non_dup':
             docs.append(doc)
+    for doc in all_docs:
+        if doc['_source']['cat'] == 'non_dup':
+
             if len(docs) > 20000:
                 break
+            docs.append(doc)
 
     import random
     #all_docs = docs
