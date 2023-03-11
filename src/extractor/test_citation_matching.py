@@ -171,7 +171,7 @@ if __name__ == "__main__":
     import random
     all_docs = docs
     random.shuffle(all_docs)
-    docs = all_docs[:20000]
+    docs = all_docs[:10000]
     #print(cat_count)
     print(len(docs))
 
