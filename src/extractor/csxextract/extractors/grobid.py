@@ -62,7 +62,7 @@ def _call_grobid_method(data, method):
             print(resp.elapsed.total_seconds())
          '''
       except Exception as ex:
-         print(ex)
+         #print(ex)
          # logging.error("exception while calling Grobid", ex)
          logger.error('Request to Grobid server failed')
          raise RunnableError('Request to Grobid server failed')
