@@ -5,6 +5,7 @@ Multi-Entity Extraction Framework for Academic Documents (with default extractio
 
 To create a new index using the existing index mapping in Elasticsearch, you can use the following Elasticsearch query:
 
+```php
 PUT /new_index
 {
   "settings": {
@@ -21,12 +22,15 @@ PUT /new_index
     }
   }
 }
+```
 
 In the above query, replace new_index with the name of the new index that you want to create. The settings section specifies the number of shards and replicas for the new index. The mappings section specifies the mapping properties for the new index.
 
 To copy the mapping properties from an existing index, you can use the following Elasticsearch query:
 
+```php
 GET /existing_index/_mapping
+```
 
 This will return the mapping properties for the existing_index. Copy the properties section and paste it into the mappings section of the PUT query for the new_index.
 
