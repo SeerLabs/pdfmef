@@ -1,6 +1,37 @@
 # PDFMEF
 Multi-Entity Extraction Framework for Academic Documents (with default extraction tools)
 
+# creating a new index with existing index mapping
+
+To create a new index using the existing index mapping in Elasticsearch, you can use the following Elasticsearch query:
+
+PUT /new_index
+{
+  "settings": {
+    "index": {
+      "number_of_shards": 1,
+      "number_of_replicas": 0
+    }
+  },
+  "mappings": {
+    "_doc": {
+      "properties": {
+        // Copy the mapping properties from the existing index here
+      }
+    }
+  }
+}
+
+In the above query, replace new_index with the name of the new index that you want to create. The settings section specifies the number of shards and replicas for the new index. The mappings section specifies the mapping properties for the new index.
+
+To copy the mapping properties from an existing index, you can use the following Elasticsearch query:
+
+GET /existing_index/_mapping
+
+This will return the mapping properties for the existing_index. Copy the properties section and paste it into the mappings section of the PUT query for the new_index.
+
+Note: You can also copy the entire mapping from the existing index and use it to create the new index, but this may result in unnecessary fields and properties being included in the new index. It's recommended to copy only the necessary mapping properties
+
 # Usage #
 1. Set the appropriate settings in /src/extractor/python_wrapper/properties.config and pdfmef/src/extractor/csxextract/config.py
 2. Go to /src/extractor/ and run
