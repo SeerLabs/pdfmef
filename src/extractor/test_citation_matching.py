@@ -21,6 +21,7 @@ def findMatchingDocumentsLSH(papers, miss_cat_count, match_index):
     FP = 0
     FN = 0
     TP = 0
+    TN = 0
     for paper in papers:
         miss = False
         try:
@@ -97,36 +98,31 @@ def findMatchingDocumentsLSH(papers, miss_cat_count, match_index):
                             dfile.write(data)
 
                     Title = paper['_source']['processed_title']
+                    actual_result = paper['_source']['labelled_duplicates']
                     s = CSXExtractorImpl().create_shingles(Title, 5)
                     min_hash = MinHash(num_perm=128)
                     for shingle in s:
                         min_hash.update(shingle.encode('utf8'))
                     result = lsh.query(min_hash)
                     expected_result = paper['_source']['cat']
-                    #print(result)
-                    #print(paper)
-                    #print('<---------------------------------------------------------->')
-                    if (len(result) <=1 and expected_result != "non_dup"):
-                        miss = True
-                        FN += 1
-                        #mismatch_count += 1
-                    elif (result!=None):
-                        if len(result) > 1 and expected_result != "non_dup":
-                            expected_match_id = paper['_source']['labelled_duplicates']
-                            if expected_match_id[0] not in result:
-                                miss = True
-                                FP += 1
-                            else:
-                                TP += 1
-                        elif len(result) == 1 and expected_result == "non_dup":
-                            TP += 1
-                            pass
+
+                    print(result)
+
+                    if len(actual_result) == 0 and len(result) == 0:
+                        TN += 1
+                    elif len(actual_result) == 0 and len(result) == 1:
+                        if (result[0] == paper['_source']['core_id']):
+                            TN += 1
                         else:
                             FP += 1
-                            miss = True
-                #print(miss_cat_count["non_dup"])
-                #cat = paper['_source']['cat']
-                #miss_cat_count[cat] += 1 if (miss == True) else 0
+                    elif actual_result.issubset(result):
+                        TP += 1
+                    elif len(actual_result) > 0 and len(result) == 0:
+                        FN += 1
+                    elif len(actual_result) > 0 and len(result) == 1 and result[0] == paper['_source']['core_id']:
+                        FN += 1
+                    else:
+                        FP += 1
 
         except Exception as es:
             print("exception in findMatchingDocumentsLSH with error msg: ", es)
@@ -134,6 +130,7 @@ def findMatchingDocumentsLSH(papers, miss_cat_count, match_index):
     print("False positive -->  \n",FP)
     print("True positive --> \n",TP)
     print("False Negative --> \n",FN)
+    print("False Negative --> \n",TN)
 
 if __name__ == "__main__":
     es = Elasticsearch([{'host': '130.203.139.160', 'port': 9200}])
@@ -183,7 +180,7 @@ if __name__ == "__main__":
     #print(cat_count)
     print(len(docs))
 
-    for i in [1]:
+    for i in [0]:
         start_time = time.time()
         findMatchingDocumentsLSH(docs, miss_cat_count, i)
         print("total time taken seconds ---> ", (time.time() - start_time))
