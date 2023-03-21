@@ -38,29 +38,32 @@ def findMatchingDocumentsLSH(papers, miss_cat_count, match_index):
                 else:
                     documents = wrapper.get_batch_for_elastic_query_match_only(title)
 
+
                 if match_index == 2:
                     expected_result = paper['_source']['cat']
-                    if (len(documents) <=1 and expected_result != "non_dup"):
-                        miss = True
-                        FN += 1
-                        #mismatch_count += 1
-                    elif (documents!=None):
-                        if len(documents) > 1 and expected_result != "non_dup":
-                            expected_match_id = paper['_source']['labelled_duplicates']
-                            core_id_list = []
-                            for doc in documents:
-                                core_id_list.append(doc['_source']['core_id'])
-                            if expected_match_id[0] not in core_id_list:
-                                miss = True
-                                FP += 1
-                            else:
-                                TP += 1
-                        elif len(documents) == 1 and expected_result == "non_dup":
-                            TP += 1
-                            pass
+                    actual_result = paper['_source']['labelled_duplicates']
+                    result = []
+                    for doc in documents:
+                        result.append(doc['_source']['core_id'])
+
+                    actual_result_set = set(actual_result)
+                    result_set = set(result)
+
+                    if len(actual_result) == 0 and len(result) == 0:
+                        TN += 1
+                    elif len(actual_result) == 0 and len(result) == 1:
+                        if (result[0] == paper['_source']['core_id']):
+                            TN += 1
                         else:
                             FP += 1
-                            miss = True
+                    elif actual_result_set.issubset(result_set):
+                        TP += 1
+                    elif len(actual_result) > 0 and len(result) == 0:
+                        FN += 1
+                    elif len(actual_result) > 0 and len(result) == 1 and result[0] == paper['_source']['core_id']:
+                        FN += 1
+                    else:
+                        FP += 1
 
                 else:
 
@@ -106,7 +109,7 @@ def findMatchingDocumentsLSH(papers, miss_cat_count, match_index):
                     result = lsh.query(min_hash)
                     expected_result = paper['_source']['cat']
 
-                    print(result)
+                    #print(result)
 
                     actual_result_set = set(actual_result)
                     result_set = set(result)
@@ -133,7 +136,7 @@ def findMatchingDocumentsLSH(papers, miss_cat_count, match_index):
     print("False positive -->  \n",FP)
     print("True positive --> \n",TP)
     print("False Negative --> \n",FN)
-    print("False Negative --> \n",TN)
+    print("true Negative --> \n",TN)
 
 if __name__ == "__main__":
     es = Elasticsearch([{'host': '130.203.139.160', 'port': 9200}])
@@ -166,13 +169,12 @@ if __name__ == "__main__":
     docs = []
     for doc in all_docs:
         if doc['_source']['cat'] == 'near_exact_dup':
-            if len(docs) == 5000:
+            if len(docs) == 100:
                 break
             docs.append(doc)
     for doc in all_docs:
         if doc['_source']['cat'] == 'non_dup':
-
-            if len(docs) == 10000:
+            if len(docs) == 200:
                 break
             docs.append(doc)
 
@@ -183,7 +185,7 @@ if __name__ == "__main__":
     #print(cat_count)
     print(len(docs))
 
-    for i in [0]:
+    for i in [2]:
         start_time = time.time()
         findMatchingDocumentsLSH(docs, miss_cat_count, i)
         print("total time taken seconds ---> ", (time.time() - start_time))
