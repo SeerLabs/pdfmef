@@ -169,17 +169,16 @@ if __name__ == "__main__":
     docs = []
     for doc in all_docs:
         if doc['_source']['cat'] == 'near_exact_dup':
-            if len(docs) == 10000:
+            if len(docs) == 5000:
                 break
-
             docs.append(doc)
-    '''
+
     for doc in all_docs:
         if doc['_source']['cat'] == 'non_dup':
             if len(docs) == 10000:
                 break
             docs.append(doc)
-    '''
+
 
     import random
     #all_docs = docs
@@ -188,7 +187,7 @@ if __name__ == "__main__":
     #print(cat_count)
     print(len(docs))
 
-    for i in [2]:
+    for i in [1]:
         start_time = time.time()
         findMatchingDocumentsLSH(docs, miss_cat_count, i)
         print("total time taken seconds ---> ", (time.time() - start_time))
