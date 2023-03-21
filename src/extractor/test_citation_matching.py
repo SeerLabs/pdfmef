@@ -108,6 +108,9 @@ def findMatchingDocumentsLSH(papers, miss_cat_count, match_index):
 
                     print(result)
 
+                    actual_result_set = set(actual_result)
+                    result_set = set(result)
+
                     if len(actual_result) == 0 and len(result) == 0:
                         TN += 1
                     elif len(actual_result) == 0 and len(result) == 1:
@@ -115,7 +118,7 @@ def findMatchingDocumentsLSH(papers, miss_cat_count, match_index):
                             TN += 1
                         else:
                             FP += 1
-                    elif actual_result.issubset(result):
+                    elif actual_result_set.issubset(result_set):
                         TP += 1
                     elif len(actual_result) > 0 and len(result) == 0:
                         FN += 1
