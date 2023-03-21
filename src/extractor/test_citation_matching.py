@@ -168,7 +168,7 @@ if __name__ == "__main__":
 
     docs = []
     for doc in all_docs:
-        if doc['_source']['cat'] == 'exact_dup':
+        if doc['_source']['cat'] == 'near_exact_dup':
             if len(docs) == 10000:
                 break
 
