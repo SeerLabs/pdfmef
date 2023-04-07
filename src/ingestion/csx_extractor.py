@@ -31,6 +31,16 @@ class CSXExtractorImpl(CSXExtractor):
     def batch_extract_figures(self, dirPath):
         pass
 
+    def extract_citations(self, filepath, paper_id):
+        try:
+            tei_root = parse(filepath)
+            citations = self.extract_citations_from_tei_root(tei_root=tei_root, paper_id=paper_id)
+            return citations
+
+        except Exception as e:
+            print("exception occured while extracting textual data for filepath: "+filepath+" with error message: "+e)
+        return papers
+
     def extract_textual_data(self, filepath, source_url):
         try:
             tei_root = parse(filepath)

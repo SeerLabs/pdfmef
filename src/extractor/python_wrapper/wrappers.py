@@ -319,9 +319,8 @@ class ElasticSearchWrapper(Wrapper):
             "from": 0,
             "size": self.batchSize,
             "query": {
-                "multi_match": {
-                    "query": "fresh",
-                    "fields": "text_status"
+                "term": {
+                    "has_pdf" : True
                 }
             }
         }
@@ -402,8 +401,13 @@ class ElasticSearchWrapper(Wrapper):
         """Purpose: parses the ids of all documents in a batch
             Returns: list of string ids"""
         ids = []
+
         for element in self.batch:
-            ids.append(element['_id'])
+            try:
+                ids.append(element['_source']['paper_id'][0])
+            except Exception:
+                print('dddsdsddsd')
+                pass
         return ids
 
     def get_source_urls(self):
