@@ -37,7 +37,7 @@ class CSXExtractorImpl(CSXExtractor):
             tei_root = parse(filepath)
             papers = []
             paper = Cluster()
-            paper.source_url = source_url
+            paper.add_source_url(source_url)
             tei_filename = str(filepath[str(filepath).rfind('/')+1:])
             paper_id = tei_filename[:tei_filename.rfind('.')]
             paper.add_paper_id(paper_id)

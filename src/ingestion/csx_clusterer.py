@@ -70,15 +70,29 @@ class KeyMatcherClusterer(CSXClusterer):
             elasticConnectionProps = dict(config.items('ElasticConnectionProperties'))
             wrapper = wrappers.ElasticSearchWrapper(elasticConnectionProps)
             documents = wrapper.get_batch_for_lsh_matching(current_paper_title)
-            if (len(documents) > 1):
-                documents = documents[1:]
+            has_new = False
+            documents_to_be_similar = []
+            paper_not_exists = True
+            for doc in documents:
+                try:
+                    if paper.paper_id[0] not in doc['_source']['paper_id']:
+                        documents_to_be_similar.append(doc)
+                    else:
+                        paper_not_exists = False
+                except Exception:
+                    documents_to_be_similar.append(doc)
+
+            if (len(documents_to_be_similar) > 0 and paper_not_exists):
+                documents = documents_to_be_similar
                 similar_doc_id = self.find_similar_document(documents, current_paper_title)
                 if similar_doc_id and len(similar_doc_id) > 0:
                     self.merge_with_existing_cluster(matched_cluster_id=similar_doc_id, current_paper=paper)
                 else:
                     self.create_new_paper(paper)
-            else:
+            elif (len(documents_to_be_similar) == 0 and paper_not_exists):
                 self.create_new_paper(paper)
+
+
         except Exception as ex:
             pass
             #print("exception in cluster_paper_with_bm25_lsh with msg-->", ex)
@@ -179,9 +193,16 @@ class KeyMatcherClusterer(CSXClusterer):
             matched_cluster.is_citation = True
         if current_paper.has_pdf:
             matched_cluster.has_pdf = True
-            matched_cluster.source_url = current_paper.source_url
+            #matched_cluster.source_url = current_paper.source_url
             matched_cluster.add_paper_id(current_paper.paper_id[0])
 
+        try:
+            if current_paper.source_url[0] not in matched_cluster.source_url:
+                matched_cluster.add_source_url(current_paper.source_url[0])
+                print("hereeeeeeeeee--------------------------------------")
+                print(matched_cluster.source_url)
+        except Exception:
+            pass
         try:
             matched_cluster.save(using=self.elastic_service.get_connection())
         except Exception as e:

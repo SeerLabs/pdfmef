@@ -326,13 +326,14 @@ class ElasticSearchWrapper(Wrapper):
             }
         }
 
-        results = self.get_connection().search(index=settings.CRAWL_META_INDEX, body=body)
+        results = self.get_connection_prod().search(index=settings.RAW_PAPERS_INDEX, body=body)
         self.batch = []
         for result in results['hits']['hits']:
             if (result["_id"] == '_update'):
                 pass
             else:
                 self.batch.append(result)
+        return self.batch
 
     def get_batch_for_lsh_matching(self, title):
         """Purpose: retrieves batch of documents to process from server"""
@@ -387,6 +388,16 @@ class ElasticSearchWrapper(Wrapper):
         }
         response = self.get_connection_prod().update(index=settings.CLUSTERS_INDEX, id=doc_id, body=source_to_update)
 
+
+    def update_raw_paper_status(self, doc_ids):
+        for doc_id in doc_ids:
+            source_to_update = {
+                "doc" : {
+                    "text_status" : "done"
+                }
+            }
+            response = self.get_connection_prod().update(index=settings.RAW_PAPERS_INDEX, id=doc_id, body=source_to_update)
+
     def get_document_ids(self):
         """Purpose: parses the ids of all documents in a batch
             Returns: list of string ids"""
@@ -428,6 +439,7 @@ class ElasticSearchWrapper(Wrapper):
         """update_state(ids, state)
         Purpose: updates the extraction state of the given documents in the database
         Parameters: ids - list of documents ids, state - the int state to assignt to each document"""
+        print(ids)
         body = {
             "script": {
                 "source": "ctx._source.text_status=" + "'" + state + "'",
@@ -435,11 +447,11 @@ class ElasticSearchWrapper(Wrapper):
             },
             "query": {
                 "terms": {
-                    "_id": ids
+                    "paper_id": ids
                 }
             }
         }
-        print(body['script'])
+        print(body)
         try:
             status = self.get_connection().update_by_query(index=settings.CRAWL_META_INDEX, body=body,
                                                            request_timeout=1000, refresh=True)
