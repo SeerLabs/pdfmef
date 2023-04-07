@@ -180,7 +180,7 @@ if __name__ == '__main__':
         logPath = baseLogPath + dateFolder + 'batch' + str(batchNum)
         runner.enable_logging(logPath, baseLogPath + 'runnables')
 
-        wrapper.get_document_batch()
+        wrapper.get_document_batch(settings.CRAWL_META_INDEX)
         documentPaths = wrapper.get_document_paths()
         ids = wrapper.get_document_ids()
         source_urls = wrapper.get_source_urls()

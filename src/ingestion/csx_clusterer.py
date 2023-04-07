@@ -159,6 +159,10 @@ class KeyMatcherClusterer(CSXClusterer):
             self.create_new_paper(paper)
             #self.cluster_paper_with_bm25_lsh(paper)
 
+    def cluster_papers_bm25_lsh(self, papers: List[Cluster]):
+        for paper in papers:
+            self.cluster_paper_with_bm25_lsh(paper)
+
     def create_new_paper(self, paper: Cluster):
         try:
             paper.save(using=self.elastic_service.get_connection())

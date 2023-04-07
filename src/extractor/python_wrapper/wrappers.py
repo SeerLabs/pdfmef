@@ -313,7 +313,7 @@ class ElasticSearchWrapper(Wrapper):
         results = self.get_connection_prod().search(index=settings.S2_META_INDEX, body=body)
         self.s2_batch = results['hits']['hits']
 
-    def get_document_batch(self):
+    def get_document_batch(self, ES_index_name):
         """Purpose: retrieves batch of documents to process from server"""
         body = {
             "from": 0,
@@ -326,7 +326,7 @@ class ElasticSearchWrapper(Wrapper):
             }
         }
 
-        results = self.get_connection_prod().search(index=settings.RAW_PAPERS_INDEX, body=body)
+        results = self.get_connection_prod().search(index=ES_index_name, body=body)
         self.batch = []
         for result in results['hits']['hits']:
             if (result["_id"] == '_update'):
@@ -439,7 +439,6 @@ class ElasticSearchWrapper(Wrapper):
         """update_state(ids, state)
         Purpose: updates the extraction state of the given documents in the database
         Parameters: ids - list of documents ids, state - the int state to assignt to each document"""
-        print(ids)
         body = {
             "script": {
                 "source": "ctx._source.text_status=" + "'" + state + "'",
@@ -447,11 +446,11 @@ class ElasticSearchWrapper(Wrapper):
             },
             "query": {
                 "terms": {
-                    "paper_id": ids
+                    "_id": ids
                 }
             }
         }
-        print(body)
+        print(body['script'])
         try:
             status = self.get_connection().update_by_query(index=settings.CRAWL_META_INDEX, body=body,
                                                            request_timeout=1000, refresh=True)

@@ -75,7 +75,7 @@ if __name__ == '__main__':
         start_time = time.time()
         logPath = baseLogPath + dateFolder + 'batch' + str(batchNum)
 
-        docs = wrapper.get_document_batch()
+        docs = wrapper.get_document_batch(settings.RAW_PAPERS_INDEX)
         documentPaths = wrapper.get_document_paths()
         ids = wrapper.get_document_ids()
         #source_urls = wrapper.get_source_urls()
@@ -118,7 +118,7 @@ if __name__ == '__main__':
             except Exception as e:
                 print(e)
 
-        KeyMatcherClusterer().cluster_papers(papers)
+        KeyMatcherClusterer().cluster_papers_bm25_lsh(papers)
         wrapper.update_raw_paper_status(ids)
         numDocs += config.getint('ConnectionProperties', 'batchSize')
 
