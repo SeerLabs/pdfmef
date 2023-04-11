@@ -313,7 +313,7 @@ class ElasticSearchWrapper(Wrapper):
         results = self.get_connection_prod().search(index=settings.S2_META_INDEX, body=body)
         self.s2_batch = results['hits']['hits']
 
-    def get_document_batch(self, ES_index_name):
+    def get_document_batch_citation(self, ES_index_name):
         """Purpose: retrieves batch of documents to process from server"""
         body = {
                  "from": 0,
@@ -347,25 +347,24 @@ class ElasticSearchWrapper(Wrapper):
         return self.batch
 
     def get_document_batch_citation(self, ES_index_name):
-        """Purpose: retrieves batch of documents to process from server"""
         body = {
             "from": 0,
             "size": self.batchSize,
             "query": {
-                "term": {
-                    "has_pdf" : True
+                "multi_match": {
+                    "query": "fresh",
+                    "fields": "text_status"
                 }
             }
         }
 
-        results = self.get_connection_prod().search(index=ES_index_name, body=body)
+        results = self.get_connection().search(index=settings.CRAWL_META_INDEX, body=body)
         self.batch = []
         for result in results['hits']['hits']:
             if (result["_id"] == '_update'):
                 pass
             else:
                 self.batch.append(result)
-        return self.batch
 
     def get_batch_for_lsh_matching(self, title):
         """Purpose: retrieves batch of documents to process from server"""
