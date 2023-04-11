@@ -319,6 +319,28 @@ class ElasticSearchWrapper(Wrapper):
             "from": 0,
             "size": self.batchSize,
             "query": {
+                "multi_match": {
+                    "query": "fresh",
+                    "fields": "text_status"
+                }
+            }
+        }
+
+        results = self.get_connection_prod().search(index=ES_index_name, body=body)
+        self.batch = []
+        for result in results['hits']['hits']:
+            if (result["_id"] == '_update'):
+                pass
+            else:
+                self.batch.append(result)
+        return self.batch
+
+    def get_document_batch_citation(self, ES_index_name):
+        """Purpose: retrieves batch of documents to process from server"""
+        body = {
+            "from": 0,
+            "size": self.batchSize,
+            "query": {
                 "term": {
                     "has_pdf" : True
                 }

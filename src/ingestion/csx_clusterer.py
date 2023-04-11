@@ -156,16 +156,25 @@ class KeyMatcherClusterer(CSXClusterer):
 
     def cluster_papers(self, papers: List[Cluster]):
         for paper in papers:
-            self.create_new_paper(paper)
+            self.create_new_paper_raw(paper)
             #self.cluster_paper_with_bm25_lsh(paper)
 
     def cluster_papers_bm25_lsh(self, papers: List[Cluster]):
         for paper in papers:
             self.cluster_paper_with_bm25_lsh(paper)
 
-    def create_new_paper(self, paper: Cluster):
+    def create_new_paper_raw(self, paper: Cluster):
         try:
             paper.save(using=self.elastic_service.get_connection())
+        except Exception as e:
+            print("failed creating new paper for paper id: "+paper.paper_id+" with error: "+e.info)
+           #print(""e)
+           #exit()
+
+
+    def create_new_paper(self, paper: Cluster):
+        try:
+            paper.save(using=self.elastic_service.get_connection(), index=settings.CLUSTERS_INDEX)
         except Exception as e:
             print("failed creating new paper for paper id: "+paper.paper_id+" with error: "+e.info)
            #print(""e)
@@ -208,7 +217,7 @@ class KeyMatcherClusterer(CSXClusterer):
         except Exception:
             pass
         try:
-            matched_cluster.save(using=self.elastic_service.get_connection())
+            matched_cluster.save(using=self.elastic_service.get_connection(), index=settings.CLUSTERS_INDEX)
         except Exception as e:
             print("Exception occurred while merging with an existing cluster with error message: "+ e)
 

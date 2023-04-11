@@ -74,7 +74,7 @@ if __name__ == '__main__':
         start_time = time.time()
         logPath = baseLogPath + dateFolder + 'batch' + str(batchNum)
 
-        wrapper.get_document_batch(settings.CLUSTERS_INDEX)
+        wrapper.get_document_batch_citation(settings.CLUSTERS_INDEX)
         documentPaths = wrapper.get_document_paths()
         ids = wrapper.get_document_ids()
         #source_urls = wrapper.get_source_urls()
@@ -94,7 +94,7 @@ if __name__ == '__main__':
                 prefixes.append(id)
                 #print(outputPaths)
                 papers = CSXExtractorImpl().extract_citations(output_path, id)
-                KeyMatcherClusterer().cluster_papers(papers)
+                KeyMatcherClusterer().cluster_papers_bm25_lsh(papers)
             except Exception:
                 print('error while ingesting file---->', output_path)
                 pass
