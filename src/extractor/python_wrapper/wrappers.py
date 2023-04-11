@@ -346,7 +346,7 @@ class ElasticSearchWrapper(Wrapper):
                 self.batch.append(result)
         return self.batch
 
-    def get_document_batch_citation(self, ES_index_name):
+    def get_document_batch(self, ES_index_name):
         body = {
             "from": 0,
             "size": self.batchSize,
