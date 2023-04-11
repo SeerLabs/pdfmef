@@ -359,7 +359,7 @@ class ElasticSearchWrapper(Wrapper):
             }
         }
 
-        results = self.get_connection_prod().search(settings.RAW_PAPERS_INDEX, body=body)
+        results = self.get_connection_prod().search(index=settings.RAW_PAPERS_INDEX, body=body)
         self.batch = []
         for result in results['hits']['hits']:
             if (result["_id"] == '_update'):
