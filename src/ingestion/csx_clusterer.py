@@ -189,7 +189,11 @@ class KeyMatcherClusterer(CSXClusterer):
            except Exception:
             pass
            resp = Cluster.search(using=self.elastic_service.get_connection()).filter("term", _id=matched_cluster_id[0])
-           matched_cluster = resp.execute()[0]
+           matched_cluster = resp.execute()
+           if matched_cluster and len(merge_with_existing_cluster) > 0:
+            matched_cluster = matched_cluster[0]
+           else:
+            return
            #print("hereeeee")
            #print(matched_cluster.paper_id)
            #matched_cluster = Cluster.get(using=self.elastic_service.get_connection(), id = matched_cluster_id)
