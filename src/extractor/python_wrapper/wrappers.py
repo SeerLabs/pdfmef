@@ -442,7 +442,7 @@ class ElasticSearchWrapper(Wrapper):
         """Purpose: parses the ids of all documents in a batch
             Returns: list of string ids"""
         ids = []
-
+        print(self.batch)
         for element in self.batch:
             try:
                 ids.append(element['_source']['paper_id'][0])
