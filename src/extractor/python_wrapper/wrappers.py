@@ -346,6 +346,27 @@ class ElasticSearchWrapper(Wrapper):
                 self.batch.append(result)
         return self.batch
 
+
+    def get_cluster_document_batch(self):
+        body = {
+            "from": 0,
+            "size": self.batchSize,
+            "query": {
+                "multi_match": {
+                    "query": "fresh",
+                    "fields": "text_status"
+                }
+            }
+        }
+
+        results = self.get_connection_prod().search(settings.RAW_PAPERS_INDEX, body=body)
+        self.batch = []
+        for result in results['hits']['hits']:
+            if (result["_id"] == '_update'):
+                pass
+            else:
+                self.batch.append(result)
+
     def get_document_batch(self, ES_index_name):
         body = {
             "from": 0,
@@ -358,7 +379,7 @@ class ElasticSearchWrapper(Wrapper):
             }
         }
 
-        results = self.get_connection().search(index=settings.CRAWL_META_INDEX, body=body)
+        results = self.get_connection().search(ES_index_name, body=body)
         self.batch = []
         for result in results['hits']['hits']:
             if (result["_id"] == '_update'):

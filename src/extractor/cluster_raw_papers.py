@@ -75,7 +75,7 @@ if __name__ == '__main__':
         start_time = time.time()
         logPath = baseLogPath + dateFolder + 'batch' + str(batchNum)
 
-        docs = wrapper.get_document_batch(settings.RAW_PAPERS_INDEX)
+        docs = wrapper.get_cluster_document_batch()
         documentPaths = wrapper.get_document_paths()
         ids = wrapper.get_document_ids()
         #source_urls = wrapper.get_source_urls()
