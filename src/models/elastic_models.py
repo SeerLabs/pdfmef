@@ -65,7 +65,7 @@ class Cluster(Document):
     source_url = Keyword(multi=True)
 
     class Index:
-        name = settings.RAW_PAPER_INDEX
+        name = settings.RAW_PAPERS_INDEX
 
     def add_cited_by(self, paper_id: str):
         if not self.__contains__("cited_by"):
