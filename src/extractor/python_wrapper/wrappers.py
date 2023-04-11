@@ -328,7 +328,7 @@ class ElasticSearchWrapper(Wrapper):
                        },
                        {
                          "multi_match": {
-                           "query": "fresh",
+                           "query": "done",
                            "fields": "text_status"
                          }
                        }
