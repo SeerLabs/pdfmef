@@ -323,7 +323,7 @@ class ElasticSearchWrapper(Wrapper):
                      "must": [
                        {
                          "term": {
-                           "has_pdf": true
+                           "has_pdf": True
                          }
                        },
                        {
