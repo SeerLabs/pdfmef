@@ -474,7 +474,7 @@ class ElasticSearchWrapper(Wrapper):
             Returns: list of string ids"""
         ids = []
         for element in self.batch:
-            ids.append(element['_source'][paper_id][0])
+            ids.append(element['_source']['paper_id'][0])
         return ids
 
     def get_source_urls(self):
