@@ -95,10 +95,12 @@ if __name__ == '__main__':
                 #print(outputPaths)
                 papers = CSXExtractorImpl().extract_citations(output_path, id)
                 KeyMatcherClusterer().cluster_papers_bm25_lsh(papers)
+
             except Exception:
                 print('error while ingesting file---->', output_path)
                 pass
 
+        wrapper.update_citation_status(ids)
         numDocs += config.getint('ConnectionProperties', 'batchSize')
 
         if numDocs >= maxDocs:

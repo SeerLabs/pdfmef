@@ -316,15 +316,26 @@ class ElasticSearchWrapper(Wrapper):
     def get_document_batch(self, ES_index_name):
         """Purpose: retrieves batch of documents to process from server"""
         body = {
-            "from": 0,
-            "size": self.batchSize,
-            "query": {
-                "multi_match": {
-                    "query": "fresh",
-                    "fields": "text_status"
-                }
-            }
-        }
+                 "from": 0,
+                 "size": self.batchSize,
+                 "query": {
+                   "bool": {
+                     "must": [
+                       {
+                         "term": {
+                           "has_pdf": true
+                         }
+                       },
+                       {
+                         "multi_match": {
+                           "query": "fresh",
+                           "fields": "text_status"
+                         }
+                       }
+                     ]
+                   }
+                 }
+               }
 
         results = self.get_connection_prod().search(index=ES_index_name, body=body)
         self.batch = []
@@ -418,6 +429,15 @@ class ElasticSearchWrapper(Wrapper):
                 }
             }
             response = self.get_connection_prod().update(index=settings.RAW_PAPERS_INDEX, id=doc_id, body=source_to_update)
+
+    def update_citation_status(self, doc_ids):
+        for doc_id in doc_ids:
+            source_to_update = {
+                "doc" : {
+                    "text_status" : "done"
+                }
+            }
+            response = self.get_connection_prod().update(index=settings.CLUSTERS_INDEX, id=doc_id, body=source_to_update)
 
     def get_document_ids(self):
         """Purpose: parses the ids of all documents in a batch
