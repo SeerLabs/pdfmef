@@ -77,6 +77,7 @@ if __name__ == '__main__':
         wrapper.get_document_batch_citation(settings.CLUSTERS_INDEX)
         documentPaths = wrapper.get_document_paths()
         ids = wrapper.get_citation_document_ids()
+        doc_ids = wrapper.get_document_ids()
         #source_urls = wrapper.get_source_urls()
         if len(ids) == 0:
             print("---no files to extractor hence exiting---")
@@ -100,7 +101,7 @@ if __name__ == '__main__':
                 print('error while ingesting file---->', output_path)
                 pass
 
-        wrapper.update_citation_status(ids)
+        wrapper.update_citation_status(doc_ids)
         numDocs += config.getint('ConnectionProperties', 'batchSize')
 
         if numDocs >= maxDocs:
