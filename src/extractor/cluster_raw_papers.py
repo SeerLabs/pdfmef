@@ -88,6 +88,7 @@ if __name__ == '__main__':
         prefixes = []
         print("batch processing-- starting pdfmef extraction and ingestion for size: "+str(len(ids)))
         papers = []
+        print(len(docs))
         for doc in docs:
             try:
                 #print(doc)
