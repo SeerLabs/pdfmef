@@ -76,7 +76,7 @@ if __name__ == '__main__':
 
         wrapper.get_document_batch_citation(settings.CLUSTERS_INDEX)
         documentPaths = wrapper.get_document_paths()
-        ids = wrapper.get_document_ids()
+        ids = wrapper.get_citation_document_ids()
         #source_urls = wrapper.get_source_urls()
         if len(ids) == 0:
             print("---no files to extractor hence exiting---")

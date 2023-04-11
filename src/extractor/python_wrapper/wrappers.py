@@ -469,7 +469,7 @@ class ElasticSearchWrapper(Wrapper):
             ids.append(element['_id'])
         return ids
 
-    def get_document_ids(self):
+    def get_citation_document_ids(self):
         """Purpose: parses the ids of all documents in a batch
             Returns: list of string ids"""
         ids = []
