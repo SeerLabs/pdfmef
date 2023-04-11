@@ -1,5 +1,5 @@
-RAW_PAPERS_INDEX = "citeseerx_papers_all"
-CLUSTERS_INDEX = "citeseerx_cluster_papers"
+RAW_PAPERS_INDEX = "citeseerx_papers_all_test"
+CLUSTERS_INDEX = "citeseerx_cluster_papers_test"
 ACL_CLUSTER_ORIGINAL_INDEX = "acl_metadata_bib2"
 KEYMAP_INDEX = "citeseerx_all_papers_keymap"
 PUB_INFO_TYPE = "pub_info"
