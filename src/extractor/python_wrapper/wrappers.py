@@ -469,6 +469,14 @@ class ElasticSearchWrapper(Wrapper):
             ids.append(element['_id'])
         return ids
 
+    def get_document_ids(self):
+        """Purpose: parses the ids of all documents in a batch
+            Returns: list of string ids"""
+        ids = []
+        for element in self.batch:
+            ids.append(element['_source'][paper_id][0])
+        return ids
+
     def get_source_urls(self):
         urls = []
         for entry in self.batch:
