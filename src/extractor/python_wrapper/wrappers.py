@@ -368,7 +368,7 @@ class ElasticSearchWrapper(Wrapper):
                 self.batch.append(result)
         return self.batch
 
-    def get_document_batch(self, ES_index_name):
+    def get_document_batch(self):
         body = {
             "from": 0,
             "size": self.batchSize,
@@ -380,7 +380,7 @@ class ElasticSearchWrapper(Wrapper):
             }
         }
 
-        results = self.get_connection().search(ES_index_name, body=body)
+        results = self.get_connection().search(index=settings.CRAWL_META_INDEX, body=body)
         self.batch = []
         for result in results['hits']['hits']:
             if (result["_id"] == '_update'):
