@@ -74,7 +74,7 @@ if __name__ == '__main__':
         start_time = time.time()
         logPath = baseLogPath + dateFolder + 'batch' + str(batchNum)
 
-        wrapper.get_document_batch_citation(settings.CLUSTERS_INDEX)
+        wrapper.get_document_batch_citation()
         documentPaths = wrapper.get_document_paths()
         ids = wrapper.get_citation_document_ids()
         doc_ids = wrapper.get_document_ids()

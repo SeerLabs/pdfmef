@@ -313,7 +313,7 @@ class ElasticSearchWrapper(Wrapper):
         results = self.get_connection_prod().search(index=settings.S2_META_INDEX, body=body)
         self.s2_batch = results['hits']['hits']
 
-    def get_document_batch_citation(self, ES_index_name):
+    def get_document_batch_citation(self):
         """Purpose: retrieves batch of documents to process from server"""
         body = {
                  "from": 0,
@@ -337,7 +337,7 @@ class ElasticSearchWrapper(Wrapper):
                  }
                }
 
-        results = self.get_connection_prod().search(index=ES_index_name, body=body)
+        results = self.get_connection_prod().search(index=settings.CLUSTERS_INDEX, body=body)
         self.batch = []
         for result in results['hits']['hits']:
             if (result["_id"] == '_update'):
