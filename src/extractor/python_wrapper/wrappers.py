@@ -374,7 +374,7 @@ class ElasticSearchWrapper(Wrapper):
             "size": self.batchSize,
             "query": {
                 "multi_match": {
-                    "query": "fresh",
+                    "query": "fail",
                     "fields": "text_status"
                 }
             }
