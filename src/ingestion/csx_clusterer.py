@@ -190,7 +190,7 @@ class KeyMatcherClusterer(CSXClusterer):
             pass
            resp = Cluster.search(using=self.elastic_service.get_connection()).filter("term", _id=matched_cluster_id[0])
            matched_cluster = resp.execute()
-           if matched_cluster
+           if matched_cluster:
             matched_cluster = matched_cluster[0]
             print("here inside if of matched_cluster----------->")
            else:
