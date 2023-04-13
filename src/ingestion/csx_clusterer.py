@@ -16,7 +16,7 @@ from collections import Counter
 from typing import List
 from utils.text_utils import remove_accents, strip_punctuation
 from ingestion.interfaces import CSXClusterer
-from models.elastic_models import Author, Cluster, KeyMap
+from models.elastic_models import Author, Cluster, Cluster_new, KeyMap
 from nltk.stem import PorterStemmer
 from nltk.corpus import stopwords
 import logging
