@@ -188,6 +188,7 @@ class KeyMatcherClusterer(CSXClusterer):
             print('current document id--->', current_paper.paper_id)
            except Exception:
             pass
+           cluster = Cluster(index=settings.CLUSTERS_INDEX)
            resp = Cluster.search(using=self.elastic_service.get_connection()).filter("term", _id=matched_cluster_id[0])
            matched_cluster = resp.execute()
            print(matched_cluster)
