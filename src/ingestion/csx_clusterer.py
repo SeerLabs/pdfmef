@@ -211,11 +211,7 @@ class KeyMatcherClusterer(CSXClusterer):
         if current_paper.has_pdf:
             matched_cluster.has_pdf = True
             #matched_cluster.source_url = current_paper.source_url
-            print("adding here")
-            print(current_paper.paper_id[0])
-            print(matched_cluster.paper_id)
             matched_cluster.add_paper_id(current_paper.paper_id[0])
-            print(matched_cluster.paper_id)
 
         try:
             if not current_paper.is_citation and current_paper.source_url[0] not in matched_cluster.source_url:
