@@ -170,8 +170,6 @@ class CSXExtractorImpl(CSXExtractor):
                 else:
                     citation.title = ''
 
-                print("citation title is -->",citation.title)
-
                 # Citation Pub Info
                 if citation_node.find('./monogr') is not None:
                     citation.pub_info = cls.extract_pub_info_from_bibil_node(citation_node)
