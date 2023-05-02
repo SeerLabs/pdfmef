@@ -359,7 +359,7 @@ class ElasticSearchWrapper(Wrapper):
             }
         }
 
-        results = self.get_connection_prod().search(index=settings.RAW_PAPERS_INDEX, body=body)
+        results = self.get_connection_prod().search(index=settings.RAW_PAPERS_INDEX, body=body,  request_timeout=1000)
         self.batch = []
         for result in results['hits']['hits']:
             if (result["_id"] == '_update'):
@@ -411,7 +411,7 @@ class ElasticSearchWrapper(Wrapper):
                           }
                         }
                    }
-            results = self.get_connection_prod().search(index=settings.CLUSTERS_INDEX, body=body)
+            results = self.get_connection_prod().search(index=settings.CLUSTERS_INDEX, body=body, request_timeout=1000)
             matching_docs = results['hits']['hits']
         except Exception as ex:
             pass
@@ -430,7 +430,7 @@ class ElasticSearchWrapper(Wrapper):
             }
         except Exception:
             pass
-        results = self.get_connection_prod().search(index=settings.CLUSTERS_INDEX, body=body)
+        results = self.get_connection_prod().search(index=settings.CLUSTERS_INDEX, body=body, request_timeout=1000)
         self.s2_batch = results['hits']['hits']
         return self.s2_batch
 
