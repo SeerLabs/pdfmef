@@ -1,6 +1,6 @@
-**PDFMEF**
+## PDFMEF
 
-Running steps
+# Running steps
 
 Pull the latest docker image from the docker hub repository using the below command
 
