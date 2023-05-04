@@ -66,19 +66,19 @@ before running the extraction, grobid service needs to be running
 
 to run grobid service create a new docker container using the below
 
-docker run -d -it --net=host -v /data/mxa5887/sfk5555/:/pdfmef-code/sfk5555 -v /data/mxa5887/pdfmef/:/pdfmef-code -v /mnt:/mnt citeseerx/pdfmef:latest bash
+- docker run -d -it --net=host -v /data/mxa5887/sfk5555/:/pdfmef-code/sfk5555 -v /data/mxa5887/pdfmef/:/pdfmef-code -v /mnt:/mnt citeseerx/pdfmef:latest bash
 
 now check the container id of the above container using docker ps command and use it to exec into the container using the below command
 
-docker exec -it <container_id> bash
+- docker exec -it <container_id> bash
 
 now cd to /grobid/grobid directory in the container and run the below command
 
-nohup ./gradlew run&
+- nohup ./gradlew run&
 
 check if the grobid service is running using the below command
 
-wget localhost:8070
+- wget localhost:8070
 
 once the grobid service is running on localhost port 8080 then run extraction
 
@@ -87,32 +87,29 @@ common errors and how to resolve
 
 1.	Extraction fails due to grobid calls
 
-Check if grobid service is running using the below command
-
-wget localhost:8070
+- Check if grobid service is running using the command -> wget localhost:8070
+	
 	if grobid service is down then rerun the grobid service using the below steps
 
+- 	cd to /grobid/grobid directory in the container and run the below command
+- 	nohup ./gradlew run&
+- 	check if the grobid service is running using the below command
 
-•	cd to /grobid/grobid directory in the container and run the below command
-•	nohup ./gradlew run&
-•	check if the grobid service is running using the below command
-wget localhost:8070
+-  wget localhost:8070
 
 2.	Elastic server is down
 
-Check if the elastic server is up by running the below command
-
-wget <elastic-ip>:5601
+- Check if the elastic server is up by running the command -> wget <elastic-ip>:5601
 
 if the elastic server is down then request IT help desk team to restart the elastic server
 
 3.	disk issue 
 
-look for disk errors in the logs and try to clean up some space for the extraction to run
+- Look for disk errors in the logs and try to clean up some space for the extraction to run
 
 4.	the extraction could also fail bcoz the storage drives where the crawled pdfs are stored are not mounted properly
 
-go to the mounted folder inside /mnt and verify if the files are accessible if they are not then request IT help desk team to mount the drive.
+- Go to the mounted folder inside /mnt and verify if the files are accessible if they are not then request IT help desk team to mount the drive.
 
 ## Python Libs ##
    * [extraction framework python library][1] (on python path (run `python setup.py install --user` from its root directory)
