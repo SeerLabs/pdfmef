@@ -1,58 +1,108 @@
-# PDFMEF
-Multi-Entity Extraction Framework for Academic Documents (with default extraction tools)
+PDFMEF
 
-# Usage #
-1. Set the appropriate settings in /src/extractor/python_wrapper/properties.config and pdfmef/src/extractor/csxextract/config.py
-2. Go to /src/extractor/ and run
+Running steps
 
-    python main.py
-    
-# Dependencies (With Docker Image) #
-The dockerfile in /docker enables setting up base image based on Ubuntu 18.04. While most of the required dependencies will
-be installed by this method, there will still be some manual configuration needed to get the extractor running. Refer [Dependencies](#dependencies) section for more details. Below are the required commands to get the docker setup running.
+Pull the latest docker image from the docker hub repository using the below command
 
-Change to `docker` directory
-    
-    cd docker
-Build the Docker Image from dockerfile using 
-    
-    docker build -t pdfmef-image:latest .
-Spin up a container from the above image
+docker pull citeseerx/pdfmef:latest
 
-    docker run -it -p 8888:8888 -v <shared-dir-host>:<shared-dir-container> pdfmef-image bash
+now run the docker image as a container using the below command
 
-The above command will run an ubuntu base image with most of the required dependencies pre-installed. All the code will be found in folder `/pdfmef-code` within container. Additionally, one can share ports using `-p` option and directory using `-v` option as depicted in the above command. Here `<shared-dir-host>` represents absolute path of shared directory in the host and `<shared-dir-container>` is path of shared directory in container. 
+docker run -d -it --net=host -v /data/mxa5887/sfk5555/:/pdfmef-code/sfk5555 -v /data/mxa5887/pdfmef/:/pdfmef-code -v /mnt:/mnt citeseerx/pdfmef:latest bash
 
-# Dependencies #
+now check the container id of the above container using docker ps command and use it to exec into the container using the below command
 
-## Extraction Framework ##
+docker exec -it <container_id> bash
 
-### Prerequisites ###
-* Python 2.7 (make sure to use pip2.7)
-* [subprocess32 package](https://pypi.python.org/pypi/subprocess32) (`pip install subprocess32 --user`)
-* xmltodict (`pip install xmltodict --user`)
-* MySQLdb (`pip install mysqldb-rich`)
-* defusedxml (`pip install defusedxml`)
-* requests (`pip install requests`)
+now cd to /pdfmef/src/ directory in the container
+
+check the git branch that the pdfmef repo is on
+
+checkout the dev_latest git branch using the below command
+
+git checkout dev_latest
+
+below are the command to run extraction, clustering and citation ingestion
+
+always make sure to run extraction, clustering and citation ingestion on different docker containers
+
+to run raw paper extraction without clustering or citation link use the below command
+
+python -m extractor.run_text_ingestion
+
+you can use nohup to run the process in the background
+
+to run clustering on the raw papers extracted use the below command
+
+python -m extractor.cluster_raw_papers
+
+to extract citations for the extracted clusters use the below command
+
+python -m extractor.citations_ingest
+
+below are the dependencies for PDFMEF
+
+elasticsearch==7.10.0
+elasticsearch-dsl~=7.3.0
+defusedxml==0.6.0
+requests==2.25.0
+xmltodict==0.12.0
+subprocess32==3.5.4
+PyPDF2==1.26.0
 
 
+before running the extraction, grobid service needs to be running 
 
-### Installation ###
-1. Clone this repo to your local machine anywhere
-2. From the project src directory, run `python setup.py install --user`
+to run grobid service create a new docker container using the below
 
-(The --user option is optional, I just like to 
-install packages only for my user account personally)
+docker run -d -it --net=host -v /data/mxa5887/sfk5555/:/pdfmef-code/sfk5555 -v /data/mxa5887/pdfmef/:/pdfmef-code -v /mnt:/mnt citeseerx/pdfmef:latest bash
 
-### Running the unittests ###
+now check the container id of the above container using docker ps command and use it to exec into the container using the below command
 
-Run, from the extraction framework root directory:
+docker exec -it <container_id> bash
 
-    python -m extraction.test.__main__
+now cd to /grobid/grobid directory in the container and run the below command
 
-If using Python 2.7 you can run more simply:
+nohup ./gradlew run&
 
-    python -m extraction.test
+check if the grobid service is running using the below command
+
+wget localhost:8070
+
+once the grobid service is running on localhost port 8080 then run extraction
+
+
+common errors and how to resolve
+
+1.	Extraction fails due to grobid calls
+
+Check if grobid service is running using the below command
+
+wget localhost:8070
+	if grobid service is down then rerun the grobid service using the below steps
+
+
+•	cd to /grobid/grobid directory in the container and run the below command
+•	nohup ./gradlew run&
+•	check if the grobid service is running using the below command
+wget localhost:8070
+
+2.	Elastic server is down
+
+Check if the elastic server is up by running the below command
+
+wget <elastic-ip>:5601
+
+if the elastic server is down then request IT help desk team to restart the elastic server
+
+3.	disk issue 
+
+look for disk errors in the logs and try to clean up some space for the extraction to run
+
+4.	the extraction could also fail bcoz the storage drives where the crawled pdfs are stored are not mounted properly
+
+go to the mounted folder inside /mnt and verify if the files are accessible if they are not then request IT help desk team to mount the drive.
+![image](https://user-images.githubusercontent.com/11198090/236300190-c72d8c88-c61a-4d04-8174-6546c5e6707d.png)
 
 ## Python Libs ##
    * [extraction framework python library][1] (on python path (run `python setup.py install --user` from its root directory)
