@@ -2,15 +2,15 @@
 
 Pull the latest docker image from the docker hub repository using the below command
 
-docker pull citeseerx/pdfmef:latest
+- docker pull citeseerx/pdfmef:latest
 
 now run the docker image as a container using the below command
 
-docker run -d -it --net=host -v /data/mxa5887/sfk5555/:/pdfmef-code/sfk5555 -v /data/mxa5887/pdfmef/:/pdfmef-code -v /mnt:/mnt citeseerx/pdfmef:latest bash
+- docker run -d -it --net=host -v /data/mxa5887/sfk5555/:/pdfmef-code/sfk5555 -v /data/mxa5887/pdfmef/:/pdfmef-code -v /mnt:/mnt citeseerx/pdfmef:latest bash
 
 now check the container id of the above container using docker ps command and use it to exec into the container using the below command
 
-docker exec -it <container_id> bash
+- docker exec -it <container_id> bash
 
 now cd to /pdfmef/src/ directory in the container
 
@@ -18,7 +18,7 @@ check the git branch that the pdfmef repo is on
 
 checkout the dev_latest git branch using the below command
 
-git checkout dev_latest
+- git checkout dev_latest
 
 below are the command to run extraction, clustering and citation ingestion
 
@@ -26,17 +26,17 @@ always make sure to run extraction, clustering and citation ingestion on differe
 
 to run raw paper extraction without clustering or citation link use the below command
 
-python -m extractor.run_text_ingestion
+- python -m extractor.run_text_ingestion
 
 you can use nohup to run the process in the background
 
 to run clustering on the raw papers extracted use the below command
 
-python -m extractor.cluster_raw_papers
+- python -m extractor.cluster_raw_papers
 
 to extract citations for the extracted clusters use the below command
 
-python -m extractor.citations_ingest
+- python -m extractor.citations_ingest
 
 # PDFMEF Dependencies
 
