@@ -115,7 +115,6 @@ look for disk errors in the logs and try to clean up some space for the extracti
 4.	the extraction could also fail bcoz the storage drives where the crawled pdfs are stored are not mounted properly
 
 go to the mounted folder inside /mnt and verify if the files are accessible if they are not then request IT help desk team to mount the drive.
-![image](https://user-images.githubusercontent.com/11198090/236300190-c72d8c88-c61a-4d04-8174-6546c5e6707d.png)
 
 ## Python Libs ##
    * [extraction framework python library][1] (on python path (run `python setup.py install --user` from its root directory)
