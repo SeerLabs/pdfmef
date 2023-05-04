@@ -40,15 +40,30 @@ to extract citations for the extracted clusters use the below command
 
 python -m extractor.citations_ingest
 
-below are the dependencies for PDFMEF
+# PDFMEF Dependencies
 
-elasticsearch==7.10.0
-elasticsearch-dsl~=7.3.0
-defusedxml==0.6.0
-requests==2.25.0
-xmltodict==0.12.0
-subprocess32==3.5.4
-PyPDF2==1.26.0
+PDFMEF is a Python-based application for processing and analyzing PDF files. The following dependencies are required to run PDFMEF successfully:
+
+- `elasticsearch==7.10.0`
+- `elasticsearch-dsl~=7.3.0`
+- `defusedxml==0.6.0`
+- `requests==2.25.0`
+- `xmltodict==0.12.0`
+- `subprocess32==3.5.4`
+- `PyPDF2==1.26.0`
+
+## Dependency Details
+
+- `elasticsearch` is used as the main database for storing and querying PDFMEF data.
+- `elasticsearch-dsl` is a high-level library for querying Elasticsearch.
+- `defusedxml` is a library for parsing XML files safely.
+- `requests` is used to send HTTP requests to external APIs.
+- `xmltodict` is a library for parsing XML files and converting them to Python dictionaries.
+- `subprocess32` is a backport of the `subprocess` module from Python 3 to Python 2.x.
+- `PyPDF2` is a library for working with PDF files in Python.
+
+Make sure to install these dependencies before running PDFMEF. You can use a package manager like pip to install them automatically:
+
 
 
 before running the extraction, grobid service needs to be running 
