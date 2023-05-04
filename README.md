@@ -1,6 +1,6 @@
 ## PDFMEF
 
-# Running steps
+## Running steps
 
 Pull the latest docker image from the docker hub repository using the below command
 
@@ -63,8 +63,6 @@ PDFMEF is a Python-based application for processing and analyzing PDF files. The
 - `PyPDF2` is a library for working with PDF files in Python.
 
 Make sure to install these dependencies before running PDFMEF. You can use a package manager like pip to install them automatically:
-
-
 
 before running the extraction, grobid service needs to be running 
 
