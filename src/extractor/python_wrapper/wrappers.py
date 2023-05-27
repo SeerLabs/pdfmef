@@ -359,6 +359,7 @@ class ElasticSearchWrapper(Wrapper):
             }
         }
 
+        print(body)
         results = self.get_connection_prod().search(index=settings.RAW_PAPERS_INDEX, body=body,  request_timeout=1000)
         self.batch = []
         for result in results['hits']['hits']:
