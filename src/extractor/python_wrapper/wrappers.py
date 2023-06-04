@@ -350,7 +350,7 @@ class ElasticSearchWrapper(Wrapper):
     def get_cluster_document_batch(self):
         body = {
             "from": 0,
-            "size": 800,
+            "size": 1000,
             "query": {
                 "multi_match": {
                     "query": "fresh",
