@@ -41,7 +41,10 @@ Note: You can also copy the entire mapping from the existing index and use it to
 2. Go to /src/extractor/ and run
 
     python main.py
-    
+
+3. Delete a paper from an index. Use the script under `script/delete_papers.py`.
+
+       
 # Dependencies (With Docker Image) #
 The dockerfile in /docker enables setting up base image based on Ubuntu 18.04. While most of the required dependencies will
 be installed by this method, there will still be some manual configuration needed to get the extractor running. Refer [Dependencies](#dependencies) section for more details. Below are the required commands to get the docker setup running.
