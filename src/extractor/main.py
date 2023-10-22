@@ -24,7 +24,7 @@ def read_results(resultsFilePath, logDirPath):
     resultDict = {}
     resultsFilePath = utils.expand_path(resultsFilePath)
     resultsFile = open(resultsFilePath, 'r')
-    log = open(logDirPath + resultsFilePath[resultsFilePath.rfind('/'):], 'wa')
+    log = open(logDirPath + resultsFilePath[resultsFilePath.rfind('/'):], 'a')
     for line in resultsFile:
         log.write(line)
         finIndex = line.find('finished')
@@ -53,7 +53,7 @@ def on_batch_finished(resultsFileDirectory, logFilePath, wrapper, states):
     results = read_results(resultsFilePath, logFilePath)
     successes = []
     failures = []
-    for key, value in results.iteritems():
+    for key, value in results.items():
         if value:
             successes.append(key)
         else:
@@ -100,7 +100,7 @@ def get_extraction_runner(modules):
 if __name__ == '__main__':
     #initialize configurations
     config = ConfigParser.ConfigParser()
-    config.read('python_wrapper/properties.config')
+    config.read('extractor/python_wrapper/properties.config')
     connectionProps = dict(config.items('ConnectionProperties'))
     states = dict(config.items('States'))
     modules = dict(config.items('Modules'))
@@ -155,7 +155,7 @@ if __name__ == '__main__':
             for path in documentPaths:
                 files.append(baseDocumentPath + path)
             #print(files)
-            wrapper.update_state(ids, states['extracting'])
+            #wrapper.update_state(ids, states['extracting'])
             runner.run_from_file_batch(files, outputPaths, num_processes=numProcesses, file_prefixes=prefixes)
             on_batch_finished(logPath, logFilePath, wrapper, states)
 

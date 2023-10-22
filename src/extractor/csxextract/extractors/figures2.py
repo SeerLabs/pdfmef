@@ -13,11 +13,14 @@ import requests
 import re
 import shutil
 import glob
+import logging
 
+logger = logging.getLogger(__name__)
 
 # Returns a plain text version of a PDF file
 class PDFFigures2Extractor(Extractor):
-   dependencies = frozenset([filters.AcademicPaperFilter])
+   #dependencies = frozenset([filters.AcademicPaperFilter])
+   dependencies = frozenset([])
    result_file_name = '.figures'
 
    def extract(self, data, dependency_results):
@@ -25,16 +28,20 @@ class PDFFigures2Extractor(Extractor):
       results_dir = tempfile.mkdtemp() + '/'
 
       try:
-         command_args = ['java', '-jar', config.PDFFIGURES2_JAR, file_path, '-m', results_dir, '-d', results_dir]
-         status, stdout, stderr = extraction.utils.external_process(command_args, timeout=30)
+         command_args = ['java', '-jar', '-Xms2g','-Xmx5g', config.PDFFIGURES2_JAR, file_path, '-m', results_dir, '-d', results_dir]
+         print("inside pdf figure extractor")
+         status, stdout, stderr = extraction.utils.external_process(command_args, timeout=25)
       except subprocess.TimeoutExpired:
-	 shutil.rmtree(results_dir)
+         shutil.rmtree(results_dir)
+         logger.error('PDFFigures2 timed out while processing document')
          raise RunnableError('PDFFigures2 timed out while processing document')
       finally:
          os.remove(file_path)
 
       if status != 0:
-         raise RunnableError('PDFFigures22 Failure. Possible error:\n' + stderr)
+         logger.error('PDFFigures22 Failure.')
+         return None
+         #raise RunnableError('PDFFigures22 Failure. Possible error:\n' + stderr)
 
       # Handle png results
       files = {}

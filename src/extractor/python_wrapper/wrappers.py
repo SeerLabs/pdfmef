@@ -1,10 +1,15 @@
+from elasticsearch import Elasticsearch
 from xml.dom.minidom import parseString
-import urllib2 as url
-import ConfigParser
-import MySQLdb as mdb
+# import urllib2 as url
+from urllib.request import urlopen
+# import MySQLdb as mdb
 import utils
 import os
 import sys
+
+sys.path.append('../src')
+import settings
+
 
 class Wrapper:
 
@@ -83,7 +88,6 @@ class FileSystemWrapper(Wrapper):
         paths = []
         for docPath in self.batch:
             paths.append(docPath.replace(self.rootPath, ''))
-        #print("file_system"+paths)
         return paths
 
     #update_state(ids, state)
@@ -105,16 +109,17 @@ class FileSystemWrapper(Wrapper):
 #Parameters: hostName - hostname that database is on, dbName - name of database,
 #                       username, password
 #Returns: MySQLConnection object
+
 def get_connection(hostName, dbName, username, password, port):
-    try:
-        #con = mdb.connect(user=username, passwd=password, host=hostName, db=dbName)
-        con = mdb.connect(hostName, username, password, dbName, port)
-        return con
-    except mdb.Error, e:
-        print "Error %d: %s" % (e.args[0],e.args[1])
-        sys.exit(1)
-    print 'error'
-    return None
+    pass
+    # try:
+    #     #con = mdb.connect(user=username, passwd=password, host=hostName, db=dbName)
+    #     con = mdb.connect(hostName, username, password, dbName, port)
+    #     return con
+    # except Exception as e:
+    #     print ("Error %d: %s" % (e.args[0],e.args[1]))
+    #     sys.exit(1)
+
 
 class MySQLWrapper(Wrapper):
     'Wrapper using mySQL API'
@@ -125,7 +130,7 @@ class MySQLWrapper(Wrapper):
     #               states - dict that holds map of state values
     def __init__(self, config, states):
         self.connection = get_connection(config['host'], config['database'], config['username'], config['password'], int(config['port']))
-        self.batchSize = int(config['batchsize'])
+        self.batchSize = int(config['batchSize'])
         self.startID = config['startid']
         self.states = states
         self.batch = None   #stores a list of document ids
@@ -187,12 +192,13 @@ class MySQLWrapper(Wrapper):
             if len(idString) != 0:
                 idString += ','
             idString += str(doc)
-        
+
         statement = statement.format(state, idString)
-        #print(statement)    
+        #print(statement)
         cursor.execute(statement)
 
         self.connection.commit()
+
 
 class HTTPWrapper(Wrapper):
     'Wrapper using the RESTful API'
@@ -211,7 +217,7 @@ class HTTPWrapper(Wrapper):
     #Purpose: retrieves batch of documents to process from server
     def get_document_batch(self):
         request = 'http://' + self.host + '/api/getdocs.xml?key=' + self.key + '&n=' + str(self.batchSize)
-        responseString = url.urlopen(request).read()
+        responseString = urlopen(request).read()
         response = parseString(responseString)
         docs = response.getElementsByTagName('doc')
         self.batch = docs
@@ -247,11 +253,206 @@ class HTTPWrapper(Wrapper):
         if len(idString) > 0:
             idString = idString[:-1]
             request = 'http://' + self.host + '/api/setdocs.xml?key=' + self.key + '&ids=' + idString + '&state=' + str(state)
-            response = url.urlopen(request).getcode()
+            response = urlopen(request).getcode()
 
     #on_stop()
     #
     #Purpose: perform necessary closing statements
-    #Behavior: nothing to do 
+    #Behavior: nothing to do
     def on_stop(self):
-        print 'closed'
+        print('closed')
+
+
+class ElasticSearchWrapper(Wrapper):
+    def __init__(self, config):
+        self.curr_index = 0
+        self.file_path_sha1_mapping = {}
+        self.file_path_source_url_map = {}
+        self.batchSize = int(config['batchsize'])
+        self.batch = None
+        self.s2_batch = None
+
+
+    def get_s2_doc_by_id(self, id):
+        body = {
+                 "query": {
+                    "term": {
+                      "id": {
+                        "value": id
+                      }
+                    }
+                  }
+               }
+        results = self.get_connection().search(index=settings.S2_META_INDEX, body=body)
+        self.s2_batch = results['hits']['hits']
+
+    def get_s2_batch_for_lsh_matching(self, author, year):
+        """Purpose: retrieves batch of documents to process from server"""
+        print("inside get_s2_batch_for_lsh_matching---> \n")
+        body = {
+                 "from": 0,
+                 "size": 1000,
+                 "query": {
+                   "bool": {
+                     "must": [
+                      {
+                          "match": {
+                            "authors.name.keyword": author
+                          }
+                      },
+                       {
+                         "term": {
+                           "year": year
+                         }
+                       }
+                     ]
+                   }
+                 }
+               }
+
+        results = self.get_connection_prod().search(index=settings.S2_META_INDEX, body=body)
+        self.s2_batch = results['hits']['hits']
+
+    def get_document_batch(self):
+        """Purpose: retrieves batch of documents to process from server"""
+        body = {
+            "from": 0,
+            "size": self.batchSize,
+            "query": {
+                "multi_match": {
+                    "query": "fresh",
+                    "fields": "text_status"
+                }
+            }
+        }
+
+        results = self.get_connection().search(index=settings.CRAWL_META_INDEX, body=body)
+        self.batch = []
+        for result in results['hits']['hits']:
+            if (result["_id"] == '_update'):
+                pass
+            else:
+                self.batch.append(result)
+
+    def get_batch_for_lsh_matching(self, title):
+        """Purpose: retrieves batch of documents to process from server"""
+
+        body = ""
+        matching_docs = []
+        try:
+            body = {
+                        "size": 100,
+                        "query":{
+                          "bool":{
+                             "should":
+                                {
+                                   "match":{
+                                      "title":{
+                                         "query": title,
+                                         "minimum_should_match":"75%"
+                                      }
+                                   }
+                                }
+                          }
+                        }
+                   }
+            results = self.get_connection_prod().search(index=settings.CLUSTERS_INDEX, body=body)
+            matching_docs = results['hits']['hits']
+        except Exception as ex:
+            pass
+        return matching_docs
+
+    def get_doc_with_id(self, doc_id):
+        body = ""
+        try:
+            body = {
+                "query": {
+                    "multi_match": {
+                        "query": doc_id,
+                        "fields": "paper_id"
+                    }
+                }
+            }
+        except Exception:
+            pass
+        results = self.get_connection_prod().search(index=settings.CLUSTERS_INDEX, body=body)
+        self.s2_batch = results['hits']['hits']
+        return self.s2_batch
+
+    def update_document_with_fields(self, doc_id, cited_by):
+        source_to_update = {
+            "doc" : {
+                "cited_by" : cited_by
+            }
+        }
+        response = self.get_connection_prod().update(index=settings.CLUSTERS_INDEX, id=doc_id, body=source_to_update)
+
+    def get_document_ids(self):
+        """Purpose: parses the ids of all documents in a batch
+            Returns: list of string ids"""
+        ids = []
+        for element in self.batch:
+            ids.append(element['_id'])
+        return ids
+
+    def get_source_urls(self):
+        urls = []
+        for entry in self.batch:
+            urls.append(entry['_source']['source'])
+        return urls
+
+    def get_connection(self):
+        return Elasticsearch([{'host': '130.203.139.151', 'port': 9200}])
+
+    def get_connection_prod(self):
+        return Elasticsearch([{'host': '130.203.139.160', 'port': 9200}])
+
+    def get_document_paths(self):
+        """get_document_paths(docs)
+        Purpose: parses the paths of all documents in a batch
+        #Returns: list of document paths as strings"""
+        paths = []
+        for element in self.batch:
+            try:
+                strr = str(element['_source']['pdf_path'])
+                if strr.endswith('\n'):
+                    strr = strr[:-1]
+                paths.append(strr)
+                self.file_path_sha1_mapping[strr] = element['_id']
+                self.file_path_source_url_map[strr] = element['_source']['source']
+            except Exception:
+                pass
+        return paths
+
+    def update_state(self, ids, state):
+        """update_state(ids, state)
+        Purpose: updates the extraction state of the given documents in the database
+        Parameters: ids - list of documents ids, state - the int state to assignt to each document"""
+        body = {
+            "script": {
+                "source": "ctx._source.text_status=" + "'" + state + "'",
+                "lang": "painless"
+            },
+            "query": {
+                "terms": {
+                    "_id": ids
+                }
+            }
+        }
+        print(body['script'])
+        try:
+            status = self.get_connection().update_by_query(index=settings.CRAWL_META_INDEX, body=body,
+                                                           request_timeout=1000, refresh=True)
+        except Exception as e:
+            print(e)
+
+    def on_stop(self):
+        """Purpose: perform necessary closing statements
+         Behavior: nothing to do"""
+        print('closed')
+
+    def file_path_to_id(self, fileName):
+        return self.file_path_sha1_mapping[fileName]
+
+    def file_path_to_source_url(self, filePath):
+        return self.file_path_source_url_map[filePath]

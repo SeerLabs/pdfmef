@@ -13,8 +13,11 @@ import shutil
 import glob
 import re
 import tempfile
-     
+import logging     
+from functools import cmp_to_key
+import functools
 
+logger = logging.getLogger(__name__)
 # Takes a TEI xml file of a document (at least containing header info)
 # and outputs an xml file containing header info in CSX format
 class TEItoHeaderExtractor(interfaces.CSXHeaderExtractor):
@@ -32,6 +35,7 @@ class TEItoHeaderExtractor(interfaces.CSXHeaderExtractor):
       if title is not None:
          ET.SubElement(result_root, 'title').text = title.text
       else:
+         logger.error('No title found in TEI document')
          raise RunnableError('No title found in TEI document')
 
       # Find document-level affiliations
@@ -65,7 +69,7 @@ class TEItoHeaderExtractor(interfaces.CSXHeaderExtractor):
                ET.SubElement(author_node, 'affiliation').text = affiliation_str
 
       else:
-         self.log('No authors found')
+         logger.info("No authors found")
 
 
       # Retreive keywords from TEI doc
@@ -75,6 +79,7 @@ class TEItoHeaderExtractor(interfaces.CSXHeaderExtractor):
          for term in keywords:
             ET.SubElement(keywords_node, 'keyword').text = term.text
       else:
+         logger.info("No keywords found")
          self.log('No keywords found')
 
       # Try and find an abstract
@@ -89,8 +94,8 @@ class TEItoHeaderExtractor(interfaces.CSXHeaderExtractor):
 
          ET.SubElement(result_root, 'abstract').text = abstract_string
       else:
+         logger.info("No abstract found")
          self.log('No abstract found')
-
 
       # CSX style xml document of header information
       return ExtractorResult(xml_result=result_root)
@@ -106,6 +111,7 @@ class TEItoPlainTextExtractor(interfaces.PlainTextExtractor):
       body_node = xml_root.find('./text/body')
 
       if body_node is None:
+         logger.info('Could not find body text in TEI xml file')
          return RunnableError('Could not find body text in TEI xml file')
 
       xml_string = ET.tostring(body_node).decode('utf-8')
@@ -118,6 +124,8 @@ class TEItoPlainTextExtractor(interfaces.PlainTextExtractor):
       return ExtractorResult(xml_result=None, files=files)
 
 
+def cmp(a, b):
+    return (a > b) - (a < b)
 
 # Helper method, takes an affiliation node from Grobid TEI format and
 # generates a plain text string representing the content
@@ -139,7 +147,8 @@ def _get_affiliation_str(affiliation_node):
       else:
          return cmp(n1.get('key', ''), n2.get('key', ''))
 
-   org_name_nodes.sort(comparator)
+   org_name_nodes.sort(key=cmp_to_key(comparator))
+   #org_name_nodes = sorted(org_name_nodes, functools.cmp_to_key(comparator) )
    return ', '.join([n.text for n in org_name_nodes])
 
 

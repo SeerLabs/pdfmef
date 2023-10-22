@@ -13,9 +13,12 @@ import shutil
 import glob
 import re
 import tempfile
+import logging
 
+logger = logging.getLogger(__name__)
 class AlgorithmsExtractor(Extractor):
-   dependencies = frozenset([filters.AcademicPaperFilter])
+   #dependencies = frozenset([filters.AcademicPaperFilter])
+   dependencies = frozenset([])
    result_file_name = '.algorithms'
 
    def extract(self, data, dependency_results):
@@ -27,15 +30,18 @@ class AlgorithmsExtractor(Extractor):
          status, stdout, stderr = extraction.utils.external_process(command_args, timeout=20)
       except subprocess.TimeoutExpired:
          shutil.rmtree(results_dir)
+         logger.error('Algorithms Jar timed out while processing document')
          raise RunnableError('Algorithms Jar timed out while processing document')
       finally:
          os.remove(temp_pdf_file)
 
       if status != 0:
+         logger.error('Algorithms Jar Failure. Possible error:\n' + stderr)
          raise RunnableError('Algorithms Jar Failure. Possible error:\n' + stderr)
 
       paths = glob.glob(results_dir + '*.xml')
       if len(paths) != 1:
+         logger.error('Wrong number of results files from Algorithms Jar.')
          raise RunnableError('Wrong number of results files from Algorithms Jar.')
 
       tree = safeET.parse(paths[0])

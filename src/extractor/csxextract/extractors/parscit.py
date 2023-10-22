@@ -13,7 +13,9 @@ import shutil
 import glob
 import re
 import tempfile
+import logging
 
+logger = logging.getLogger(__name__)
 # Takes a plain text version of a PDF and uses ParsCit to extract citations
 # Returns an xml document of citation info in CSX format
 class ParsCitCitationExtractor(interfaces.CSXCitationExtractor):
@@ -30,11 +32,13 @@ class ParsCitCitationExtractor(interfaces.CSXCitationExtractor):
       try:
          status, stdout, stderr = extraction.utils.external_process(['perl', config.PARSCIT_PATH, text_file_path], timeout=20)
       except subprocess.TimeoutExpired as te:
+         logger.error('ParsCit timed out while processing document')
          raise RunnableError('ParsCit timed out while processing document')
       finally:
          os.remove(text_file_path)
 
       if status != 0:
+         logger.error('ParsCit Failure. Possible error:\n' + stderr)
          raise RunnableError('ParsCit Failure. Possible error:\n' + stderr)
 
       # ParsCit will give us a string representing an xml doc

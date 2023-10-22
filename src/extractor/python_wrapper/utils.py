@@ -1,7 +1,7 @@
 import os
 import sys
 
-#file_name_to_id(fileName)
+#file_path_to_id(fileName)
 #
 #Purpose: converts a xxx.xxx.xxx.pdf to int
 #Parameters: fileName - string in xxx.xxx.xxx.pdf format
@@ -11,7 +11,7 @@ def file_name_to_id(fileName):
     try:
         return int(ID)
     except ValueError as e:
-        print "Please input a file with the proper xxx.xxx.xxx.pdf format"
+        print ("Please input a file with the proper xxx.xxx.xxx.pdf format")
         sys.exit()
 
 #id_to_file_name(id)

@@ -44,11 +44,7 @@ if __name__ == '__main__':
             files.append(path + file)
             folders.append(outputDir + file[:-4])
             prefixes.append(file[:-4])
-
-        #print dir
-        print file
     runner.run_from_file_batch(files, folders, num_processes=8, file_prefixes=prefixes)
-    print 'done'
 
     """argc = len(sys.argv)
     if argc == 2:

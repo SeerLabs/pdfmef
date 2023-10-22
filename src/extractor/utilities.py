@@ -38,7 +38,7 @@ class Util:
         #calls pdfbox to convert a pdf file into text file. 
         #returns the path of the text file
         #"""
-        ret = subprocess.call(["java", "-jar", ROOT_FOLDER+"pdfbox/pdfbox-app-1.8.1.jar", "ExtractText", path, path+".txt"])
+        ret = subprocess.call(["java", "-jar", '-Xmx5g', ROOT_FOLDER+"pdfbox/pdfbox-app-1.8.1.jar", "ExtractText", path, path+".txt"])
         """ Raise an error if text extraction failed """
         if ret > 0: 
             raise IOError

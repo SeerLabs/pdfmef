@@ -1,6 +1,9 @@
 import collections
 import sys
 import traceback
+import logging
+
+logger = logging.getLogger(__name__)
 
 class Runnable(object):
 
@@ -19,13 +22,16 @@ class Runnable(object):
       for filter in filter_deps:
          result = dep_results[filter]
          if isinstance(result, RunnableError):
+            logger.error('Did not run because dependency filter %s errored' % filter.__name__)
             return DependencyError('Did not run because dependency filter %s errored' % filter.__name__)
          elif not result:
+            logger.error('Did not run because dependency filter %s returned false' % filter.__name__)
             return DependencyError('Did not run because dependency filter %s returned false' % filter.__name__)
 
       for extractor in extractor_deps:
          result = dep_results[extractor]
          if isinstance(result, RunnableError):
+            logger.error('Did not run because dependency extractor %s errored' % extractor.__name__)
             return DependencyError('Did not run because dependency extractor %s errored' % extractor.__name__)
 
       return None
@@ -41,7 +47,7 @@ class Runnable(object):
       try:
          if isinstance(self, Filter):
             return self.filter(data, dep_results)
-         elif isinstance(self, Extractor): 
+         elif isinstance(self, Extractor):
             return self.extract(data, dep_results)
       except RunnableError as r:
          return r

@@ -1,3 +1,7 @@
+import json
+
+import logging
+
 from extraction.runnables import Extractor, RunnableError, ExtractorResult
 import extractor.csxextract.interfaces as interfaces
 import extractor.csxextract.config as config
@@ -10,11 +14,15 @@ import tempfile
 import requests
 import re
 import os
+import logging
 
+logger = logging.getLogger(__name__)
 
 # Returns full TEI xml document of the PDF
 class GrobidTEIExtractor(interfaces.FullTextTEIExtractor):
-   dependencies = frozenset([filters.AcademicPaperFilter])
+   #dependencies = frozenset([filters.AcademicPaperFilter])
+   dependencies = frozenset([])
+   # dependencies = frozenset([filters.SimpleAcademicPaperFilter])
    result_file_name = '.tei'
 
    def extract(self, data, dep_results):
@@ -23,7 +31,8 @@ class GrobidTEIExtractor(interfaces.FullTextTEIExtractor):
 
 # Returns TEI xml document only of the PDF's header info
 class GrobidHeaderTEIExtractor(interfaces.HeaderTEIExtractor):
-   dependencies = frozenset([filters.AcademicPaperFilter])
+   #dependencies = frozenset([filters.AcademicPaperFilter])
+   dependencies = frozenset([])
    result_file_name = '.header.tei'
 
    def extract(self, data, dep_results):
@@ -31,7 +40,8 @@ class GrobidHeaderTEIExtractor(interfaces.HeaderTEIExtractor):
       return ExtractorResult(xml_result=xml)
 
 class GrobidCitationTEIExtractor(Extractor):
-   dependencies = frozenset([filters.AcademicPaperFilter])
+   #dependencies = frozenset([filters.AcademicPaperFilter])
+   dependencies = frozenset([])
    result_file_name = '.cite.tei'
 
    def extract(self, data, dep_results):
@@ -40,20 +50,28 @@ class GrobidCitationTEIExtractor(Extractor):
 
 def _call_grobid_method(data, method):
       url = '{0}/api/{1}'.format(config.GROBID_HOST, method)
-
       # Write the pdf data to a temporary location so Grobid can process it
       path = extraction.utils.temp_file(data, suffix='.pdf')
- 
-      files = {'input': (path, open(path, 'rb')),} 
-      
+      files = {'input': (path, open(path, 'rb'))}
+      the_data = {'consolidateHeader': '1'}
       try:
-         resp = requests.post(url, files=files)
+         resp = requests.post(url, files=files, data=the_data)
+         '''
+         if (method == 'processFulltextDocument'):
+            print('inside _call_grobid_method grobid time taken----------------------------------->\n')
+            print(resp.elapsed.total_seconds())
+         '''
       except requests.exceptions.RequestException as ex:
+         print(ex)
+         # logging.error("exception while calling Grobid", ex)
+         logger.error('Request to Grobid server failed')
          raise RunnableError('Request to Grobid server failed')
       finally:
-         os.remove(path)
+         pass
+         #os.remove(path)
 
       if resp.status_code != 200:
+         logger.error('Grobid returned status {0} instead of 200\nPossible Error:\n{1}'.format(resp.status_code, resp.text))
          raise RunnableError('Grobid returned status {0} instead of 200\nPossible Error:\n{1}'.format(resp.status_code, resp.text))
 
       # remove all namespace info from xml string
@@ -61,8 +79,7 @@ def _call_grobid_method(data, method):
       #remove_xmlns = re.compile(r'\sxmlns[^"]+"[^"]+"')
       #xml_text = remove_xmlns.sub('', resp.content)
       #xml = safeET.fromstring(xml_text)
-
-      xmlstring = re.sub(' xmlns="[^"]+"', '', resp.content, count=1)
+      xmlstring = re.sub(' xmlns="[^"]+"', '', resp.content.decode('utf-8'), count=1)
       xml = safeET.fromstring(xmlstring)
 
       return xml

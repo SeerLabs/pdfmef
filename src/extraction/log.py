@@ -48,7 +48,7 @@ class ParallelTimedRotatingFileHandler(logging.handlers.TimedRotatingFileHandler
          raise ValueError("Invalid rollover interval specified: %s" % self.when)
 
       currenttime = int(time.time())
-      logging.handlers.BaseRotatingHandler.__init__(self, self.calculateFileName(currenttime), 'a', encoding, delay)
+      logging.handlers.BaseRotatingHandler.__init__(self, self.calculateFileName(currenttime), 'w', encoding, delay)
 
       self.extMatch = re.compile(self.extMatch)
       self.interval = self.interval * interval # multiply by units requested

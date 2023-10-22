@@ -1,0 +1,24 @@
+---
+version: 1
+disable_existing_loggers: False
+ 
+# Define format of output logs (named 'simple').
+formatters:
+    simple:
+        format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+ 
+handlers:
+ 
+    # Create rotating file handler using 'simple' format.
+    file_handler:
+        class: logging.handlers.RotatingFileHandler
+        level: INFO
+        formatter: simple
+        filename: /pdfmef-code/src/extractor/pdfmef-service.log
+        maxBytes: 10485760 # 10MB
+        backupCount: 5
+        encoding: utf8
+ 
+root:
+    level: INFO
+    handlers: [file_handler]
